@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(DATABASE_URL=\"file:./prisma/dev.db\" npx tsx:*)",
+      "Bash(node -e:*)",
+      "Bash(sqlite3:*)",
+      "Bash(PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"yes\" npx prisma migrate reset:*)",
+      "Bash(curl:*)",
+      "Bash(python3 -m json.tool:*)",
+      "Bash(python3:*)",
+      "Bash(pkill:*)",
+      "WebFetch(domain:www.unnathicnc.com)",
+      "Bash(dir:*)",
+      "Bash(find:*)",
+      "Bash(node_modules.bints-node --compiler-options \"{\"\"module\"\":\"\"CommonJS\"\"}\" prisma/seed.ts)",
+      "Bash(node:*)",
+      "Bash(npm rebuild:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
+    ]
+  }
+}

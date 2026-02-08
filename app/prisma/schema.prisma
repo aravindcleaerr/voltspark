@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  employeeId   String   @unique
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("EMPLOYEE")
+  department   String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  consumptionEntries ConsumptionEntry[]
+  trainingAttendance TrainingAttendance[]
+  auditsLed          Audit[]              @relation("AuditLead")
+  capasRaised        CAPA[]               @relation("CAPARaisedBy")
+  capasAssigned      CAPA[]               @relation("CAPAAssignedTo")
+  capaComments       CAPAComment[]
+}
+
+model EnergySource {
+  id          String   @id @default(cuid())
+  name        String
+  type        String
+  unit        String
+  description String?
+  location    String?
+  meterNumber String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  targets            EnergyTarget[]
+  consumptionEntries ConsumptionEntry[]
+}
+
+model EnergyTarget {
+  id               String       @id @default(cuid())
+  energySourceId   String
+  energySource     EnergySource @relation(fields: [energySourceId], references: [id])
+  period           String
+  periodType       String
+  targetValue      Float
+  unit             String
+  baselineValue    Float?
+  reductionPercent Float?
+  actualValue      Float?
+  isActive         Boolean      @default(true)
+  notes            String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([energySourceId, period])
+}
+
+model ConsumptionEntry {
+  id               String       @id @default(cuid())
+  energySourceId   String
+  energySource     EnergySource @relation(fields: [energySourceId], references: [id])
+  recordedById     String
+  recordedBy       User         @relation(fields: [recordedById], references: [id])
+  date             DateTime
+  value            Float
+  unit             String
+  meterReading     Float?
+  previousReading  Float?
+  shift            String?
+  notes            String?
+  hasDeviation      Boolean      @default(false)
+  deviationPercent  Float?
+  deviationSeverity String?
+  deviationNote     String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model TrainingProgram {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  type            String
+  trainer         String?
+  scheduledDate   DateTime
+  duration        Float?
+  location        String?
+  maxParticipants Int?
+  materialsUrl    String?
+  status          String    @default("SCHEDULED")
+  completionDate  DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  attendance TrainingAttendance[]
+}
+
+model TrainingAttendance {
+  id                String          @id @default(cuid())
+  trainingProgramId String
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id])
+  userId            String
+  user              User            @relation(fields: [userId], references: [id])
+  attended          Boolean         @default(false)
+  score             Float?
+  feedback          String?
+  certificateIssued Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([trainingProgramId, userId])
+}
+
+model Audit {
+  id              String    @id @default(cuid())
+  title           String
+  type            String
+  auditDate       DateTime
+  leadAuditorId   String?
+  leadAuditor     User?     @relation("AuditLead", fields: [leadAuditorId], references: [id])
+  externalAuditor String?
+  scope           String?
+  status          String    @default("PLANNED")
+  summary         String?
+  completedDate   DateTime?
+  nextAuditDate   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  findings AuditFinding[]
+}
+
+model AuditFinding {
+  id             String    @id @default(cuid())
+  auditId        String
+  audit          Audit     @relation(fields: [auditId], references: [id])
+  findingNumber  Int
+  category       String
+  area           String?
+  description    String
+  evidence       String?
+  recommendation String?
+  status         String    @default("OPEN")
+  dueDate        DateTime?
+  closedDate     DateTime?
+  capaId         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model CAPA {
+  id              String    @id @default(cuid())
+  capaNumber      String    @unique
+  type            String
+  source          String
+  sourceReference String?
+  title           String
+  description     String
+  raisedById      String
+  raisedBy        User      @relation("CAPARaisedBy", fields: [raisedById], references: [id])
+  assignedToId    String?
+  assignedTo      User?     @relation("CAPAAssignedTo", fields: [assignedToId], references: [id])
+  priority        String    @default("MEDIUM")
+  status          String    @default("OPEN")
+
+  rcaMethod        String?
+  rcaDetails       String?
+  rootCause        String?
+
+  correctiveAction    String?
+  preventiveAction    String?
+  actionDueDate       DateTime?
+  actionCompletedDate DateTime?
+
+  verificationMethod String?
+  verificationDate   DateTime?
+  verificationResult String?
+  verifiedBy         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments CAPAComment[]
+}
+
+model CAPAComment {
+  id        String   @id @default(cuid())
+  capaId    String
+  capa      CAPA     @relation(fields: [capaId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  comment   String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
