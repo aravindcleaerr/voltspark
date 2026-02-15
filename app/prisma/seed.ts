@@ -1,9 +1,23 @@
 import { PrismaClient } from '../src/generated/prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import bcrypt from 'bcryptjs';
 
-const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
-const prisma = new PrismaClient({ adapter });
+function createPrisma() {
+  if (process.env.TURSO_DATABASE_URL) {
+    const { PrismaLibSQL } = require('@prisma/adapter-libsql');
+    const { createClient } = require('@libsql/client');
+    const client = createClient({
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+    return new PrismaClient({ adapter: new PrismaLibSQL(client) });
+  } else {
+    const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+    const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
+    return new PrismaClient({ adapter });
+  }
+}
+
+const prisma = createPrisma();
 
 async function main() {
   console.log('Seeding database with real Unnathi CNC data...');
