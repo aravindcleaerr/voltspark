@@ -7,13 +7,13 @@ const globalForPrisma = globalThis as unknown as {
 function createPrismaClient() {
   if (process.env.TURSO_DATABASE_URL) {
     // Production: use Turso (libSQL)
-    const { PrismaLibSQL } = require('@prisma/adapter-libsql');
+    const { PrismaLibSql } = require('@prisma/adapter-libsql');
     const { createClient } = require('@libsql/client');
     const client = createClient({
       url: process.env.TURSO_DATABASE_URL,
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
-    const adapter = new PrismaLibSQL(client);
+    const adapter = new PrismaLibSql(client);
     return new PrismaClient({ adapter });
   } else {
     // Local development: use better-sqlite3
