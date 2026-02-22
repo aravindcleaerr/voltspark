@@ -38,8 +38,8 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-100 mb-4">
             <Zap className="h-8 w-8 text-brand-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Unnathi CNC</h1>
-          <p className="text-sm text-gray-500 mt-1">ZED Energy Management System</p>
+          <h1 className="text-2xl font-bold text-gray-900">VoltSpark</h1>
+          <p className="text-sm text-gray-500 mt-1">Energy Management System</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,7 +56,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input-field"
-              placeholder="sureshkumar@unnathicnc.com"
+              placeholder="you@company.com"
               required
             />
           </div>
@@ -82,9 +82,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-gray-400">
-          <p>Demo: sureshkumar@unnathicnc.com / unnathi123</p>
-        </div>
       </div>
     </div>
   );

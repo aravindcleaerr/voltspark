@@ -63,13 +63,13 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Dashboard" subtitle="ZED Energy Management Overview" />
+      <PageHeader title="Dashboard" subtitle="Energy Management Overview" />
 
-      {/* ZED Compliance Score */}
+      {/* Compliance Score */}
       <div className="card">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="h-5 w-5 text-brand-600" />
-          <h2 className="text-lg font-semibold">ZED Compliance Score</h2>
+          <h2 className="text-lg font-semibold">Compliance Score</h2>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-8">
           <div className="relative">

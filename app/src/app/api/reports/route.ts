@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
       });
       return NextResponse.json({ type, title: 'CAPA Summary Report', data: capas });
     }
-    case 'zed-compliance': {
+    case 'compliance-overview': {
       const [sources, targets, entries, programs, attendance, audits, findings, capas] = await Promise.all([
         prisma.energySource.count({ where: { isActive: true } }),
         prisma.energyTarget.count({ where: { isActive: true } }),
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       ]);
       const closedCapas = capas.filter(c => c.status === 'CLOSED').length;
       return NextResponse.json({
-        type, title: 'ZED Compliance Overview',
+        type, title: 'Compliance Overview',
         data: { energySources: sources, activeTargets: targets, consumptionEntries: entries, trainingPrograms: programs, attendedTraining: attendance, totalAudits: audits, openFindings: findings, totalCapas: capas.length, closedCapas, capaClosureRate: capas.length > 0 ? Math.round((closedCapas / capas.length) * 100) : 100 },
       });
     }

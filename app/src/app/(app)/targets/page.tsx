@@ -34,7 +34,7 @@ export default function TargetsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Energy Targets"
-        subtitle="Track targets vs actual consumption (ZED Requirement 1)"
+        subtitle="Track targets vs actual consumption (Compliance Requirement 1)"
         action={<Link href="/targets/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> Set Target</Link>}
       />
 

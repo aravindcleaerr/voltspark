@@ -25,7 +25,7 @@ export default function TrainingPage() {
     <div className="space-y-6">
       <PageHeader
         title="Training Management"
-        subtitle="Energy awareness training programs (ZED Requirement 3)"
+        subtitle="Energy awareness training programs (Compliance Requirement 3)"
         action={<Link href="/training/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> New Program</Link>}
       />
 

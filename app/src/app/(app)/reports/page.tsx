@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FileText, Printer, Download } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import { formatDate } from '@/lib/utils';
+import { useSettings } from '@/lib/hooks/useSettings';
 
 const REPORT_TYPES = [
   { value: 'energy-register', label: 'Energy Source Register', description: 'Complete list of identified energy sources with meter details' },
@@ -11,10 +12,11 @@ const REPORT_TYPES = [
   { value: 'training-compliance', label: 'Training Compliance', description: 'Training programs and attendance records' },
   { value: 'audit-summary', label: 'Audit Summary', description: 'Audit history with findings and status' },
   { value: 'capa-summary', label: 'CAPA Summary', description: 'Corrective/preventive actions and closure rates' },
-  { value: 'zed-compliance', label: 'ZED Compliance Overview', description: 'Overall ZED compliance status across all requirements' },
+  { value: 'compliance-overview', label: 'Compliance Overview', description: 'Overall compliance status across all requirements' },
 ];
 
 export default function ReportsPage() {
+  const { settings } = useSettings();
   const [selectedType, setSelectedType] = useState('energy-register');
   const [reportData, setReportData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,7 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Reports" subtitle="Generate ZED compliance evidence reports" />
+      <PageHeader title="Reports" subtitle="Generate compliance evidence reports" />
 
       {/* Report Selection */}
       <div className="card print:hidden">
@@ -72,8 +74,8 @@ export default function ReportsPage() {
         <div className="card print:shadow-none print:border-0">
           {/* Report Header */}
           <div className="text-center border-b pb-4 mb-6">
-            <h1 className="text-2xl font-bold text-brand-900">Unnathi CNC Technologies Pvt Ltd</h1>
-            <p className="text-sm text-gray-500">ZED Certification - Energy Management System</p>
+            <h1 className="text-2xl font-bold text-brand-900">{settings?.company_name || 'Company'}</h1>
+            <p className="text-sm text-gray-500">Energy Management System</p>
             <h2 className="text-lg font-semibold mt-2">{reportData.title}</h2>
             <p className="text-xs text-gray-400">Generated on {new Date().toLocaleDateString()}</p>
           </div>
@@ -146,8 +148,8 @@ export default function ReportsPage() {
             </table>
           )}
 
-          {/* ZED Compliance Overview */}
-          {reportData.type === 'zed-compliance' && (
+          {/* Compliance Overview */}
+          {reportData.type === 'compliance-overview' && (
             <div className="space-y-4">
               {Object.entries(reportData.data || {}).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-center py-2 border-b">
@@ -160,8 +162,8 @@ export default function ReportsPage() {
 
           {/* Report Footer */}
           <div className="mt-8 pt-4 border-t text-center text-xs text-gray-400">
-            <p>This report is generated as part of ZED Certification compliance evidence.</p>
-            <p>System maintained by Akshaya Createch | Unnathi CNC Technologies Pvt Ltd</p>
+            <p>This report is generated as part of Energy Management compliance evidence.</p>
+            <p>Powered by VoltSpark</p>
           </div>
         </div>
       )}

@@ -23,7 +23,7 @@ export default function AuditsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Audits"
-        subtitle="Internal & external energy audits (ZED Requirement 4)"
+        subtitle="Internal & external energy audits (Compliance Requirement 4)"
         action={<Link href="/audits/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> Schedule Audit</Link>}
       />
 

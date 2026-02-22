@@ -51,7 +51,7 @@ export default function NewTrainingPage() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label-text">Trainer</label>
-            <input className="input-field" value={form.trainer} onChange={e => setForm(f => ({ ...f, trainer: e.target.value }))} placeholder="e.g., Akshaya Createch" />
+            <input className="input-field" value={form.trainer} onChange={e => setForm(f => ({ ...f, trainer: e.target.value }))} placeholder="e.g., External Trainer Name" />
           </div>
           <div>
             <label className="label-text">Duration (hours)</label>

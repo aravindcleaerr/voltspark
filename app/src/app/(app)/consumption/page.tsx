@@ -35,7 +35,7 @@ export default function ConsumptionPage() {
     <div className="space-y-6">
       <PageHeader
         title="Consumption Log"
-        subtitle="Monitor energy consumption and deviations (ZED Requirement 2)"
+        subtitle="Monitor energy consumption and deviations (Compliance Requirement 2)"
         action={<Link href="/consumption/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> Record Entry</Link>}
       />
 

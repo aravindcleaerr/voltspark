@@ -56,8 +56,8 @@ export default function Sidebar({
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-brand-800">
           <div>
-            <h1 className="text-lg font-bold">Unnathi CNC</h1>
-            <p className="text-xs text-brand-300">ZED Energy Management</p>
+            <h1 className="text-lg font-bold">VoltSpark</h1>
+            <p className="text-xs text-brand-300">Energy Management</p>
           </div>
           <button onClick={onClose} className="lg:hidden p-1 hover:bg-brand-800 rounded">
             <X className="h-5 w-5" />

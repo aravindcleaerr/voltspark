@@ -25,7 +25,7 @@ export default function EnergySourcesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Energy Sources"
-        subtitle="Manage identified energy sources (ZED Requirement 1)"
+        subtitle="Manage identified energy sources (Compliance Requirement 1)"
         action={<Link href="/energy-sources/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> Add Source</Link>}
       />
 

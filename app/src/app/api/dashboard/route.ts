@@ -38,7 +38,7 @@ export async function GET() {
     prisma.cAPA.count({ where: { status: 'CLOSED' } }),
   ]);
 
-  // Calculate ZED compliance sub-scores
+  // Calculate compliance sub-scores
   const sourceScore = energySourceCount > 0 ? Math.min(100, energySourceCount * 20) : 0;
   const targetScore = activeTargets > 0 ? Math.min(100, activeTargets * 25) : 0;
 

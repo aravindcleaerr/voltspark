@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Unnathi CNC - ZED Energy Management",
-  description: "ZED Certification Energy Management Compliance Suite for Unnathi CNC Technologies",
+  title: "VoltSpark - Energy Management",
+  description: "Energy Management Compliance Suite by VoltSpark",
 };
 
 export default function RootLayout({

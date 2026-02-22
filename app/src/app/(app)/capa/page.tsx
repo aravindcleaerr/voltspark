@@ -31,7 +31,7 @@ export default function CAPAPage() {
     <div className="space-y-6">
       <PageHeader
         title="CAPA Management"
-        subtitle="Corrective & Preventive Actions (ZED Requirement 5)"
+        subtitle="Corrective & Preventive Actions (Compliance Requirement 5)"
         action={<Link href="/capa/new" className="btn-primary flex items-center gap-2"><Plus className="h-4 w-4" /> Raise CAPA</Link>}
       />
 
