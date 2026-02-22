@@ -9,7 +9,8 @@ const turso = createClient({
 
 // Tables in dependency order (parents before children)
 const tables = [
-  'User', 'EnergySource', 'EnergyTarget', 'ConsumptionEntry',
+  'Organization', 'User', 'Membership', 'Client', 'ClientAccess',
+  'EnergySource', 'EnergyTarget', 'ConsumptionEntry',
   'TrainingProgram', 'TrainingAttendance',
   'Audit', 'AuditFinding',
   'CAPA', 'CAPAComment',
