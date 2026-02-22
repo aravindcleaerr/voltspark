@@ -866,85 +866,193 @@ volt-spark.vercel.app/
 
 **Goal:** Multi-tenant architecture. Consultant manages multiple clients. Energy data becomes financial data.
 
+**Status:** ~80% complete
+
 **Deliverables:**
-- [ ] Organization, Client, Membership, ClientAccess models
-- [ ] Prisma schema overhaul + migration
+- [x] Organization, Client, Membership, ClientAccess models
+- [x] Prisma schema overhaul + migration
 - [ ] Registration flow (invitation-only) for consultants
-- [ ] Client workspace creation with company details + tariff config
-- [ ] Workspace switcher in sidebar
-- [ ] Migrate all existing modules to be client-scoped (add clientId)
-- [ ] Role-based access control (consultant vs client admin vs employee)
-- [ ] Console dashboard (portfolio view for consultants)
+- [x] Client workspace creation with company details + tariff config
+- [x] Workspace switcher in sidebar
+- [x] Migrate all existing modules to be client-scoped (add clientId)
+- [x] Role-based access control (consultant vs client admin vs employee)
+- [x] Console dashboard (portfolio view for consultants)
 - [ ] Invite client users via email
-- [ ] Energy Cost Dashboard (₹ view of consumption data)
-- [ ] Cost fields on energy sources and consumption entries
-- [ ] Migrate Unnathi CNC data into new multi-tenant structure
+- [x] Energy Cost Dashboard (₹ view of consumption data)
+- [x] Cost fields on energy sources and consumption entries
+- [x] Migrate Unnathi CNC data into new multi-tenant structure
 - [ ] URL routing update (/w/[slug]/...)
-- [ ] Auth system update for multi-tenant sessions
-- [ ] Middleware for tenant isolation
+- [x] Auth system update for multi-tenant sessions
+- [x] Middleware for tenant isolation
 
-### Phase 2: Framework Engine + Safety Modules (Weeks 5-8)
+**Remaining Phase 1 items:**
+- Registration/invite flow for consultants and client users
+- URL routing update with `/w/[slug]/...` pattern
 
-**Goal:** Configurable compliance frameworks. Electrical Safety as second framework. Baseline assessment flow.
+### Phase 2: Framework Engine + Safety + Utility Bills (Weeks 5-8)
+
+**Goal:** Configurable compliance frameworks. Electrical Safety as second framework. Utility bill analysis for immediate ₹ impact. Safety risk quantification.
 
 **Deliverables:**
+
+**2A — Framework Engine (Core)**
 - [ ] ComplianceFramework, FrameworkRequirement, ClientFramework, RequirementStatus models
-- [ ] Built-in ZED template
-- [ ] Built-in ISO 50001 template
-- [ ] Built-in Electrical Safety template
+- [ ] Built-in ZED template (5 energy requirements mapped to existing modules)
+- [ ] Built-in ISO 50001 template (Plan-Do-Check-Act clauses)
+- [ ] Built-in Electrical Safety template (IE Rules, IS standards)
 - [ ] Framework assignment to clients (multiple frameworks per client)
-- [ ] Requirement tracking UI (status, evidence links, notes)
-- [ ] Evidence traceability chain (link module data to requirements)
-- [ ] Gap analysis view (visual compliance matrix)
-- [ ] Per-framework compliance scoring
-- [ ] Baseline assessment / initial survey flow
-- [ ] Inspection checklists module (configurable templates)
-- [ ] Incident register module
-- [ ] Certification tracker with expiry alerts
-- [ ] Pre-audit readiness check
+- [ ] Requirement tracking UI (status, evidence links, notes per requirement)
+- [ ] Evidence traceability chain (link module data → requirements automatically)
+- [ ] Gap analysis view (visual compliance matrix — what's done, what's missing)
+- [ ] Per-framework compliance scoring (weighted by requirement criticality)
+- [ ] Baseline assessment / initial survey flow (onboarding questionnaire per framework)
+- [ ] Pre-audit readiness check (are all requirements met before the auditor arrives?)
+
+**2B — Safety Modules**
+- [ ] Inspection checklists module (configurable templates — electrical, fire, general safety)
+- [ ] Inspection template builder (consultants create custom checklists)
+- [ ] Incident register module (incident reports, near-misses, RCA, follow-up actions)
+- [ ] Certification tracker with expiry alerts (CEIG, BIS, Fire NOC, pressure vessels)
+- [ ] Compliance calendar view (all certifications/tests with due dates across clients)
+- [ ] Safety Risk Score — weighted scoring model:
+  - Earthing system integrity (20%)
+  - Protection devices — ELCB/MCB/RCBO (15%)
+  - Panel condition — thermography, labeling (15%)
+  - Statutory certifications current (15%)
+  - Maintenance schedule adherence (10%)
+  - Safety training completion (10%)
+  - Incident history (10%)
+  - Emergency preparedness (5%)
+- [ ] Liability estimation in ₹ (based on CEIG enforcement data — fines, compensation, shutdown cost)
+- [ ] Risk level classification (Critical/High/Moderate/Low/Excellent)
+
+**2C — Utility Bill Analyzer** _(new — from CUSTOMER-VALUE.md)_
+- [ ] UtilityBill model (month, provider, units consumed, demand kVA, power factor, penalty breakdown, total amount, tariff category)
+- [ ] Monthly bill entry form (structured data entry for BESCOM/CESC/MESCOM bills)
+- [ ] Auto-analysis dashboard:
+  - Power factor trend + penalty amount detection (₹/kVAh surcharge for PF < 0.90)
+  - Demand charges vs. contracted demand (kVA overshoot detection)
+  - Bill anomaly detection (>20% spike from previous month)
+  - Tariff category mismatch flag (commercial vs. industrial tariff)
+  - Estimated vs. actual billing flag (BESCOM didn't read meter)
+  - Fuel surcharge and tax component breakdown
+- [ ] 12-month bill trend with month-over-month comparison
+- [ ] Red flag auto-detection with ₹ impact quantification
+- [ ] Bill-level cost breakdown linked to Energy Cost Dashboard
+
+**2D — Enhanced Energy Cost Dashboard** _(enriching Phase 1 work)_
+- [ ] Power factor tracking with penalty risk estimate (₹ exposure per quarter)
+- [ ] Peak demand utilization gauge (current vs. contracted kVA)
+- [ ] Time-of-Day consumption pattern (peak/off-peak/shoulder hours)
+- [ ] Predicted next month cost (linear trend projection)
+- [ ] Cost per unit of production (₹/kg, ₹/piece — requires production volume input field on Client)
 
 ### Phase 3: Action Plans, Savings & Documents (Weeks 9-12)
 
-**Goal:** Consultant workflow tools. Prove financial value to clients.
+**Goal:** Consultant workflow tools. Prove financial value to clients. The savings tracker is the killer feature that makes consultants sell VoltSpark.
 
 **Deliverables:**
-- [ ] Action plan module (improvement roadmaps with milestones)
-- [ ] Action plan templates per framework
-- [ ] Recurring schedules engine
-- [ ] Savings tracker (investment → savings → ROI measurement)
-- [ ] ROI calculator with pre-built models (solar, VFD, LED, PF correction)
-- [ ] Utility bill entry and analysis
+
+**3A — Savings Tracker** _(the feature that justifies consultant fees)_
+- [ ] Improvement model (name, type, investment cost, installation date, linked energy source)
+- [ ] Baseline period establishment (3-month average consumption before improvement)
+- [ ] Post-implementation measurement (actual consumption after improvement)
+- [ ] Normalization engine (adjust for production volume, weather, operating hours)
+- [ ] Per-improvement savings attribution (isolate savings from each specific change)
+- [ ] Cumulative savings running total with month-by-month breakdown
+- [ ] Savings categories: energy cost reduction, penalty avoidance, maintenance reduction, subsidy income, insurance reduction
+- [ ] Consultant fee vs. savings comparison (ROI proof screen)
+- [ ] Savings dashboard — the screen consultants screenshot in every client meeting
+
+**3B — ROI Calculator**
+- [ ] Pre-built ROI templates with industry-standard parameters:
+  - Solar rooftop (system size, irradiance, tariff, subsidy, degradation rate)
+  - VFD installation (motor HP, load profile, tariff)
+  - Power factor correction (current PF, target PF, kVAR, penalty rate)
+  - LED retrofit (fixtures, wattage old vs new, operating hours)
+  - Compressed air optimization (compressor kW, leak %, target reduction)
+  - IE3 motor replacement (motor HP, hours, efficiency old vs new)
+  - Transformer replacement (no-load + load losses, utilization)
+- [ ] Key calculations: simple payback, NPV, IRR, monthly cash flow projection
+- [ ] Sensitivity analysis (what if tariff increases 5%/year?)
+- [ ] Subsidy impact on payback period
+- [ ] Carbon reduction estimate (tonnes CO2/year)
+- [ ] "Add to Action Plan" and "Share with Client" actions
+
+**3C — Action Plans & Documents**
+- [ ] Action plan module (improvement roadmaps with milestones, owners, deadlines)
+- [ ] Action plan templates per framework (ZED improvement plan, ISO 50001 implementation plan)
+- [ ] Recurring schedules engine (monthly inspections, quarterly audits, annual certifications)
 - [ ] Document library with file uploads (Vercel Blob)
-- [ ] Link documents to any entity (audit, training, inspection, etc.)
-- [ ] Template library (inspection, audit, action plan, policy templates)
-- [ ] Bulk data import (CSV/Excel for consumption, training)
+- [ ] Link documents to any entity (audit, training, inspection, CAPA, improvement)
+- [ ] Template library (inspection, audit, action plan, policy document templates)
+- [ ] Bulk data import (CSV/Excel for consumption readings, training records)
+
+**3D — Reports & Export**
 - [ ] Enhanced reports with PDF export
-- [ ] Impact report generation (quarterly/annual)
-- [ ] Configurable client access modes
-- [ ] Data export (client can export all their data)
+- [ ] Impact report generation (quarterly/annual) — 8-section structure:
+  1. Executive Summary (one-page highlights with key ₹ numbers)
+  2. Energy Performance (consumption trend, cost trend, savings, source mix)
+  3. Compliance Status (framework-wise progress, certifications achieved)
+  4. Safety Performance (risk score trend, incidents, inspections completed)
+  5. Financial Impact (total savings, subsidies claimed, penalties avoided, vendor qualifications)
+  6. Improvement Roadmap (completed this period, planned for next period)
+  7. Consultant Recommendations (top 3 priorities with estimated ROI)
+  8. Benchmarking (how client compares to industry peers)
+- [ ] Report distribution: PDF download, email to stakeholders, presentation mode
+- [ ] Configurable client access modes (consultant-managed, collaborative, self-service)
+- [ ] Data export (client can export all their data as CSV/JSON)
 
 ### Phase 4: Notifications, Analytics & Launch (Weeks 13-16)
 
-**Goal:** Production-ready. Notifications. Analytics. Beta launch.
+**Goal:** Production-ready. Notifications. Analytics. Government schemes. Beta launch.
 
 **Deliverables:**
+
+**4A — Notifications**
 - [ ] Email notification system (Resend)
 - [ ] WhatsApp notifications (Business API)
 - [ ] In-app notification center
 - [ ] Notification preferences per client
-- [ ] Consultant analytics dashboard (cross-client insights)
-- [ ] Client health score
-- [ ] Industry benchmarking (when sufficient data)
-- [ ] Safety risk score
-- [ ] Government scheme database + eligibility matching
+- [ ] Trigger types: certification expiry (30/15/7 days), audit due, CAPA overdue, bill anomaly, safety risk change
+
+**4B — Analytics & Benchmarking**
+- [ ] Consultant analytics dashboard (cross-client insights, portfolio health)
+- [ ] Client health score (composite of compliance, safety, cost trend, engagement)
+- [ ] Industry benchmarking (anonymous, aggregated — requires min 5 facilities per category):
+  - Specific energy consumption (kWh/unit of output)
+  - Energy cost per unit (₹/kg, ₹/piece)
+  - Power factor comparison
+  - Renewable energy share (%)
+  - Safety incident rate
+  - Compliance score
+  - Maintenance downtime
+- [ ] Trend charts and historical analysis (12-month, YoY)
+
+**4C — Government Schemes & Subsidies**
+- [ ] Government scheme database (ZED subsidy, PM-KUSUM, CLCSS, BEE awards, state incentives)
+- [ ] Auto-eligibility matching based on client profile (Udyam number, industry, size, location, certifications)
+- [ ] Application checklist (documents needed, forms to fill)
+- [ ] Deadline tracking with reminders
+- [ ] Application status tracking
+- [ ] Historical record of subsidies claimed (total ₹ unlocked per client)
+
+**4D — Vendor Qualification & Shareable Views**
 - [ ] Vendor qualification / shareable compliance view (/share/[token])
-- [ ] Trend charts and historical analysis
+- [ ] Public URL with branded template (company logo, VoltSpark watermark)
+- [ ] QR code for physical display in factory reception
+- [ ] Downloadable PDF compliance summary
+- [ ] Real-time status (not a stale certificate)
+- [ ] Evidence trail (auditor can drill down into specific requirements)
+- [ ] Expiry date visibility (buyer knows when re-certification is due)
+
+**4E — Launch Readiness**
 - [ ] Mobile-responsive optimization / PWA
-- [ ] Onboarding flow for new consultants (guided setup)
+- [ ] Onboarding flow for new consultants (guided setup wizard)
 - [ ] Landing page at volt-spark.vercel.app
-- [ ] Demo environment with seed data
-- [ ] Security audit (OWASP, tenant isolation verification)
-- [ ] Performance optimization
+- [ ] Demo environment with seed data (multiple industries)
+- [ ] Security audit (OWASP top 10, tenant isolation verification)
+- [ ] Performance optimization (page load <2s all routes)
 - [ ] Beta launch with 3-5 consultants
 
 ---
@@ -959,10 +1067,13 @@ volt-spark.vercel.app/
 
 ### Customer Value Metrics (the ones that matter)
 - Total energy cost savings tracked across platform (₹)
-- Average savings per client per month
+- Average savings per client per month (target: ₹50K+ for CNC shops)
+- Penalties avoided per client per quarter (PF, demand, regulatory)
 - Number of certifications achieved via VoltSpark
-- Government subsidies captured (₹)
+- Government subsidies captured (₹) — target: ₹1-5L per eligible client
 - Safety incidents (trending down per client)
+- Safety risk score improvement (quarter-over-quarter)
+- Utility bill anomalies detected and ₹ recovered
 
 ### Product-Market Fit Indicators
 - Consultants inviting their clients without prompting
@@ -970,6 +1081,8 @@ volt-spark.vercel.app/
 - Report generation frequency >2x per client per month
 - Consultant referrals (organic growth)
 - Savings tracker being updated regularly (proof of value delivery)
+- Utility bills entered monthly by >80% of active clients
+- Consultant uses Impact Report in client meetings
 
 ### Quality Metrics
 - Page load time <2s (all routes)
