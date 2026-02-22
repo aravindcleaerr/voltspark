@@ -7,18 +7,100 @@ datasource db {
   provider = "sqlite"
 }
 
+// ============================================================
+// MULTI-TENANCY MODELS
+// ============================================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  logo      String?
+  website   String?
+  plan      String   @default("FREE") // FREE, PRO, ENTERPRISE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clients     Client[]
+  memberships Membership[]
+}
+
+model Client {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  slug           String       @unique
+  address        String?
+  industry       String?
+  employeeCount  Int?
+  accessMode     String       @default("COLLABORATIVE") // CONSULTANT_MANAGED, COLLABORATIVE, SELF_SERVICE
+  // Energy cost config
+  gridTariffRate    Float?    // ₹/kWh
+  solarTariffRate   Float?
+  dgTariffRate      Float?
+  contractDemand    Float?    // kVA
+  powerFactorTarget Float?
+  baselineYear      Int?
+  baselineMonth     Int?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  clientAccess       ClientAccess[]
+  energySources      EnergySource[]
+  consumptionEntries ConsumptionEntry[]
+  trainingPrograms   TrainingProgram[]
+  audits             Audit[]
+  capas              CAPA[]
+  auditLogs          AuditLog[]
+  appSettings        AppSetting[]
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  role           String       @default("MEMBER") // OWNER, ADMIN, MEMBER
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, organizationId])
+}
+
+model ClientAccess {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+  role      String   @default("EMPLOYEE") // CLIENT_ADMIN, EMPLOYEE, VIEWER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, clientId])
+}
+
+// ============================================================
+// USER MODEL
+// ============================================================
+
 model User {
   id           String   @id @default(cuid())
-  employeeId   String   @unique
+  employeeId   String?
   name         String
   email        String   @unique
   passwordHash String
-  role         String   @default("EMPLOYEE")
+  role         String   @default("USER") // PLATFORM_ADMIN, USER
   department   String?
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  memberships        Membership[]
+  clientAccess       ClientAccess[]
   consumptionEntries ConsumptionEntry[]
   trainingAttendance TrainingAttendance[]
   auditsLed          Audit[]              @relation("AuditLead")
@@ -27,14 +109,21 @@ model User {
   capaComments       CAPAComment[]
 }
 
+// ============================================================
+// ENERGY MANAGEMENT MODELS (client-scoped)
+// ============================================================
+
 model EnergySource {
   id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
   name        String
   type        String
   unit        String
   description String?
   location    String?
   meterNumber String?
+  costPerUnit Float?   // ₹/kWh — overrides client-level tariff
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -54,6 +143,7 @@ model EnergyTarget {
   baselineValue    Float?
   reductionPercent Float?
   actualValue      Float?
+  costTarget       Float?       // ₹ target for this period
   isActive         Boolean      @default(true)
   notes            String?
   createdAt        DateTime     @default(now())
@@ -64,6 +154,8 @@ model EnergyTarget {
 
 model ConsumptionEntry {
   id               String       @id @default(cuid())
+  clientId         String
+  client           Client       @relation(fields: [clientId], references: [id])
   energySourceId   String
   energySource     EnergySource @relation(fields: [energySourceId], references: [id])
   recordedById     String
@@ -71,6 +163,7 @@ model ConsumptionEntry {
   date             DateTime
   value            Float
   unit             String
+  cost             Float?       // ₹ — auto-calculated from value * costPerUnit
   meterReading     Float?
   previousReading  Float?
   shift            String?
@@ -83,8 +176,14 @@ model ConsumptionEntry {
   updatedAt        DateTime     @updatedAt
 }
 
+// ============================================================
+// TRAINING MODELS (client-scoped)
+// ============================================================
+
 model TrainingProgram {
   id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
   title           String
   description     String?
   type            String
@@ -119,8 +218,14 @@ model TrainingAttendance {
   @@unique([trainingProgramId, userId])
 }
 
+// ============================================================
+// AUDIT MODELS (client-scoped)
+// ============================================================
+
 model Audit {
   id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
   title           String
   type            String
   auditDate       DateTime
@@ -156,8 +261,14 @@ model AuditFinding {
   updatedAt      DateTime  @updatedAt
 }
 
+// ============================================================
+// CAPA MODELS (client-scoped)
+// ============================================================
+
 model CAPA {
   id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
   capaNumber      String    @unique
   type            String
   source          String
@@ -201,8 +312,14 @@ model CAPAComment {
   createdAt DateTime @default(now())
 }
 
+// ============================================================
+// SYSTEM MODELS
+// ============================================================
+
 model AuditLog {
   id        String   @id @default(cuid())
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id])
   userId    String?
   action    String
   entity    String
@@ -213,7 +330,11 @@ model AuditLog {
 
 model AppSetting {
   id        String   @id @default(cuid())
-  key       String   @unique
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id])
+  key       String
   value     String
   updatedAt DateTime @updatedAt
+
+  @@unique([clientId, key])
 }

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireClient } from '@/lib/session';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
 
-  const audit = await prisma.audit.findUnique({
-    where: { id: params.id },
+  const audit = await prisma.audit.findFirst({
+    where: { id: params.id, clientId: result.clientId },
     include: { leadAuditor: { select: { name: true, email: true } }, findings: { orderBy: { findingNumber: 'asc' } } },
   });
   if (!audit) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -16,14 +15,17 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
+  if (result.user.clientRole === 'VIEWER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json();
   if (body.auditDate) body.auditDate = new Date(body.auditDate);
   if (body.completedDate) body.completedDate = new Date(body.completedDate);
   if (body.nextAuditDate) body.nextAuditDate = new Date(body.nextAuditDate);
 
-  const audit = await prisma.audit.update({ where: { id: params.id }, data: body });
-  return NextResponse.json(audit);
+  const audit = await prisma.audit.updateMany({ where: { id: params.id, clientId: result.clientId }, data: body });
+  if (audit.count === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  const updated = await prisma.audit.findUnique({ where: { id: params.id } });
+  return NextResponse.json(updated);
 }

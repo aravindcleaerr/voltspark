@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireClient } from '@/lib/session';
 import { createConsumptionEntrySchema } from '@/lib/validations';
 import { detectDeviation } from '@/lib/deviation';
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
 
   const { searchParams } = new URL(request.url);
   const sourceId = searchParams.get('sourceId');
@@ -16,7 +15,7 @@ export async function GET(request: NextRequest) {
   const deviationsOnly = searchParams.get('deviationsOnly') === 'true';
   const limit = parseInt(searchParams.get('limit') || '100');
 
-  const where: any = {};
+  const where: any = { clientId: result.clientId };
   if (sourceId) where.energySourceId = sourceId;
   if (deviationsOnly) where.hasDeviation = true;
   if (from || to) {
@@ -38,8 +37,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
+  if (result.user.clientRole === 'VIEWER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await request.json();
   const parsed = createConsumptionEntrySchema.safeParse(body);
@@ -56,15 +56,22 @@ export async function POST(request: NextRequest) {
     where: { energySourceId: rest.energySourceId, period: quarterlyPeriod },
   });
 
+  // Look up cost per unit from energy source
+  const source = await prisma.energySource.findUnique({
+    where: { id: rest.energySourceId },
+    select: { costPerUnit: true },
+  });
+  const cost = source?.costPerUnit ? rest.value * source.costPerUnit : null;
+
   let deviationData = {};
   if (target) {
     const dailyTarget = target.targetValue / 90;
-    const result = detectDeviation(rest.value, dailyTarget);
-    deviationData = { hasDeviation: result.hasDeviation, deviationPercent: result.deviationPercent, deviationSeverity: result.severity, deviationNote: result.note };
+    const deviationResult = detectDeviation(rest.value, dailyTarget);
+    deviationData = { hasDeviation: deviationResult.hasDeviation, deviationPercent: deviationResult.deviationPercent, deviationSeverity: deviationResult.severity, deviationNote: deviationResult.note };
   }
 
   const entry = await prisma.consumptionEntry.create({
-    data: { ...rest, date: entryDate, recordedById: (session.user as any).id, ...deviationData },
+    data: { ...rest, date: entryDate, clientId: result.clientId, recordedById: result.user.id, cost, ...deviationData },
     include: { energySource: { select: { name: true } }, recordedBy: { select: { name: true } } },
   });
   return NextResponse.json(entry, { status: 201 });

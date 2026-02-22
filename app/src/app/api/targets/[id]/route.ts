@@ -1,19 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireClient } from '@/lib/session';
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
+  if (result.user.clientRole === 'VIEWER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
   const body = await request.json();
   const target = await prisma.energyTarget.update({ where: { id: params.id }, data: body });
   return NextResponse.json(target);
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
+  if (result.user.clientRole !== 'CLIENT_ADMIN' && result.user.orgRole !== 'OWNER') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   await prisma.energyTarget.delete({ where: { id: params.id } });
   return NextResponse.json({ success: true });
 }

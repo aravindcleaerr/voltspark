@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireClient } from '@/lib/session';
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const result = await requireClient();
+  if ('error' in result) return result.error;
+  const { clientId } = result;
 
   const now = new Date();
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -24,18 +24,18 @@ export async function GET() {
     capas,
     closedCapas,
   ] = await Promise.all([
-    prisma.energySource.count({ where: { isActive: true } }),
-    prisma.energyTarget.count({ where: { isActive: true } }),
-    prisma.consumptionEntry.findMany({ where: { date: { gte: thirtyDaysAgo } }, orderBy: { date: 'desc' }, take: 30, include: { energySource: { select: { name: true, unit: true } } } }),
-    prisma.consumptionEntry.count({ where: { hasDeviation: true, date: { gte: thirtyDaysAgo } } }),
-    prisma.trainingProgram.count(),
-    prisma.trainingProgram.count({ where: { status: 'COMPLETED' } }),
-    prisma.trainingAttendance.count(),
-    prisma.trainingAttendance.count({ where: { attended: true } }),
-    prisma.audit.count(),
-    prisma.auditFinding.count({ where: { status: { not: 'CLOSED' } } }),
-    prisma.cAPA.count(),
-    prisma.cAPA.count({ where: { status: 'CLOSED' } }),
+    prisma.energySource.count({ where: { clientId, isActive: true } }),
+    prisma.energyTarget.count({ where: { isActive: true, energySource: { clientId } } }),
+    prisma.consumptionEntry.findMany({ where: { clientId, date: { gte: thirtyDaysAgo } }, orderBy: { date: 'desc' }, take: 30, include: { energySource: { select: { name: true, unit: true } } } }),
+    prisma.consumptionEntry.count({ where: { clientId, hasDeviation: true, date: { gte: thirtyDaysAgo } } }),
+    prisma.trainingProgram.count({ where: { clientId } }),
+    prisma.trainingProgram.count({ where: { clientId, status: 'COMPLETED' } }),
+    prisma.trainingAttendance.count({ where: { trainingProgram: { clientId } } }),
+    prisma.trainingAttendance.count({ where: { attended: true, trainingProgram: { clientId } } }),
+    prisma.audit.count({ where: { clientId } }),
+    prisma.auditFinding.count({ where: { status: { not: 'CLOSED' }, audit: { clientId } } }),
+    prisma.cAPA.count({ where: { clientId } }),
+    prisma.cAPA.count({ where: { clientId, status: 'CLOSED' } }),
   ]);
 
   // Calculate compliance sub-scores
@@ -57,18 +57,27 @@ export async function GET() {
     (sourceScore * 0.15 + targetScore * 0.10 + dataCurrencyScore * 0.25 + ((trainingScore + attendanceRate) / 2) * 0.20 + ((auditScore + findingScore) / 2) * 0.15 + capaClosureRate * 0.15)
   );
 
-  // Recent deviations for alerts
   const deviationAlerts = await prisma.consumptionEntry.findMany({
-    where: { hasDeviation: true },
+    where: { clientId, hasDeviation: true },
     orderBy: { date: 'desc' },
     take: 5,
     include: { energySource: { select: { name: true } } },
   });
+
+  // Energy cost summary
+  const costEntries = await prisma.consumptionEntry.findMany({
+    where: { clientId, cost: { not: null } },
+    orderBy: { date: 'desc' },
+    take: 100,
+    select: { date: true, cost: true, energySource: { select: { name: true, type: true } } },
+  });
+  const totalMonthlyCost = costEntries.reduce((sum, e) => sum + (e.cost || 0), 0);
 
   return NextResponse.json({
     complianceScore: { overall: overallScore, sources: sourceScore, targets: targetScore, dataCurrency: dataCurrencyScore, training: Math.round((trainingScore + attendanceRate) / 2), audits: Math.round((auditScore + findingScore) / 2), capa: capaClosureRate },
     stats: { energySources: energySourceCount, activeTargets, recentEntries: recentCount, deviations: deviationEntries, trainingPrograms, completedTraining, audits, openFindings, totalCapas: capas, closedCapas },
     recentConsumption,
     deviationAlerts,
+    energyCost: { totalRecent: totalMonthlyCost },
   });
 }

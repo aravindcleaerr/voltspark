@@ -23,30 +23,66 @@ export const authOptions: NextAuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
+        // Look up organization membership
+        const membership = await prisma.membership.findFirst({
+          where: { userId: user.id },
+          include: { organization: true },
+        });
+
+        // Look up client access — pick first active client
+        const clientAccess = await prisma.clientAccess.findFirst({
+          where: { userId: user.id, client: { isActive: true } },
+          include: { client: true },
+        });
+
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           role: user.role,
-          employeeId: user.employeeId,
+          organizationId: membership?.organizationId || null,
+          orgRole: membership?.role || null,
+          activeClientId: clientAccess?.clientId || null,
+          activeClientSlug: clientAccess?.client?.slug || null,
+          activeClientName: clientAccess?.client?.name || null,
+          clientRole: clientAccess?.role || null,
         };
       },
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
-        token.role = (user as any).role;
-        token.employeeId = (user as any).employeeId;
         token.id = user.id;
+        token.role = (user as any).role;
+        token.organizationId = (user as any).organizationId;
+        token.orgRole = (user as any).orgRole;
+        token.activeClientId = (user as any).activeClientId;
+        token.activeClientSlug = (user as any).activeClientSlug;
+        token.activeClientName = (user as any).activeClientName;
+        token.clientRole = (user as any).clientRole;
+      }
+      // Handle workspace switching via useSession().update()
+      if (trigger === 'update' && session) {
+        if (session.activeClientId) {
+          token.activeClientId = session.activeClientId;
+          token.activeClientSlug = session.activeClientSlug;
+          token.activeClientName = session.activeClientName;
+          token.clientRole = session.clientRole;
+        }
       }
       return token;
     },
     session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).employeeId = token.employeeId;
         (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
+        (session.user as any).organizationId = token.organizationId;
+        (session.user as any).orgRole = token.orgRole;
+        (session.user as any).activeClientId = token.activeClientId;
+        (session.user as any).activeClientSlug = token.activeClientSlug;
+        (session.user as any).activeClientName = token.activeClientName;
+        (session.user as any).clientRole = token.clientRole;
       }
       return session;
     },

@@ -17,5 +17,7 @@ export const config = {
     '/capa/:path*',
     '/reports/:path*',
     '/settings/:path*',
+    '/console/:path*',
+    '/costs/:path*',
   ],
 };
