@@ -4,12 +4,11 @@ import bcrypt from 'bcryptjs';
 function createPrisma() {
   if (process.env.TURSO_DATABASE_URL) {
     const { PrismaLibSql } = require('@prisma/adapter-libsql');
-    const { createClient } = require('@libsql/client');
-    const client = createClient({
+    const adapter = new PrismaLibSql({
       url: process.env.TURSO_DATABASE_URL,
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
-    return new PrismaClient({ adapter: new PrismaLibSql(client) });
+    return new PrismaClient({ adapter });
   } else {
     const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
     const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
