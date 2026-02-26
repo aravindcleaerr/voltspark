@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BarChart3, Zap, Target, GraduationCap, ClipboardCheck, Shield, AlertTriangle, TrendingUp } from 'lucide-react';
+import { BarChart3, Zap, Target, GraduationCap, ClipboardCheck, Shield, AlertTriangle, TrendingUp, IndianRupee } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 
 interface DashboardData {
@@ -10,7 +10,10 @@ interface DashboardData {
   stats: { energySources: number; activeTargets: number; recentEntries: number; deviations: number; trainingPrograms: number; completedTraining: number; audits: number; openFindings: number; totalCapas: number; closedCapas: number };
   deviationAlerts: any[];
   recentConsumption: any[];
+  energyCost: { totalRecent: number; predictedNextMonth: number | null; recentBillTrend: { month: string; amount: number }[] };
 }
+
+const fmt = (n: number) => n >= 100000 ? `₹${(n / 100000).toFixed(1)}L` : `₹${n.toLocaleString('en-IN')}`;
 
 function ScoreRing({ score, label, size = 80 }: { score: number; label: string; size?: number }) {
   const radius = (size - 8) / 2;
@@ -102,6 +105,45 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
+
+      {/* Energy Cost Prediction */}
+      {data.energyCost && (data.energyCost.predictedNextMonth !== null || data.energyCost.recentBillTrend?.length > 0) && (
+        <div className="card">
+          <div className="flex items-center gap-2 mb-4">
+            <IndianRupee className="h-5 w-5 text-green-600" />
+            <h2 className="text-lg font-semibold">Energy Cost Forecast</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {data.energyCost.predictedNextMonth !== null && (
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4">
+                <p className="text-xs text-blue-600 font-medium mb-1">Predicted Next Month Cost</p>
+                <p className="text-3xl font-bold text-blue-700">{fmt(data.energyCost.predictedNextMonth)}</p>
+                <p className="text-xs text-gray-500 mt-1">Based on linear trend from last {data.energyCost.recentBillTrend?.length || 0} bills</p>
+              </div>
+            )}
+            {data.energyCost.recentBillTrend && data.energyCost.recentBillTrend.length > 0 && (
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Recent Bill Trend</p>
+                <div className="flex items-end gap-1 h-24">
+                  {data.energyCost.recentBillTrend.map((b: any) => {
+                    const max = Math.max(...data.energyCost.recentBillTrend.map((x: any) => x.amount));
+                    return (
+                      <div key={b.month} className="flex-1 flex flex-col items-center">
+                        <span className="text-[9px] text-gray-500 mb-1">{fmt(b.amount)}</span>
+                        <div
+                          className="w-full bg-blue-500 rounded-t min-h-[4px]"
+                          style={{ height: `${(b.amount / max) * 100}%` }}
+                        />
+                        <span className="text-[9px] text-gray-400 mt-1">{b.month.slice(5)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Deviation Alerts */}
       {deviationAlerts.length > 0 && (

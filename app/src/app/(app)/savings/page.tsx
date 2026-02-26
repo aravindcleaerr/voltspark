@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { TrendingUp, IndianRupee, Clock, CheckCircle2, PlusCircle, Zap, Leaf } from 'lucide-react';
+import { TrendingUp, IndianRupee, Clock, CheckCircle2, PlusCircle, Zap, Leaf, UserCheck } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 
@@ -32,6 +32,17 @@ interface SavingsMeasure {
   entries: SavingsEntry[];
 }
 
+interface ConsultantROI {
+  consultantName: string;
+  monthlyFee: number;
+  monthsEngaged: number;
+  totalFeesPaid: number;
+  totalSavingsDelivered: number;
+  savingsMultiple: number;
+  netBenefit: number;
+  monthlySavingsVsFee: number;
+}
+
 interface SavingsData {
   measures: SavingsMeasure[];
   summary: {
@@ -44,6 +55,7 @@ interface SavingsData {
     projectedAnnualSavings: number;
   };
   trend: { month: string; savings: number; kwhSaved: number }[];
+  consultantROI: ConsultantROI | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -172,6 +184,50 @@ export default function SavingsPage() {
               : <span>Remaining to recover: {fmt(summary.totalInvestment - summary.totalCumulativeSavings)}</span>
             }
           </p>
+        </div>
+      )}
+
+      {/* Consultant Fee vs Savings (ROI Proof) */}
+      {data.consultantROI && (
+        <div className="card border-l-4 border-l-green-500">
+          <div className="flex items-center gap-2 mb-4">
+            <UserCheck className="h-5 w-5 text-green-600" />
+            <h3 className="font-semibold text-gray-700">Consultant ROI Proof</h3>
+            {data.consultantROI.consultantName && (
+              <span className="text-xs px-2 py-0.5 bg-green-100 rounded-full text-green-700">{data.consultantROI.consultantName}</span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Monthly Fee</p>
+              <p className="text-lg font-bold">{fmt(data.consultantROI.monthlyFee)}</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Total Fees Paid ({data.consultantROI.monthsEngaged} months)</p>
+              <p className="text-lg font-bold">{fmt(data.consultantROI.totalFeesPaid)}</p>
+            </div>
+            <div className="bg-green-50 rounded-lg p-3">
+              <p className="text-xs text-green-600">Savings Delivered</p>
+              <p className="text-lg font-bold text-green-700">{fmt(data.consultantROI.totalSavingsDelivered)}</p>
+            </div>
+            <div className={`rounded-lg p-3 ${data.consultantROI.netBenefit >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+              <p className="text-xs text-gray-500">Net Benefit</p>
+              <p className={`text-lg font-bold ${data.consultantROI.netBenefit >= 0 ? 'text-green-700' : 'text-red-600'}`}>{data.consultantROI.netBenefit >= 0 ? '+' : ''}{fmt(data.consultantROI.netBenefit)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Savings Multiple:</span>
+              <span className={`text-xl font-bold ${data.consultantROI.savingsMultiple >= 1 ? 'text-green-600' : 'text-orange-600'}`}>{data.consultantROI.savingsMultiple}x</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Monthly savings per ₹ of fee:</span>
+              <span className={`text-xl font-bold ${data.consultantROI.monthlySavingsVsFee >= 1 ? 'text-green-600' : 'text-orange-600'}`}>{data.consultantROI.monthlySavingsVsFee}x</span>
+            </div>
+          </div>
+          {data.consultantROI.savingsMultiple >= 1 && (
+            <p className="text-sm text-green-600 font-medium mt-3">Consultant engagement has already paid for itself {data.consultantROI.savingsMultiple}x over.</p>
+          )}
         </div>
       )}
 

@@ -73,11 +73,38 @@ export async function GET() {
   });
   const totalMonthlyCost = costEntries.reduce((sum, e) => sum + (e.cost || 0), 0);
 
+  // Predicted next month cost (linear trend from utility bills)
+  const recentBills = await prisma.utilityBill.findMany({
+    where: { clientId },
+    orderBy: [{ year: 'desc' }, { month: 'desc' }],
+    take: 6,
+    select: { year: true, month: true, totalAmount: true },
+  });
+
+  let predictedNextMonthCost: number | null = null;
+  let costTrend: { month: string; amount: number }[] = [];
+  if (recentBills.length >= 2) {
+    const billsAsc = [...recentBills].reverse();
+    costTrend = billsAsc.map(b => ({ month: `${b.year}-${String(b.month).padStart(2, '0')}`, amount: b.totalAmount }));
+    // Simple linear regression
+    const n = billsAsc.length;
+    const xs = billsAsc.map((_, i) => i);
+    const ys = billsAsc.map(b => b.totalAmount);
+    const sumX = xs.reduce((a, b) => a + b, 0);
+    const sumY = ys.reduce((a, b) => a + b, 0);
+    const sumXY = xs.reduce((a, x, i) => a + x * ys[i], 0);
+    const sumX2 = xs.reduce((a, x) => a + x * x, 0);
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    predictedNextMonthCost = Math.round(intercept + slope * n);
+    if (predictedNextMonthCost < 0) predictedNextMonthCost = 0;
+  }
+
   return NextResponse.json({
     complianceScore: { overall: overallScore, sources: sourceScore, targets: targetScore, dataCurrency: dataCurrencyScore, training: Math.round((trainingScore + attendanceRate) / 2), audits: Math.round((auditScore + findingScore) / 2), capa: capaClosureRate },
     stats: { energySources: energySourceCount, activeTargets, recentEntries: recentCount, deviations: deviationEntries, trainingPrograms, completedTraining, audits, openFindings, totalCapas: capas, closedCapas },
     recentConsumption,
     deviationAlerts,
-    energyCost: { totalRecent: totalMonthlyCost },
+    energyCost: { totalRecent: totalMonthlyCost, predictedNextMonth: predictedNextMonthCost, recentBillTrend: costTrend },
   });
 }

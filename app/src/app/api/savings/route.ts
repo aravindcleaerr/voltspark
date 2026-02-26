@@ -38,6 +38,39 @@ export async function GET() {
   }
   const trend = Object.values(monthlyTrend).sort((a, b) => a.month.localeCompare(b.month));
 
+  // Consultant fee vs savings comparison (ROI proof)
+  const feeSettings = await prisma.appSetting.findMany({
+    where: { clientId, key: { in: ['consultant_fee_monthly', 'consultant_engagement_start', 'consultant'] } },
+  });
+  const feeLookup: Record<string, string> = {};
+  for (const s of feeSettings) feeLookup[s.key] = s.value;
+
+  const consultantFeeMonthly = parseFloat(feeLookup['consultant_fee_monthly'] || '0');
+  const engagementStart = feeLookup['consultant_engagement_start'] || '';
+  const consultantName = feeLookup['consultant'] || '';
+
+  let consultantROI = null;
+  if (consultantFeeMonthly > 0) {
+    const startDate = engagementStart ? new Date(engagementStart) : null;
+    const now = new Date();
+    const monthsEngaged = startDate
+      ? Math.max(1, (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth()))
+      : 12;
+    const totalFeesPaid = consultantFeeMonthly * monthsEngaged;
+    const savingsMultiple = totalFeesPaid > 0 ? totalCumulativeSavings / totalFeesPaid : 0;
+
+    consultantROI = {
+      consultantName,
+      monthlyFee: consultantFeeMonthly,
+      monthsEngaged,
+      totalFeesPaid,
+      totalSavingsDelivered: totalCumulativeSavings,
+      savingsMultiple: Math.round(savingsMultiple * 10) / 10,
+      netBenefit: totalCumulativeSavings - totalFeesPaid,
+      monthlySavingsVsFee: totalMonthlySavings > 0 ? Math.round((totalMonthlySavings / consultantFeeMonthly) * 10) / 10 : 0,
+    };
+  }
+
   return NextResponse.json({
     measures,
     summary: {
@@ -50,6 +83,7 @@ export async function GET() {
       projectedAnnualSavings: totalMonthlySavings * 12,
     },
     trend,
+    consultantROI,
   });
 }
 

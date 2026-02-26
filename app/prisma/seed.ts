@@ -391,6 +391,8 @@ async function main() {
       { clientId: unnathiClient.id, key: 'energy_policy_date', value: '2025-01-10' },
       { clientId: unnathiClient.id, key: 'solar_monthly_target', value: '8000' },
       { clientId: unnathiClient.id, key: 'grid_monthly_target', value: '22000' },
+      { clientId: unnathiClient.id, key: 'consultant_fee_monthly', value: '25000' },
+      { clientId: unnathiClient.id, key: 'consultant_engagement_start', value: '2025-01-01' },
     ],
   });
 
