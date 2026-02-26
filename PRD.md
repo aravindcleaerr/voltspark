@@ -954,18 +954,18 @@ volt-spark.vercel.app/
 **Deliverables:**
 
 **3A — Savings Tracker** _(the feature that justifies consultant fees)_
-- [ ] Improvement model (name, type, investment cost, installation date, linked energy source)
+- [x] Improvement model (name, type, investment cost, installation date, linked energy source)
 - [ ] Baseline period establishment (3-month average consumption before improvement)
-- [ ] Post-implementation measurement (actual consumption after improvement)
+- [x] Post-implementation measurement (actual consumption after improvement)
 - [ ] Normalization engine (adjust for production volume, weather, operating hours)
-- [ ] Per-improvement savings attribution (isolate savings from each specific change)
-- [ ] Cumulative savings running total with month-by-month breakdown
+- [x] Per-improvement savings attribution (isolate savings from each specific change)
+- [x] Cumulative savings running total with month-by-month breakdown
 - [ ] Savings categories: energy cost reduction, penalty avoidance, maintenance reduction, subsidy income, insurance reduction
 - [ ] Consultant fee vs. savings comparison (ROI proof screen)
-- [ ] Savings dashboard — the screen consultants screenshot in every client meeting
+- [x] Savings dashboard — the screen consultants screenshot in every client meeting
 
 **3B — ROI Calculator**
-- [ ] Pre-built ROI templates with industry-standard parameters:
+- [x] Pre-built ROI templates with industry-standard parameters:
   - Solar rooftop (system size, irradiance, tariff, subsidy, degradation rate)
   - VFD installation (motor HP, load profile, tariff)
   - Power factor correction (current PF, target PF, kVAR, penalty rate)
@@ -973,18 +973,18 @@ volt-spark.vercel.app/
   - Compressed air optimization (compressor kW, leak %, target reduction)
   - IE3 motor replacement (motor HP, hours, efficiency old vs new)
   - Transformer replacement (no-load + load losses, utilization)
-- [ ] Key calculations: simple payback, NPV, IRR, monthly cash flow projection
+- [x] Key calculations: simple payback, NPV, IRR, monthly cash flow projection
 - [ ] Sensitivity analysis (what if tariff increases 5%/year?)
-- [ ] Subsidy impact on payback period
-- [ ] Carbon reduction estimate (tonnes CO2/year)
+- [x] Subsidy impact on payback period
+- [x] Carbon reduction estimate (tonnes CO2/year)
 - [ ] "Add to Action Plan" and "Share with Client" actions
 
 **3C — Action Plans & Documents**
-- [ ] Action plan module (improvement roadmaps with milestones, owners, deadlines)
+- [x] Action plan module (improvement roadmaps with milestones, owners, deadlines)
 - [ ] Action plan templates per framework (ZED improvement plan, ISO 50001 implementation plan)
 - [ ] Recurring schedules engine (monthly inspections, quarterly audits, annual certifications)
-- [ ] Document library with file uploads (Vercel Blob)
-- [ ] Link documents to any entity (audit, training, inspection, CAPA, improvement)
+- [x] Document library with file uploads (Vercel Blob)
+- [x] Link documents to any entity (audit, training, inspection, CAPA, improvement)
 - [ ] Template library (inspection, audit, action plan, policy document templates)
 - [ ] Bulk data import (CSV/Excel for consumption readings, training records)
 

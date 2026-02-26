@@ -19,6 +19,9 @@ const tables = [
   'ComplianceFramework', 'FrameworkRequirement', 'ClientFramework', 'RequirementStatus',
   'InspectionTemplate', 'InspectionTemplateItem', 'Inspection', 'InspectionResponse',
   'Incident', 'Certification', 'UtilityBill',
+  // Phase 3 tables
+  'SavingsMeasure', 'SavingsEntry', 'ROICalculation',
+  'ActionPlan', 'ActionItem', 'Document',
 ];
 
 async function main() {
