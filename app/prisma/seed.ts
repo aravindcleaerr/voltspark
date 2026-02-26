@@ -374,6 +374,228 @@ async function main() {
     ],
   });
 
+  // ============================================================
+  // COMPLIANCE FRAMEWORKS (Phase 2A — Built-in templates)
+  // ============================================================
+
+  // --- ZED Bronze ---
+  const zedFramework = await prisma.complianceFramework.create({
+    data: {
+      code: 'ZED_BRONZE', name: 'ZED Bronze Certification', version: '2.0', isBuiltIn: true,
+      description: 'Zero Defect Zero Effect — Bronze level. QCI / Ministry of MSME certification for Indian MSMEs.',
+    },
+  });
+  const zedReqs = await Promise.all([
+    prisma.frameworkRequirement.create({ data: { frameworkId: zedFramework.id, code: 'ZED-E1', category: 'Energy Management', title: 'Identify all energy sources', description: 'Document all energy sources used in the facility including grid, solar, DG, compressed air.', evidenceGuidance: 'Energy source register with type, location, meter number.', evidenceModule: 'ENERGY_SOURCE', weight: 15, sortOrder: 1, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: zedFramework.id, code: 'ZED-E2', category: 'Energy Management', title: 'Set energy targets and track consumption', description: 'Establish quarterly energy targets per source and track actual consumption against targets.', evidenceGuidance: 'Target register + consumption log with deviation analysis.', evidenceModule: 'CONSUMPTION', weight: 20, sortOrder: 2, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: zedFramework.id, code: 'ZED-E3', category: 'Energy Management', title: 'Conduct energy awareness training', description: 'Train all employees on energy management practices and awareness.', evidenceGuidance: 'Training records with attendance and evaluation.', evidenceModule: 'TRAINING', weight: 15, sortOrder: 3 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: zedFramework.id, code: 'ZED-E4', category: 'Energy Management', title: 'Perform internal energy audits', description: 'Conduct periodic internal energy audits to identify improvement opportunities.', evidenceGuidance: 'Audit reports with findings and recommendations.', evidenceModule: 'AUDIT', weight: 25, sortOrder: 4, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: zedFramework.id, code: 'ZED-E5', category: 'Energy Management', title: 'Implement corrective and preventive actions', description: 'Address audit findings and deviations through structured CAPA process.', evidenceGuidance: 'CAPA records with root cause analysis and closure evidence.', evidenceModule: 'CAPA', weight: 25, sortOrder: 5, isCritical: true } }),
+  ]);
+  console.log('ZED Bronze framework: 5 requirements');
+
+  // --- ISO 50001 ---
+  const isoFramework = await prisma.complianceFramework.create({
+    data: {
+      code: 'ISO_50001', name: 'ISO 50001:2018 Energy Management System', version: '2018', isBuiltIn: true,
+      description: 'International standard for Energy Management Systems. Plan-Do-Check-Act cycle.',
+    },
+  });
+  await Promise.all([
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-4.1', category: 'Context', title: 'Understanding the organization and its context', description: 'Determine external and internal issues relevant to energy management.', weight: 5, sortOrder: 1 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-4.2', category: 'Context', title: 'Needs and expectations of interested parties', description: 'Identify interested parties and their requirements related to energy performance.', weight: 5, sortOrder: 2 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-5.1', category: 'Leadership', title: 'Leadership and commitment', description: 'Top management shall demonstrate leadership for the EnMS.', weight: 5, sortOrder: 3 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-5.2', category: 'Leadership', title: 'Energy policy', description: 'Establish and communicate an energy policy.', evidenceGuidance: 'Documented energy policy signed by top management.', weight: 10, sortOrder: 4, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-6.1', category: 'Planning', title: 'Energy review', description: 'Analyze energy use and consumption, identify significant energy uses (SEUs).', evidenceGuidance: 'Energy review document with SEU analysis.', evidenceModule: 'ENERGY_SOURCE', weight: 10, sortOrder: 5, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-6.2', category: 'Planning', title: 'Energy baseline and EnPIs', description: 'Establish energy baseline and energy performance indicators.', evidenceGuidance: 'Baseline data + EnPI definitions.', evidenceModule: 'CONSUMPTION', weight: 10, sortOrder: 6, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-6.3', category: 'Planning', title: 'Objectives and energy targets', description: 'Set measurable energy objectives and targets.', evidenceModule: 'CONSUMPTION', weight: 10, sortOrder: 7 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-7.2', category: 'Support', title: 'Competence and awareness', description: 'Ensure persons are competent and aware of energy management.', evidenceModule: 'TRAINING', weight: 10, sortOrder: 8 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-8.1', category: 'Operation', title: 'Operational planning and control', description: 'Plan and control processes related to significant energy uses.', weight: 5, sortOrder: 9 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-9.1', category: 'Performance Evaluation', title: 'Monitoring and measurement', description: 'Monitor, measure, analyze and evaluate energy performance.', evidenceModule: 'CONSUMPTION', weight: 10, sortOrder: 10, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-9.2', category: 'Performance Evaluation', title: 'Internal audit', description: 'Conduct internal audits at planned intervals.', evidenceModule: 'AUDIT', weight: 10, sortOrder: 11 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-10.1', category: 'Improvement', title: 'Nonconformity and corrective action', description: 'React to nonconformities, take corrective action.', evidenceModule: 'CAPA', weight: 5, sortOrder: 12 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: isoFramework.id, code: 'ISO-10.2', category: 'Improvement', title: 'Continual improvement', description: 'Continually improve energy performance and the EnMS.', weight: 5, sortOrder: 13 } }),
+  ]);
+  console.log('ISO 50001 framework: 13 requirements');
+
+  // --- Electrical Safety ---
+  const esFramework = await prisma.complianceFramework.create({
+    data: {
+      code: 'ELECTRICAL_SAFETY', name: 'Electrical Safety Compliance', version: '1.0', isBuiltIn: true,
+      description: 'Indian Electricity Rules, IS/IEC standards, CEA Safety Regulations for industrial facilities.',
+    },
+  });
+  await Promise.all([
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-1', category: 'Installation Safety', title: 'Earthing system compliance', description: 'Earth resistance <2 ohm as per IS 3043. Annual testing required.', evidenceGuidance: 'Earth resistance test report.', evidenceModule: 'INSPECTION', weight: 20, sortOrder: 1, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-2', category: 'Installation Safety', title: 'Protection devices installed and tested', description: 'ELCB/MCB/RCBO installed on all circuits. Periodic testing.', evidenceGuidance: 'Protection device inventory + test results.', evidenceModule: 'INSPECTION', weight: 15, sortOrder: 2, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-3', category: 'Installation Safety', title: 'Panel condition and thermography', description: 'Annual thermography of all electrical panels. No hotspots.', evidenceGuidance: 'Thermography report with images.', evidenceModule: 'INSPECTION', weight: 15, sortOrder: 3, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-4', category: 'Statutory Compliance', title: 'CEIG / statutory certifications current', description: 'All required certifications from CEIG, BIS, Fire Dept within validity.', evidenceGuidance: 'Certificate copies with validity dates.', weight: 15, sortOrder: 4, isCritical: true } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-5', category: 'Maintenance', title: 'Preventive maintenance schedule adherence', description: 'Transformer oil testing, panel maintenance, DG service on schedule.', evidenceGuidance: 'Maintenance log with completed dates.', weight: 10, sortOrder: 5 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-6', category: 'Training', title: 'Safety training for electrical workers', description: 'All electrical maintenance staff trained on safety procedures.', evidenceModule: 'TRAINING', weight: 10, sortOrder: 6 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-7', category: 'Incident Management', title: 'Incident tracking and reporting', description: 'All electrical incidents and near-misses logged and investigated.', evidenceGuidance: 'Incident register with RCA.', weight: 10, sortOrder: 7 } }),
+    prisma.frameworkRequirement.create({ data: { frameworkId: esFramework.id, code: 'ES-8', category: 'Emergency Preparedness', title: 'Emergency response plan', description: 'Documented emergency response for electrical incidents. Fire extinguishers, first aid, evacuation plan.', weight: 5, sortOrder: 8 } }),
+  ]);
+  console.log('Electrical Safety framework: 8 requirements');
+
+  // --- Assign frameworks to Unnathi CNC ---
+  const cfZed = await prisma.clientFramework.create({
+    data: { clientId: unnathiClient.id, frameworkId: zedFramework.id, status: 'ACTIVE', targetDate: new Date('2026-06-30'), score: 75 },
+  });
+  const cfIso = await prisma.clientFramework.create({
+    data: { clientId: unnathiClient.id, frameworkId: isoFramework.id, status: 'ACTIVE', targetDate: new Date('2027-03-31'), score: 45 },
+  });
+  const cfEs = await prisma.clientFramework.create({
+    data: { clientId: unnathiClient.id, frameworkId: esFramework.id, status: 'ACTIVE', targetDate: new Date('2026-09-30'), score: 60 },
+  });
+
+  // Seed requirement statuses for ZED
+  for (const req of zedReqs) {
+    const statuses: Record<string, string> = { 'ZED-E1': 'COMPLIANT', 'ZED-E2': 'COMPLIANT', 'ZED-E3': 'COMPLIANT', 'ZED-E4': 'COMPLIANT', 'ZED-E5': 'IN_PROGRESS' };
+    const reqData = await prisma.frameworkRequirement.findUnique({ where: { id: req.id } });
+    await prisma.requirementStatus.create({
+      data: { clientFrameworkId: cfZed.id, requirementId: req.id, status: statuses[reqData!.code] || 'NOT_STARTED', updatedById: consultant.id },
+    });
+  }
+  console.log('Framework assignments + ZED requirement statuses created');
+
+  // ============================================================
+  // INSPECTION TEMPLATES (Phase 2B — Built-in)
+  // ============================================================
+
+  const elecTemplate = await prisma.inspectionTemplate.create({
+    data: { name: 'Electrical Safety Inspection', category: 'ELECTRICAL', isBuiltIn: true, description: 'Standard electrical safety inspection checklist for industrial facilities.' },
+  });
+  const elecItems = [
+    { section: 'Earthing System', itemText: 'Earth resistance measured and within limits (<2 ohm)', isCritical: true, sortOrder: 1 },
+    { section: 'Earthing System', itemText: 'Earth pit condition satisfactory', sortOrder: 2 },
+    { section: 'Earthing System', itemText: 'Earth continuity verified on all equipment', sortOrder: 3 },
+    { section: 'Protection Devices', itemText: 'All ELCB/MCB/RCBO functional and tested', isCritical: true, sortOrder: 4 },
+    { section: 'Protection Devices', itemText: 'Trip settings appropriate for load', sortOrder: 5 },
+    { section: 'Protection Devices', itemText: 'Surge protection devices installed', sortOrder: 6 },
+    { section: 'Panel Condition', itemText: 'No visible damage or overheating signs', isCritical: true, sortOrder: 7 },
+    { section: 'Panel Condition', itemText: 'Proper labeling on all panels and circuits', sortOrder: 8 },
+    { section: 'Panel Condition', itemText: 'Panel doors closed and locked', sortOrder: 9 },
+    { section: 'Panel Condition', itemText: 'Thermography completed (no hotspots)', isCritical: true, sortOrder: 10 },
+    { section: 'Wiring & Cables', itemText: 'No exposed or damaged wiring', isCritical: true, sortOrder: 11 },
+    { section: 'Wiring & Cables', itemText: 'Cable trays in good condition', sortOrder: 12 },
+    { section: 'Emergency', itemText: 'Emergency stop buttons accessible and functional', sortOrder: 13 },
+    { section: 'Emergency', itemText: 'Fire extinguishers available near panels', sortOrder: 14 },
+    { section: 'Emergency', itemText: 'Evacuation route signs visible', sortOrder: 15 },
+  ];
+  for (const item of elecItems) {
+    await prisma.inspectionTemplateItem.create({ data: { templateId: elecTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
+  }
+
+  const fireTemplate = await prisma.inspectionTemplate.create({
+    data: { name: 'Fire Safety Inspection', category: 'FIRE', isBuiltIn: true, description: 'Basic fire safety inspection for industrial facilities.' },
+  });
+  const fireItems = [
+    { section: 'Fire Detection', itemText: 'Smoke detectors installed and functional', isCritical: true, sortOrder: 1 },
+    { section: 'Fire Detection', itemText: 'Fire alarm system tested', sortOrder: 2 },
+    { section: 'Fire Extinguishers', itemText: 'All fire extinguishers within validity', isCritical: true, sortOrder: 3 },
+    { section: 'Fire Extinguishers', itemText: 'Extinguishers accessible (not blocked)', sortOrder: 4 },
+    { section: 'Fire Extinguishers', itemText: 'Correct type for area (ABC, CO2, etc.)', sortOrder: 5 },
+    { section: 'Evacuation', itemText: 'Emergency exit paths clear', isCritical: true, sortOrder: 6 },
+    { section: 'Evacuation', itemText: 'Exit signs illuminated', sortOrder: 7 },
+    { section: 'Evacuation', itemText: 'Assembly point identified and signposted', sortOrder: 8 },
+    { section: 'General', itemText: 'Fire NOC current and displayed', isCritical: true, sortOrder: 9 },
+    { section: 'General', itemText: 'No flammable materials stored near electrical panels', sortOrder: 10 },
+  ];
+  for (const item of fireItems) {
+    await prisma.inspectionTemplateItem.create({ data: { templateId: fireTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
+  }
+  console.log('Inspection templates created: Electrical (15 items), Fire (10 items)');
+
+  // --- Sample completed inspection ---
+  const sampleInspection = await prisma.inspection.create({
+    data: {
+      clientId: unnathiClient.id, templateId: elecTemplate.id, inspectorId: consultant.id,
+      inspectionDate: new Date('2025-12-15'), location: 'Main Factory Floor',
+      status: 'COMPLETED', overallResult: 'PARTIAL', score: 80,
+      overallNotes: '12 of 15 items passed. 3 items need attention: earth pit maintenance, panel labeling, cable tray condition.',
+      completedDate: new Date('2025-12-15'),
+    },
+  });
+  console.log('Sample inspection created');
+
+  // ============================================================
+  // CERTIFICATIONS (Phase 2B)
+  // ============================================================
+  await prisma.certification.createMany({
+    data: [
+      { clientId: unnathiClient.id, name: 'CEIG Electrical Safety Audit', category: 'ELECTRICAL', issuingBody: 'CEIG Karnataka', certificateNumber: 'CEIG/BLR/2025/1234', issueDate: new Date('2025-06-15'), expiryDate: new Date('2026-06-14'), renewalFrequency: 'ANNUAL', status: 'VALID', reminderDays: 60 },
+      { clientId: unnathiClient.id, name: 'Fire NOC', category: 'FIRE', issuingBody: 'Karnataka Fire Department', certificateNumber: 'FIRE/PNY/2025/567', issueDate: new Date('2025-01-10'), expiryDate: new Date('2026-01-09'), renewalFrequency: 'ANNUAL', status: 'EXPIRED', reminderDays: 30 },
+      { clientId: unnathiClient.id, name: 'Transformer Oil Test', category: 'EQUIPMENT', issuingBody: 'NABL Accredited Lab', certificateNumber: 'TOT/2025/890', issueDate: new Date('2025-09-01'), expiryDate: new Date('2026-09-01'), renewalFrequency: 'ANNUAL', status: 'VALID', reminderDays: 45 },
+      { clientId: unnathiClient.id, name: 'Pressure Vessel BIS Certification', category: 'EQUIPMENT', issuingBody: 'BIS', certificateNumber: 'BIS/PV/2024/456', issueDate: new Date('2024-03-15'), expiryDate: new Date('2026-03-14'), renewalFrequency: 'BIENNIAL', status: 'EXPIRING_SOON', reminderDays: 30, equipmentName: 'Compressed Air Receiver Tank' },
+      { clientId: unnathiClient.id, name: 'AS9100D Certification', category: 'OTHER', issuingBody: 'TUV SUD', certificateNumber: 'AS9100/2023/UC001', issueDate: new Date('2023-08-01'), expiryDate: new Date('2026-07-31'), renewalFrequency: 'TRIENNIAL', status: 'VALID', reminderDays: 90, notes: 'Aerospace quality management system' },
+    ],
+  });
+  console.log('5 certifications created');
+
+  // ============================================================
+  // INCIDENTS (Phase 2B — sample data)
+  // ============================================================
+  await prisma.incident.create({
+    data: {
+      clientId: unnathiClient.id, type: 'ELECTRICAL', severity: 'NEAR_MISS',
+      title: 'Sparking observed at CNC-5 panel during startup',
+      description: 'Operator noticed sparking at the main disconnect switch of CNC machine #5 during morning startup. No injury. Machine was isolated immediately.',
+      location: 'CNC Machine Shop — Bay 5', incidentDate: new Date('2025-11-20'),
+      reportedById: vilas.id, immediateAction: 'Machine isolated, electrician called.',
+      rootCause: 'Loose terminal connection at main disconnect switch.',
+      correctiveAction: 'Terminal re-tightened and torque-verified. Thermography done on all panels.',
+      status: 'CLOSED', closedDate: new Date('2025-11-22'), closedById: suresh.id,
+    },
+  });
+  await prisma.incident.create({
+    data: {
+      clientId: unnathiClient.id, type: 'ELECTRICAL', severity: 'MINOR',
+      title: 'ELCB tripping repeatedly on grinding section circuit',
+      description: 'ELCB on grinding section circuit tripping 3-4 times per day for the past week. Production disrupted.',
+      location: 'Grinding Section', incidentDate: new Date('2026-01-10'),
+      reportedById: jyothiPrasad.id, immediateAction: 'Temporary bypass (not recommended). Electrician investigating.',
+      rootCause: 'Insulation breakdown on grinding machine motor cable.',
+      correctiveAction: 'Cable replaced. ELCB function verified.',
+      preventiveAction: 'Added insulation resistance testing to quarterly maintenance schedule.',
+      status: 'CLOSED', closedDate: new Date('2026-01-15'), closedById: suresh.id,
+    },
+  });
+  console.log('2 incidents created');
+
+  // ============================================================
+  // UTILITY BILLS (Phase 2C — 12 months sample data)
+  // ============================================================
+  const utilityBillData = [
+    { month: 7, year: 2024, unitsConsumed: 13683, demandKVA: 82, powerFactor: 0.89, energyCharges: 92661, demandCharges: 8200, pfPenalty: 4500, fuelSurcharge: 2737, electricityDuty: 4641, totalAmount: 112739 },
+    { month: 8, year: 2024, unitsConsumed: 16360, demandKVA: 88, powerFactor: 0.88, energyCharges: 110835, demandCharges: 8800, pfPenalty: 6200, fuelSurcharge: 3272, electricityDuty: 5558, totalAmount: 134665 },
+    { month: 9, year: 2024, unitsConsumed: 16169, demandKVA: 86, powerFactor: 0.91, energyCharges: 109545, demandCharges: 8600, pfPenalty: 0, fuelSurcharge: 3234, electricityDuty: 5497, totalAmount: 126876 },
+    { month: 10, year: 2024, unitsConsumed: 14929, demandKVA: 84, powerFactor: 0.90, energyCharges: 101122, demandCharges: 8400, pfPenalty: 0, fuelSurcharge: 2986, electricityDuty: 5071, totalAmount: 117579 },
+    { month: 11, year: 2024, unitsConsumed: 15999, demandKVA: 87, powerFactor: 0.87, energyCharges: 108393, demandCharges: 8700, pfPenalty: 5800, fuelSurcharge: 3200, electricityDuty: 5440, totalAmount: 131533 },
+    { month: 12, year: 2024, unitsConsumed: 17414, demandKVA: 92, powerFactor: 0.86, energyCharges: 117995, demandCharges: 9200, pfPenalty: 7100, fuelSurcharge: 3483, electricityDuty: 5919, totalAmount: 143697 },
+    { month: 1, year: 2025, unitsConsumed: 20645, demandKVA: 98, powerFactor: 0.85, energyCharges: 139868, demandCharges: 9800, pfPenalty: 8500, fuelSurcharge: 4129, electricityDuty: 7012, totalAmount: 169309 },
+    { month: 2, year: 2025, unitsConsumed: 17100, demandKVA: 89, powerFactor: 0.88, energyCharges: 115875, demandCharges: 8900, pfPenalty: 5900, fuelSurcharge: 3420, electricityDuty: 5814, totalAmount: 139909 },
+    { month: 3, year: 2025, unitsConsumed: 17683, demandKVA: 90, powerFactor: 0.89, energyCharges: 119822, demandCharges: 9000, pfPenalty: 4800, fuelSurcharge: 3537, electricityDuty: 6012, totalAmount: 143171 },
+    { month: 4, year: 2025, unitsConsumed: 19061, demandKVA: 94, powerFactor: 0.87, energyCharges: 129163, demandCharges: 9400, pfPenalty: 6500, fuelSurcharge: 3812, electricityDuty: 6481, totalAmount: 155356 },
+    { month: 5, year: 2025, unitsConsumed: 19783, demandKVA: 96, powerFactor: 0.86, energyCharges: 134030, demandCharges: 9600, pfPenalty: 7300, fuelSurcharge: 3957, electricityDuty: 6726, totalAmount: 161613 },
+    { month: 6, year: 2025, unitsConsumed: 16186, demandKVA: 85, powerFactor: 0.92, energyCharges: 109660, demandCharges: 8500, pfPenalty: 0, fuelSurcharge: 3237, electricityDuty: 5503, totalAmount: 126900 },
+  ];
+  for (const bill of utilityBillData) {
+    const hasPfPenalty = (bill.pfPenalty || 0) > 0;
+    const hasDemandOvershoot = bill.demandKVA > (unnathiClient.contractDemand || 100);
+    const prevBill = utilityBillData.find(b => (b.month === bill.month - 1 && b.year === bill.year) || (bill.month === 1 && b.month === 12 && b.year === bill.year - 1));
+    const hasAnomaly = prevBill ? Math.abs(bill.totalAmount - prevBill.totalAmount) / prevBill.totalAmount > 0.2 : false;
+
+    await prisma.utilityBill.create({
+      data: {
+        clientId: unnathiClient.id, ...bill, provider: 'BESCOM', tariffCategory: 'LT_INDUSTRIAL',
+        hasPfPenalty, hasDemandOvershoot, hasAnomaly,
+        anomalyNote: hasAnomaly ? `${Math.round((bill.totalAmount / (prevBill?.totalAmount || bill.totalAmount) - 1) * 100)}% change from previous month` : null,
+        enteredById: sandeep.id,
+      },
+    });
+  }
+  console.log('12 utility bills created (Jul 2024 — Jun 2025)');
+
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');

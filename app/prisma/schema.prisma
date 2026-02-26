@@ -55,6 +55,12 @@ model Client {
   capas              CAPA[]
   auditLogs          AuditLog[]
   appSettings        AppSetting[]
+  // Phase 2
+  clientFrameworks   ClientFramework[]
+  inspections        Inspection[]
+  incidents          Incident[]
+  certifications     Certification[]
+  utilityBills       UtilityBill[]
 }
 
 model Membership {
@@ -107,6 +113,12 @@ model User {
   capasRaised        CAPA[]               @relation("CAPARaisedBy")
   capasAssigned      CAPA[]               @relation("CAPAAssignedTo")
   capaComments       CAPAComment[]
+  // Phase 2
+  requirementUpdates RequirementStatus[]  @relation("RequirementUpdatedBy")
+  inspectionsLed     Inspection[]         @relation("InspectionInspector")
+  incidentsReported  Incident[]           @relation("IncidentReporter")
+  incidentsClosed    Incident[]           @relation("IncidentCloser")
+  utilityBillsEntered UtilityBill[]
 }
 
 // ============================================================
@@ -337,4 +349,237 @@ model AppSetting {
   updatedAt DateTime @updatedAt
 
   @@unique([clientId, key])
+}
+
+// ============================================================
+// COMPLIANCE FRAMEWORK MODELS (Phase 2A)
+// ============================================================
+
+model ComplianceFramework {
+  id             String   @id @default(cuid())
+  code           String   @unique // ZED_BRONZE, ISO_50001, ELECTRICAL_SAFETY
+  name           String
+  description    String?
+  version        String   @default("1.0")
+  isBuiltIn      Boolean  @default(false) // true = system templates
+  organizationId String?  // null for built-in; org-specific for custom
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  requirements    FrameworkRequirement[]
+  clientFrameworks ClientFramework[]
+}
+
+model FrameworkRequirement {
+  id               String              @id @default(cuid())
+  frameworkId       String
+  framework        ComplianceFramework @relation(fields: [frameworkId], references: [id])
+  code             String              // e.g., "ZED-E1", "ISO-4.1"
+  category         String              // e.g., "Energy Management", "Leadership"
+  title            String
+  description      String?
+  evidenceGuidance String?             // What evidence is needed
+  evidenceModule   String?             // Linked module: ENERGY_SOURCE, CONSUMPTION, TRAINING, AUDIT, CAPA, INSPECTION
+  weight           Float               @default(1.0) // Scoring weight
+  sortOrder        Int                 @default(0)
+  isCritical       Boolean             @default(false) // Must-pass requirement
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  statuses RequirementStatus[]
+}
+
+model ClientFramework {
+  id            String              @id @default(cuid())
+  clientId      String
+  client        Client              @relation(fields: [clientId], references: [id])
+  frameworkId   String
+  framework     ComplianceFramework @relation(fields: [frameworkId], references: [id])
+  status        String              @default("ACTIVE") // ACTIVE, COMPLETED, ON_HOLD
+  assignedDate  DateTime            @default(now())
+  targetDate    DateTime?
+  score         Float?              // Auto-calculated compliance score (0-100)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  requirementStatuses RequirementStatus[]
+
+  @@unique([clientId, frameworkId])
+}
+
+model RequirementStatus {
+  id                  String               @id @default(cuid())
+  clientFrameworkId   String
+  clientFramework     ClientFramework      @relation(fields: [clientFrameworkId], references: [id])
+  requirementId       String
+  requirement         FrameworkRequirement @relation(fields: [requirementId], references: [id])
+  status              String               @default("NOT_STARTED") // NOT_STARTED, IN_PROGRESS, COMPLIANT, NON_COMPLIANT, NOT_APPLICABLE
+  notes               String?
+  evidenceLinks       String?              // JSON array of { type, id, label } for linked evidence
+  lastReviewedAt      DateTime?
+  updatedById         String?
+  updatedBy           User?                @relation("RequirementUpdatedBy", fields: [updatedById], references: [id])
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@unique([clientFrameworkId, requirementId])
+}
+
+// ============================================================
+// SAFETY MODELS (Phase 2B)
+// ============================================================
+
+model InspectionTemplate {
+  id             String   @id @default(cuid())
+  name           String
+  category       String   // ELECTRICAL, FIRE, GENERAL_SAFETY, CUSTOM
+  description    String?
+  isBuiltIn      Boolean  @default(false)
+  organizationId String?  // null for built-in; org-specific for custom
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  items       InspectionTemplateItem[]
+  inspections Inspection[]
+}
+
+model InspectionTemplateItem {
+  id          String             @id @default(cuid())
+  templateId  String
+  template    InspectionTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  section     String             // Group heading
+  itemText    String             // The inspection question/check
+  helpText    String?            // Guidance for inspector
+  type        String             @default("PASS_FAIL") // PASS_FAIL, TEXT, NUMERIC, PHOTO
+  isCritical  Boolean            @default(false)
+  sortOrder   Int                @default(0)
+  createdAt   DateTime           @default(now())
+
+  responses InspectionResponse[]
+}
+
+model Inspection {
+  id              String             @id @default(cuid())
+  clientId        String
+  client          Client             @relation(fields: [clientId], references: [id])
+  templateId      String
+  template        InspectionTemplate @relation(fields: [templateId], references: [id])
+  inspectorId     String
+  inspector       User               @relation("InspectionInspector", fields: [inspectorId], references: [id])
+  inspectionDate  DateTime
+  location        String?
+  status          String             @default("SCHEDULED") // SCHEDULED, IN_PROGRESS, COMPLETED
+  overallResult   String?            // PASS, FAIL, PARTIAL
+  overallNotes    String?
+  score           Float?             // Percentage of items passed
+  completedDate   DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  responses InspectionResponse[]
+}
+
+model InspectionResponse {
+  id           String                 @id @default(cuid())
+  inspectionId String
+  inspection   Inspection             @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  itemId       String
+  item         InspectionTemplateItem @relation(fields: [itemId], references: [id])
+  result       String?                // PASS, FAIL, NA, or text/numeric value
+  notes        String?
+  photoUrl     String?
+  correctiveActionRequired Boolean    @default(false)
+  correctiveActionNotes    String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+}
+
+model Incident {
+  id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
+  type            String    // ELECTRICAL, FIRE, MECHANICAL, CHEMICAL, SLIP_FALL, OTHER
+  severity        String    // NEAR_MISS, MINOR, MAJOR, FATAL
+  title           String
+  description     String
+  location        String?
+  incidentDate    DateTime
+  reportedById    String
+  reportedBy      User      @relation("IncidentReporter", fields: [reportedById], references: [id])
+  immediateAction String?
+  rootCause       String?
+  correctiveAction String?
+  preventiveAction String?
+  status          String    @default("OPEN") // OPEN, INVESTIGATING, CORRECTIVE_ACTION, CLOSED
+  closedDate      DateTime?
+  closedById      String?
+  closedBy        User?     @relation("IncidentCloser", fields: [closedById], references: [id])
+  followUpDate    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Certification {
+  id                String    @id @default(cuid())
+  clientId          String
+  client            Client    @relation(fields: [clientId], references: [id])
+  name              String    // e.g., "CEIG Electrical Safety Audit", "BIS Pressure Vessel"
+  category          String    // ELECTRICAL, FIRE, EQUIPMENT, ENVIRONMENTAL, PERSONNEL, OTHER
+  issuingBody       String?   // e.g., "CEIG Karnataka", "BIS"
+  certificateNumber String?
+  holderId          String?   // User ID if personnel cert; null if equipment/facility cert
+  equipmentName     String?   // Equipment name if equipment cert
+  issueDate         DateTime?
+  expiryDate        DateTime?
+  renewalFrequency  String?   // ANNUAL, BIENNIAL, TRIENNIAL, FIVE_YEAR, CUSTOM
+  reminderDays      Int       @default(30) // Days before expiry to alert
+  status            String    @default("VALID") // VALID, EXPIRING_SOON, EXPIRED, RENEWED
+  documentUrl       String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+// ============================================================
+// UTILITY BILL MODEL (Phase 2C)
+// ============================================================
+
+model UtilityBill {
+  id               String   @id @default(cuid())
+  clientId         String
+  client           Client   @relation(fields: [clientId], references: [id])
+  month            Int      // 1-12
+  year             Int
+  provider         String?  // BESCOM, CESC, MESCOM, etc.
+  tariffCategory   String?  // LT, HT, INDUSTRIAL, COMMERCIAL
+  // Consumption
+  unitsConsumed    Float    // kWh
+  demandKVA        Float?   // Recorded demand
+  powerFactor      Float?   // 0-1
+  // Charges breakdown
+  energyCharges    Float?   // ₹
+  demandCharges    Float?   // ₹
+  pfPenalty        Float?   // ₹ — power factor penalty/surcharge
+  pfIncentive      Float?   // ₹ — power factor incentive (if PF > target)
+  fuelSurcharge    Float?   // ₹
+  electricityDuty  Float?   // ₹
+  otherCharges     Float?   // ₹
+  totalAmount      Float    // ₹ — total bill amount
+  // Meter
+  meterReadingStart Float?
+  meterReadingEnd   Float?
+  isEstimated      Boolean  @default(false) // Was this an estimated bill?
+  // Flags (auto-calculated)
+  hasPfPenalty     Boolean  @default(false)
+  hasDemandOvershoot Boolean @default(false)
+  hasAnomaly       Boolean  @default(false)
+  anomalyNote      String?
+  // Metadata
+  notes            String?
+  enteredById      String
+  enteredBy        User     @relation(fields: [enteredById], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([clientId, year, month])
 }

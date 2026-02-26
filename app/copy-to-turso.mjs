@@ -14,7 +14,11 @@ const tables = [
   'TrainingProgram', 'TrainingAttendance',
   'Audit', 'AuditFinding',
   'CAPA', 'CAPAComment',
-  'AuditLog', 'AppSetting'
+  'AuditLog', 'AppSetting',
+  // Phase 2 tables
+  'ComplianceFramework', 'FrameworkRequirement', 'ClientFramework', 'RequirementStatus',
+  'InspectionTemplate', 'InspectionTemplateItem', 'Inspection', 'InspectionResponse',
+  'Incident', 'Certification', 'UtilityBill',
 ];
 
 async function main() {

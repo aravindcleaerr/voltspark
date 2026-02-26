@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import PageHeader from '@/components/layout/PageHeader';
-import { IndianRupee, TrendingDown, TrendingUp, Zap, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
+import { IndianRupee, TrendingDown, TrendingUp, Zap, BarChart3, Gauge, AlertTriangle, Receipt } from 'lucide-react';
 
 interface CostData {
   tariffs: { gridTariffRate: number | null; solarTariffRate: number | null; dgTariffRate: number | null };
@@ -10,6 +11,28 @@ interface CostData {
   monthly: { month: string; totalCost: number; totalUnits: number; sources: Record<string, { cost: number; units: number }> }[];
   sourceBreakdown: { name: string; totalCost: number; totalUnits: number }[];
   lastMonth: { month: string; totalCost: number; totalUnits: number } | null;
+}
+
+interface BillSummary {
+  totalBills: number;
+  totalAmount: number;
+  totalPfPenalty: number;
+  avgPowerFactor: number;
+  monthsWithPenalty: number;
+  monthsWithOvershoot: number;
+  contractDemand: number | null;
+  pfTarget: number | null;
+}
+
+interface UtilityBill {
+  month: number;
+  year: number;
+  powerFactor: number | null;
+  pfPenalty: number | null;
+  demandKVA: number | null;
+  totalAmount: number;
+  hasPfPenalty: boolean;
+  hasDemandOvershoot: boolean;
 }
 
 function formatCurrency(value: number): string {
@@ -26,13 +49,17 @@ function formatMonth(monthStr: string): string {
 
 export default function EnergyCostsPage() {
   const [data, setData] = useState<CostData | null>(null);
+  const [billData, setBillData] = useState<{ bills: UtilityBill[]; summary: BillSummary } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/costs')
-      .then(r => r.json())
-      .then(setData)
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch('/api/costs').then(r => r.json()),
+      fetch('/api/utility-bills').then(r => r.json()).catch(() => null),
+    ]).then(([costData, utilityData]) => {
+      setData(costData);
+      if (utilityData) setBillData(utilityData);
+    }).finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-gray-200 rounded w-48" /><div className="grid grid-cols-2 lg:grid-cols-4 gap-4">{[1,2,3,4].map(i => <div key={i} className="h-32 bg-gray-200 rounded-lg" />)}</div></div>;
@@ -140,6 +167,72 @@ export default function EnergyCostsPage() {
           </table>
         </div>
       </div>
+
+      {/* PF & Demand Tracking */}
+      {billData && billData.bills.length > 0 && (
+        <>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="card text-center">
+              <Gauge className="h-6 w-6 text-yellow-500 mx-auto mb-2" />
+              <p className="text-3xl font-bold">{billData.summary.avgPowerFactor}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Avg Power Factor{billData.summary.pfTarget ? ` (Target: ${billData.summary.pfTarget})` : ''}
+              </p>
+              {billData.summary.avgPowerFactor < (billData.summary.pfTarget || 0.9) && (
+                <p className="text-xs text-red-500 mt-1 font-medium">Below target — penalties apply</p>
+              )}
+            </div>
+            <div className="card text-center">
+              <AlertTriangle className="h-6 w-6 text-red-500 mx-auto mb-2" />
+              <p className="text-3xl font-bold text-red-600">{formatCurrency(billData.summary.totalPfPenalty)}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Total PF Penalties ({billData.summary.monthsWithPenalty} of {billData.summary.totalBills} months)
+              </p>
+            </div>
+            <div className="card text-center">
+              <Zap className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+              <p className="text-3xl font-bold">{billData.summary.monthsWithOvershoot}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Demand Overshoot Months{billData.summary.contractDemand ? ` (>${billData.summary.contractDemand} kVA)` : ''}
+              </p>
+            </div>
+          </div>
+
+          {/* PF Trend */}
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Power Factor Trend</h3>
+              <Link href="/utility-bills" className="text-xs text-brand-600 hover:underline flex items-center gap-1">
+                <Receipt className="h-3 w-3" /> View All Bills
+              </Link>
+            </div>
+            <div className="flex items-end gap-1 h-40">
+              {[...billData.bills].reverse().map((bill) => {
+                const pf = bill.powerFactor || 0;
+                const target = billData.summary.pfTarget || 0.9;
+                const height = pf > 0 ? ((pf - 0.7) / 0.3) * 100 : 0; // Scale 0.7-1.0 to 0-100%
+                const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return (
+                  <div key={`${bill.year}-${bill.month}`} className="flex-1 flex flex-col items-center group relative">
+                    <div className="absolute -top-8 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                      PF: {pf}{bill.hasPfPenalty ? ` | Penalty: ₹${bill.pfPenalty}` : ''}
+                    </div>
+                    <div
+                      className={`w-full rounded-t transition-all ${pf < target ? 'bg-red-400' : 'bg-green-400'}`}
+                      style={{ height: `${Math.max(5, height)}%` }}
+                    />
+                    <span className="text-xs text-gray-400 mt-1">{MONTH_NAMES[bill.month]}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-2 text-xs text-gray-400 flex items-center gap-2">
+              <span className="w-3 h-3 bg-green-400 rounded inline-block" /> Above target
+              <span className="w-3 h-3 bg-red-400 rounded inline-block ml-2" /> Below target
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Tariff configuration */}
       {data.tariffs && (

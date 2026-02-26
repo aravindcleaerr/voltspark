@@ -7,7 +7,7 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: "npx tsx prisma/seed.mts",
+    seed: "npx tsx prisma/seed.ts",
   },
   datasource: {
     url: process.env["TURSO_DATABASE_URL"] || process.env["DATABASE_URL"] || "file:./dev.db",

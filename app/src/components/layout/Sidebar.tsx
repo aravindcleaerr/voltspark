@@ -13,6 +13,7 @@ import {
   GraduationCap,
   ClipboardCheck,
   Shield,
+  ShieldCheck,
   FileText,
   Settings,
   X,
@@ -20,6 +21,8 @@ import {
   Building2,
   IndianRupee,
   Briefcase,
+  Receipt,
+  HardHat,
 } from 'lucide-react';
 
 const workspaceNav = [
@@ -31,6 +34,9 @@ const workspaceNav = [
   { name: 'Training', href: '/training', icon: GraduationCap },
   { name: 'Audits', href: '/audits', icon: ClipboardCheck },
   { name: 'CAPA', href: '/capa', icon: Shield },
+  { name: 'Compliance', href: '/compliance', icon: ShieldCheck },
+  { name: 'Safety', href: '/safety', icon: HardHat },
+  { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
   { name: 'Reports', href: '/reports', icon: FileText },
 ];
 
