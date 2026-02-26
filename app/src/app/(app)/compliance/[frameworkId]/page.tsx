@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { CheckCircle2, Clock, XCircle, AlertTriangle, Minus, ChevronDown, ChevronRight, Save } from 'lucide-react';
+import Link from 'next/link';
+import { CheckCircle2, Clock, XCircle, AlertTriangle, Minus, ChevronDown, ChevronRight, Save, ClipboardCheck } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 
@@ -45,11 +46,20 @@ const STATUS_OPTIONS = [
 
 const MODULE_LABELS: Record<string, string> = {
   ENERGY_SOURCE: 'Energy Sources',
-  CONSUMPTION: 'Consumption',
+  CONSUMPTION: 'Consumption & Targets',
   TRAINING: 'Training',
   AUDIT: 'Audits',
   CAPA: 'CAPA',
-  INSPECTION: 'Inspections',
+  INSPECTION: 'Safety Inspections',
+};
+
+const MODULE_HREFS: Record<string, string> = {
+  ENERGY_SOURCE: '/energy-sources',
+  CONSUMPTION: '/consumption',
+  TRAINING: '/training',
+  AUDIT: '/audits',
+  CAPA: '/capa',
+  INSPECTION: '/safety',
 };
 
 export default function FrameworkDetailPage() {
@@ -107,6 +117,11 @@ export default function FrameworkDetailPage() {
           { label: 'Compliance', href: '/compliance' },
           { label: data.framework.name },
         ]}
+        action={
+          <Link href={`/compliance/readiness/${frameworkId}`} className="btn-primary flex items-center gap-2 text-sm">
+            <ClipboardCheck className="h-4 w-4" /> Readiness Check
+          </Link>
+        }
       />
 
       {/* Score summary bar */}
@@ -177,7 +192,13 @@ export default function FrameworkDetailPage() {
                       )}
                       {req.evidenceModule && (
                         <p className="text-xs text-gray-500">
-                          Linked module: <span className="font-medium">{MODULE_LABELS[req.evidenceModule] || req.evidenceModule}</span>
+                          Evidence source:{' '}
+                          <Link
+                            href={MODULE_HREFS[req.evidenceModule] || '#'}
+                            className="font-medium text-brand-600 hover:underline"
+                          >
+                            {MODULE_LABELS[req.evidenceModule] || req.evidenceModule} →
+                          </Link>
                         </p>
                       )}
 

@@ -896,25 +896,25 @@ volt-spark.vercel.app/
 **Deliverables:**
 
 **2A — Framework Engine (Core)**
-- [ ] ComplianceFramework, FrameworkRequirement, ClientFramework, RequirementStatus models
-- [ ] Built-in ZED template (5 energy requirements mapped to existing modules)
-- [ ] Built-in ISO 50001 template (Plan-Do-Check-Act clauses)
-- [ ] Built-in Electrical Safety template (IE Rules, IS standards)
-- [ ] Framework assignment to clients (multiple frameworks per client)
-- [ ] Requirement tracking UI (status, evidence links, notes per requirement)
+- [x] ComplianceFramework, FrameworkRequirement, ClientFramework, RequirementStatus models
+- [x] Built-in ZED template (5 energy requirements mapped to existing modules)
+- [x] Built-in ISO 50001 template (Plan-Do-Check-Act clauses)
+- [x] Built-in Electrical Safety template (IE Rules, IS standards)
+- [x] Framework assignment to clients (multiple frameworks per client)
+- [x] Requirement tracking UI (status, evidence links, notes per requirement)
 - [ ] Evidence traceability chain (link module data → requirements automatically)
-- [ ] Gap analysis view (visual compliance matrix — what's done, what's missing)
-- [ ] Per-framework compliance scoring (weighted by requirement criticality)
+- [x] Gap analysis view (visual compliance matrix — what's done, what's missing)
+- [x] Per-framework compliance scoring (weighted by requirement criticality)
 - [ ] Baseline assessment / initial survey flow (onboarding questionnaire per framework)
 - [ ] Pre-audit readiness check (are all requirements met before the auditor arrives?)
 
 **2B — Safety Modules**
-- [ ] Inspection checklists module (configurable templates — electrical, fire, general safety)
+- [x] Inspection checklists module (configurable templates — electrical, fire, general safety)
 - [ ] Inspection template builder (consultants create custom checklists)
-- [ ] Incident register module (incident reports, near-misses, RCA, follow-up actions)
-- [ ] Certification tracker with expiry alerts (CEIG, BIS, Fire NOC, pressure vessels)
+- [x] Incident register module (incident reports, near-misses, RCA, follow-up actions)
+- [x] Certification tracker with expiry alerts (CEIG, BIS, Fire NOC, pressure vessels)
 - [ ] Compliance calendar view (all certifications/tests with due dates across clients)
-- [ ] Safety Risk Score — weighted scoring model:
+- [x] Safety Risk Score — weighted scoring model:
   - Earthing system integrity (20%)
   - Protection devices — ELCB/MCB/RCBO (15%)
   - Panel condition — thermography, labeling (15%)
@@ -924,25 +924,25 @@ volt-spark.vercel.app/
   - Incident history (10%)
   - Emergency preparedness (5%)
 - [ ] Liability estimation in ₹ (based on CEIG enforcement data — fines, compensation, shutdown cost)
-- [ ] Risk level classification (Critical/High/Moderate/Low/Excellent)
+- [x] Risk level classification (Critical/High/Moderate/Low/Excellent)
 
 **2C — Utility Bill Analyzer** _(new — from CUSTOMER-VALUE.md)_
-- [ ] UtilityBill model (month, provider, units consumed, demand kVA, power factor, penalty breakdown, total amount, tariff category)
-- [ ] Monthly bill entry form (structured data entry for BESCOM/CESC/MESCOM bills)
-- [ ] Auto-analysis dashboard:
+- [x] UtilityBill model (month, provider, units consumed, demand kVA, power factor, penalty breakdown, total amount, tariff category)
+- [x] Monthly bill entry form (structured data entry for BESCOM/CESC/MESCOM bills)
+- [x] Auto-analysis dashboard:
   - Power factor trend + penalty amount detection (₹/kVAh surcharge for PF < 0.90)
   - Demand charges vs. contracted demand (kVA overshoot detection)
   - Bill anomaly detection (>20% spike from previous month)
   - Tariff category mismatch flag (commercial vs. industrial tariff)
-  - Estimated vs. actual billing flag (BESCOM didn't read meter)
+  - [ ] Estimated vs. actual billing flag (BESCOM didn't read meter)
   - Fuel surcharge and tax component breakdown
-- [ ] 12-month bill trend with month-over-month comparison
-- [ ] Red flag auto-detection with ₹ impact quantification
-- [ ] Bill-level cost breakdown linked to Energy Cost Dashboard
+- [x] 12-month bill trend with month-over-month comparison
+- [x] Red flag auto-detection with ₹ impact quantification
+- [x] Bill-level cost breakdown linked to Energy Cost Dashboard
 
 **2D — Enhanced Energy Cost Dashboard** _(enriching Phase 1 work)_
-- [ ] Power factor tracking with penalty risk estimate (₹ exposure per quarter)
-- [ ] Peak demand utilization gauge (current vs. contracted kVA)
+- [x] Power factor tracking with penalty risk estimate (₹ exposure per quarter)
+- [x] Peak demand utilization gauge (current vs. contracted kVA)
 - [ ] Time-of-Day consumption pattern (peak/off-peak/shoulder hours)
 - [ ] Predicted next month cost (linear trend projection)
 - [ ] Cost per unit of production (₹/kg, ₹/piece — requires production volume input field on Client)

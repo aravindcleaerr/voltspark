@@ -23,6 +23,7 @@ import {
   Briefcase,
   Receipt,
   HardHat,
+  CalendarClock,
 } from 'lucide-react';
 
 const workspaceNav = [
@@ -37,6 +38,7 @@ const workspaceNav = [
   { name: 'Compliance', href: '/compliance', icon: ShieldCheck },
   { name: 'Safety', href: '/safety', icon: HardHat },
   { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
+  { name: 'Calendar', href: '/calendar', icon: CalendarClock },
   { name: 'Reports', href: '/reports', icon: FileText },
 ];
 
