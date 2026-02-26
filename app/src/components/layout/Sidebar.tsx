@@ -32,10 +32,13 @@ import {
   Landmark,
   PieChart,
   Share2,
+  ClipboardList,
+  Upload,
 } from 'lucide-react';
 
 const workspaceNav = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Assessment', href: '/assessment', icon: ClipboardList },
   { name: 'Energy Sources', href: '/energy-sources', icon: Zap },
   { name: 'Consumption', href: '/consumption', icon: BarChart3 },
   { name: 'Energy Costs', href: '/costs', icon: IndianRupee },
@@ -55,6 +58,7 @@ const workspaceNav = [
   { name: 'Notifications', href: '/notifications', icon: Bell },
   { name: 'Schemes', href: '/schemes', icon: Landmark },
   { name: 'Shareable Views', href: '/share', icon: Share2 },
+  { name: 'Bulk Import', href: '/import', icon: Upload },
   { name: 'Analytics', href: '/analytics', icon: PieChart },
 ];
 

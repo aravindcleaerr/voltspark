@@ -187,6 +187,38 @@ export default function SavingsPage() {
         </div>
       )}
 
+      {/* Savings by Category */}
+      {measures.length > 0 && (() => {
+        const cats: Record<string, { investment: number; savings: number; count: number }> = {};
+        measures.forEach(m => {
+          const cat = CATEGORY_LABELS[m.category] || m.category;
+          if (!cats[cat]) cats[cat] = { investment: 0, savings: 0, count: 0 };
+          cats[cat].investment += m.investmentCost;
+          cats[cat].savings += m.cumulativeSavings || 0;
+          cats[cat].count++;
+        });
+        const entries = Object.entries(cats).sort((a, b) => b[1].savings - a[1].savings);
+        const maxSavings = Math.max(...entries.map(([, v]) => v.savings), 1);
+
+        return (
+          <div className="card">
+            <h3 className="font-semibold text-gray-700 mb-4">Savings by Category</h3>
+            <div className="space-y-3">
+              {entries.map(([cat, data]) => (
+                <div key={cat} className="flex items-center gap-4">
+                  <span className="text-sm w-28 truncate font-medium">{cat}</span>
+                  <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-6 bg-green-500 rounded-full" style={{ width: `${(data.savings / maxSavings) * 100}%` }} />
+                  </div>
+                  <span className="text-sm font-bold text-green-600 w-20 text-right">{fmt(data.savings)}</span>
+                  <span className="text-xs text-gray-400 w-16 text-right">{data.count} measures</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Consultant Fee vs Savings (ROI Proof) */}
       {data.consultantROI && (
         <div className="card border-l-4 border-l-green-500">

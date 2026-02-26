@@ -12,7 +12,7 @@ export async function GET() {
   if ('error' in result) return result.error;
   const { clientId } = result;
 
-  const [schemes, applications] = await Promise.all([
+  const [schemes, applications, client, certifications] = await Promise.all([
     prisma.governmentScheme.findMany({
       where: { isActive: true },
       orderBy: { name: 'asc' },
@@ -21,7 +21,95 @@ export async function GET() {
       where: { clientId },
       include: { scheme: { select: { name: true, shortName: true } }, appliedBy: { select: { name: true } } },
     }),
+    prisma.client.findUnique({
+      where: { id: clientId },
+      select: { industry: true, employeeCount: true, address: true },
+    }),
+    prisma.certification.findMany({
+      where: { clientId, status: 'VALID' },
+      select: { name: true, category: true },
+    }),
   ]);
+
+  // Auto-eligibility matching
+  const clientCerts = certifications.map(c => c.name.toLowerCase());
+  const clientIndustry = client?.industry?.toLowerCase() || '';
+  const clientAddress = client?.address?.toLowerCase() || '';
+  const clientSize = client?.employeeCount || 0;
+
+  const schemesWithEligibility = schemes.map(s => {
+    let eligible = true;
+    let matchScore = 0;
+    const reasons: string[] = [];
+
+    if (s.eligibility) {
+      try {
+        const criteria = JSON.parse(s.eligibility);
+        // Industry match
+        if (criteria.industry) {
+          const industries = (Array.isArray(criteria.industry) ? criteria.industry : [criteria.industry]).map((i: string) => i.toLowerCase());
+          if (clientIndustry && industries.some((i: string) => clientIndustry.includes(i) || i === 'all')) {
+            matchScore += 30;
+            reasons.push('Industry match');
+          } else if (clientIndustry) {
+            eligible = false;
+          }
+        } else {
+          matchScore += 15; // No industry restriction
+        }
+        // Size match
+        if (criteria.size) {
+          const { min, max } = criteria.size;
+          if (clientSize > 0) {
+            if ((!min || clientSize >= min) && (!max || clientSize <= max)) {
+              matchScore += 25;
+              reasons.push('Size eligible');
+            } else {
+              eligible = false;
+            }
+          }
+        } else {
+          matchScore += 10;
+        }
+        // State match
+        if (criteria.state) {
+          const states = (Array.isArray(criteria.state) ? criteria.state : [criteria.state]).map((st: string) => st.toLowerCase());
+          if (states.includes('all') || states.some((st: string) => clientAddress.includes(st))) {
+            matchScore += 20;
+            reasons.push('Location eligible');
+          } else if (clientAddress) {
+            eligible = false;
+          }
+        } else {
+          matchScore += 10;
+        }
+        // Certification match
+        if (criteria.certifications) {
+          const required = (Array.isArray(criteria.certifications) ? criteria.certifications : [criteria.certifications]).map((c: string) => c.toLowerCase());
+          const hasCerts = required.some((rc: string) => clientCerts.some(cc => cc.includes(rc)));
+          if (hasCerts) {
+            matchScore += 25;
+            reasons.push('Certification match');
+          }
+        } else {
+          matchScore += 10;
+        }
+      } catch {
+        matchScore = 50; // Can't parse, assume neutral
+      }
+    } else {
+      matchScore = 70; // No eligibility criteria = open to all
+      reasons.push('Open eligibility');
+    }
+
+    return { ...s, eligible, matchScore, matchReasons: reasons };
+  });
+
+  // Sort: eligible first, then by matchScore desc
+  schemesWithEligibility.sort((a, b) => {
+    if (a.eligible !== b.eligible) return a.eligible ? -1 : 1;
+    return b.matchScore - a.matchScore;
+  });
 
   // Summary
   const totalSubsidiesApplied = applications.reduce((s, a) => s + (a.amountApplied || 0), 0);
@@ -29,7 +117,7 @@ export async function GET() {
   const totalSubsidiesDisbursed = applications.reduce((s, a) => s + (a.amountDisbursed || 0), 0);
 
   return NextResponse.json({
-    schemes,
+    schemes: schemesWithEligibility,
     applications,
     summary: {
       totalSchemes: schemes.length,
@@ -38,6 +126,7 @@ export async function GET() {
       totalSubsidiesApplied,
       totalSubsidiesApproved,
       totalSubsidiesDisbursed,
+      eligibleCount: schemesWithEligibility.filter(s => s.eligible && s.matchScore >= 50).length,
     },
   });
 }

@@ -27,6 +27,8 @@ interface Bill {
   hasDemandOvershoot: boolean;
   hasAnomaly: boolean;
   anomalyNote: string | null;
+  isEstimated: boolean;
+  notes: string | null;
   enteredBy: { name: string } | null;
 }
 
@@ -59,6 +61,7 @@ export default function UtilityBillsPage() {
     unitsConsumed: '', demandKVA: '', powerFactor: '',
     energyCharges: '', demandCharges: '', pfPenalty: '', pfIncentive: '',
     fuelSurcharge: '', electricityDuty: '', otherCharges: '', totalAmount: '',
+    meterReadingStart: '', meterReadingEnd: '', isEstimated: false, notes: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -88,6 +91,10 @@ export default function UtilityBillsPage() {
       electricityDuty: Number(form.electricityDuty) || undefined,
       otherCharges: Number(form.otherCharges) || undefined,
       totalAmount: Number(form.totalAmount) || 0,
+      meterReadingStart: Number(form.meterReadingStart) || undefined,
+      meterReadingEnd: Number(form.meterReadingEnd) || undefined,
+      isEstimated: form.isEstimated,
+      notes: form.notes || undefined,
     };
 
     const res = await fetch('/api/utility-bills', {
@@ -97,7 +104,7 @@ export default function UtilityBillsPage() {
     });
     if (res.ok) {
       setShowForm(false);
-      setForm(prev => ({ ...prev, unitsConsumed: '', demandKVA: '', powerFactor: '', energyCharges: '', demandCharges: '', pfPenalty: '', pfIncentive: '', fuelSurcharge: '', electricityDuty: '', otherCharges: '', totalAmount: '' }));
+      setForm(prev => ({ ...prev, unitsConsumed: '', demandKVA: '', powerFactor: '', energyCharges: '', demandCharges: '', pfPenalty: '', pfIncentive: '', fuelSurcharge: '', electricityDuty: '', otherCharges: '', totalAmount: '', meterReadingStart: '', meterReadingEnd: '', isEstimated: false, notes: '' }));
       fetchData();
     }
     setSaving(false);
@@ -221,6 +228,27 @@ export default function UtilityBillsPage() {
             </div>
           </div>
 
+          <div className="grid gap-4 sm:grid-cols-4 mt-4">
+            <div>
+              <label className="label">Meter Start</label>
+              <input type="number" value={form.meterReadingStart} onChange={e => setForm(p => ({ ...p, meterReadingStart: e.target.value }))} className="input" placeholder="Start reading" />
+            </div>
+            <div>
+              <label className="label">Meter End</label>
+              <input type="number" value={form.meterReadingEnd} onChange={e => setForm(p => ({ ...p, meterReadingEnd: e.target.value }))} className="input" placeholder="End reading" />
+            </div>
+            <div>
+              <label className="label">Notes</label>
+              <input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="input" placeholder="Optional notes" />
+            </div>
+            <div className="flex items-end pb-1">
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.isEstimated} onChange={e => setForm(p => ({ ...p, isEstimated: e.target.checked }))} className="rounded" />
+                Estimated Bill
+              </label>
+            </div>
+          </div>
+
           <div className="flex gap-3 mt-4">
             <button type="submit" disabled={saving} className="btn-primary">{saving ? 'Saving...' : 'Save Bill'}</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancel</button>
@@ -269,6 +297,7 @@ export default function UtilityBillsPage() {
                         {bill.hasPfPenalty && <StatusBadge label="PF" color="red" />}
                         {bill.hasDemandOvershoot && <StatusBadge label="Demand" color="orange" />}
                         {bill.hasAnomaly && <StatusBadge label="Anomaly" color="yellow" />}
+                        {bill.isEstimated && <StatusBadge label="Est." color="gray" />}
                       </div>
                     </td>
                   </tr>

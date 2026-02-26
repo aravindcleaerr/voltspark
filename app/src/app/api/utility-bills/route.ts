@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { month, year, provider, tariffCategory, unitsConsumed, demandKVA, powerFactor, energyCharges, demandCharges, pfPenalty, pfIncentive, fuelSurcharge, electricityDuty, otherCharges, totalAmount } = body;
+  const { month, year, provider, tariffCategory, unitsConsumed, demandKVA, powerFactor, energyCharges, demandCharges, pfPenalty, pfIncentive, fuelSurcharge, electricityDuty, otherCharges, totalAmount, meterReadingStart, meterReadingEnd, isEstimated, notes } = body;
 
   if (!month || !year || !unitsConsumed || !totalAmount) {
     return NextResponse.json({ error: 'month, year, unitsConsumed, and totalAmount are required' }, { status: 400 });
@@ -95,6 +95,10 @@ export async function POST(request: NextRequest) {
       totalAmount,
       hasPfPenalty, hasDemandOvershoot, hasAnomaly,
       anomalyNote: hasAnomaly ? `${Math.round((totalAmount / (prevBill?.totalAmount || totalAmount) - 1) * 100)}% change from previous month` : undefined,
+      meterReadingStart: meterReadingStart || undefined,
+      meterReadingEnd: meterReadingEnd || undefined,
+      isEstimated: isEstimated || false,
+      notes: notes || undefined,
       enteredById: result.user.id,
     },
   });

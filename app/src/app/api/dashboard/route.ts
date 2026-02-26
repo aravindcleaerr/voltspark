@@ -100,11 +100,18 @@ export async function GET() {
     if (predictedNextMonthCost < 0) predictedNextMonthCost = 0;
   }
 
+  // Client profile for industry benchmarking
+  const client = await prisma.client.findUnique({
+    where: { id: clientId },
+    select: { industry: true, employeeCount: true, name: true },
+  });
+
   return NextResponse.json({
     complianceScore: { overall: overallScore, sources: sourceScore, targets: targetScore, dataCurrency: dataCurrencyScore, training: Math.round((trainingScore + attendanceRate) / 2), audits: Math.round((auditScore + findingScore) / 2), capa: capaClosureRate },
     stats: { energySources: energySourceCount, activeTargets, recentEntries: recentCount, deviations: deviationEntries, trainingPrograms, completedTraining, audits, openFindings, totalCapas: capas, closedCapas },
     recentConsumption,
     deviationAlerts,
     energyCost: { totalRecent: totalMonthlyCost, predictedNextMonth: predictedNextMonthCost, recentBillTrend: costTrend },
+    clientProfile: { industry: client?.industry || null, employeeCount: client?.employeeCount || null, name: client?.name || '' },
   });
 }

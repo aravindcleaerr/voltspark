@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireClient } from '@/lib/session';
+import { sendEmail, notificationEmail } from '@/lib/email';
 
 /**
  * Notifications API
@@ -126,9 +127,21 @@ export async function POST(request: NextRequest) {
       await prisma.notification.createMany({
         data: toCreate.map(n => ({ ...n, clientId, userId: user.id })),
       });
+
+      // Send email digest if there are critical/warning alerts
+      const urgent = toCreate.filter(n => n.severity === 'CRITICAL' || n.severity === 'WARNING');
+      if (urgent.length > 0 && user.email) {
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://volt-spark.vercel.app';
+        const email = notificationEmail({
+          userName: user.name,
+          notifications: urgent,
+          baseUrl,
+        });
+        sendEmail({ to: user.email, ...email }).catch(() => {});
+      }
     }
 
-    return NextResponse.json({ generated: toCreate.length, total: notifications.length });
+    return NextResponse.json({ generated: toCreate.length, total: notifications.length, emailed: toCreate.filter(n => n.severity === 'CRITICAL' || n.severity === 'WARNING').length });
   }
 
   return NextResponse.json({ error: 'Invalid request' }, { status: 400 });

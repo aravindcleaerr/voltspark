@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Landmark, IndianRupee, CheckCircle2, Clock, FileText, PlusCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Landmark, IndianRupee, CheckCircle2, Clock, FileText, PlusCircle, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 
@@ -18,6 +18,9 @@ interface Scheme {
   applicationUrl: string | null;
   deadline: string | null;
   category: string;
+  eligible: boolean;
+  matchScore: number;
+  matchReasons: string[];
 }
 
 interface Application {
@@ -110,6 +113,38 @@ export default function SchemesPage() {
         </div>
       )}
 
+      {/* Subsidies History */}
+      {summary && (summary.totalSubsidiesApproved > 0 || summary.totalSubsidiesDisbursed > 0) && (
+        <div className="card border-l-4 border-l-green-500">
+          <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2"><IndianRupee className="h-4 w-4 text-green-600" /> Total Subsidies Unlocked</h3>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-xs text-gray-500">Applied For</p>
+              <p className="text-lg font-bold">{fmt(summary.totalSubsidiesApplied)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">Approved</p>
+              <p className="text-lg font-bold text-blue-600">{fmt(summary.totalSubsidiesApproved)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">Received</p>
+              <p className="text-lg font-bold text-green-600">{fmt(summary.totalSubsidiesDisbursed)}</p>
+            </div>
+          </div>
+          {applications.filter(a => a.status === 'DISBURSED').length > 0 && (
+            <div className="mt-3 pt-3 border-t">
+              <p className="text-xs font-medium text-gray-500 mb-2">Disbursement History</p>
+              {applications.filter(a => a.status === 'DISBURSED').map(a => (
+                <div key={a.id} className="flex items-center justify-between text-sm py-1">
+                  <span>{a.scheme.name}</span>
+                  <span className="font-bold text-green-600">{fmt(a.amountDisbursed || 0)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* My Applications */}
       {applications.length > 0 && (
         <div className="card">
@@ -168,11 +203,24 @@ export default function SchemesPage() {
                     <span className="ml-2 text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-500">{CATEGORY_LABELS[s.category] || s.category}</span>
                   </div>
                   {s.maxSubsidy && <span className="text-sm font-bold text-green-600">Up to {fmt(s.maxSubsidy)}</span>}
+                  {s.eligible && s.matchScore >= 50 && !isApplied && (
+                    <span className="text-xs px-2 py-0.5 bg-amber-100 rounded-full text-amber-700 flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" /> Recommended
+                    </span>
+                  )}
                   {isApplied && <span className="text-xs px-2 py-0.5 bg-green-100 rounded-full text-green-700">Applied</span>}
                 </button>
                 {isExp && (
                   <div className="px-4 pb-4 pt-1 border-t bg-gray-50">
                     <p className="text-sm text-gray-600 mb-3">{s.description}</p>
+                    {s.matchReasons.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {s.matchReasons.map((r, ri) => (
+                          <span key={ri} className="text-xs px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-amber-700">{r}</span>
+                        ))}
+                        {!s.eligible && <span className="text-xs px-2 py-0.5 bg-red-50 border border-red-200 rounded-full text-red-600">May not qualify</span>}
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                       {s.ministry && <div><p className="text-xs text-gray-400">Ministry</p><p className="font-medium">{s.ministry}</p></div>}
                       {s.subsidyPercent && <div><p className="text-xs text-gray-400">Subsidy %</p><p className="font-medium">{s.subsidyPercent}%</p></div>}

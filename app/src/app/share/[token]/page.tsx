@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Shield, CheckCircle2, AlertTriangle, TrendingUp, Award } from 'lucide-react';
+import { Shield, CheckCircle2, AlertTriangle, TrendingUp, Award, FileDown, ChevronDown, ChevronRight, XCircle, Clock } from 'lucide-react';
+import { generateComplianceSummaryPDF } from '@/lib/pdf';
+
+interface Requirement {
+  code: string;
+  title: string;
+  category: string;
+  status: string;
+  isCritical: boolean;
+}
 
 interface ShareData {
   title: string;
@@ -10,7 +19,7 @@ interface ShareData {
   data: {
     companyName: string;
     client: { name: string; address: string | null; industry: string | null; employeeCount: number | null } | null;
-    compliance?: { framework: string; code: string; score: number; status: string; totalRequirements: number; compliantRequirements: number }[];
+    compliance?: { framework: string; code: string; score: number; status: string; totalRequirements: number; compliantRequirements: number; requirements?: Requirement[] }[];
     certifications?: { name: string; category: string; issuingBody: string | null; status: string; issueDate: string | null; expiryDate: string | null; certificateNumber: string | null }[];
     safety?: { totalIncidents: number; resolvedIncidents: number; resolutionRate: number; totalInspections: number; completedInspections: number; avgInspectionScore: number | null };
     improvements?: { totalMeasures: number; implemented: number; totalInvestment: number; totalSavings: number };
@@ -24,6 +33,7 @@ export default function PublicSharePage() {
   const [data, setData] = useState<ShareData | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [expandedFramework, setExpandedFramework] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/share/${token}`)
@@ -71,6 +81,12 @@ export default function PublicSharePage() {
           </div>
           <h2 className="text-lg font-semibold text-brand-600 mt-3">{data.title}</h2>
           <p className="text-xs text-gray-400">Real-time compliance status — Generated {new Date(data.generatedAt).toLocaleDateString()}</p>
+          <button
+            onClick={() => generateComplianceSummaryPDF(data)}
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700"
+          >
+            <FileDown className="h-4 w-4" /> Download PDF
+          </button>
         </div>
       </div>
 
@@ -93,20 +109,48 @@ export default function PublicSharePage() {
             <h3 className="flex items-center gap-2 text-lg font-semibold mb-4"><Shield className="h-5 w-5 text-blue-600" /> Compliance Frameworks</h3>
             <div className="space-y-3">
               {d.compliance.map((c, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">{c.framework}</span>
-                      <span className={`text-sm font-bold ${c.score >= 80 ? 'text-green-600' : c.score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>{c.score}%</span>
+                <div key={i} className="border rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => setExpandedFramework(expandedFramework === i ? null : i)}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
+                  >
+                    {expandedFramework === i ? <ChevronDown className="h-4 w-4 text-gray-400" /> : <ChevronRight className="h-4 w-4 text-gray-400" />}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium">{c.framework}</span>
+                        <span className={`text-sm font-bold ${c.score >= 80 ? 'text-green-600' : c.score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>{c.score}%</span>
+                      </div>
+                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-3 rounded-full ${c.score >= 80 ? 'bg-green-500' : c.score >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                          style={{ width: `${c.score}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">{c.compliantRequirements}/{c.totalRequirements} requirements met</p>
                     </div>
-                    <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-3 rounded-full ${c.score >= 80 ? 'bg-green-500' : c.score >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                        style={{ width: `${c.score}%` }}
-                      />
+                  </button>
+                  {expandedFramework === i && c.requirements && c.requirements.length > 0 && (
+                    <div className="border-t bg-gray-50 px-4 py-3">
+                      <p className="text-xs font-medium text-gray-500 mb-2">Requirement Details</p>
+                      <div className="space-y-1.5">
+                        {c.requirements.map((r, ri) => (
+                          <div key={ri} className="flex items-center gap-2 text-sm">
+                            {r.status === 'COMPLIANT' ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            ) : r.status === 'NON_COMPLIANT' ? (
+                              <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                            ) : (
+                              <Clock className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                            )}
+                            <span className="text-xs font-mono text-gray-500 w-12 flex-shrink-0">{r.code}</span>
+                            <span className="text-xs text-gray-700 flex-1">{r.title}</span>
+                            {r.isCritical && <span className="text-xs px-1.5 py-0.5 bg-red-100 text-red-600 rounded-full flex-shrink-0">Critical</span>}
+                            <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded-full flex-shrink-0">{r.category}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">{c.compliantRequirements}/{c.totalRequirements} requirements met</p>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>

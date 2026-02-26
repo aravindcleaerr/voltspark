@@ -51,7 +51,10 @@ export async function GET(
       where: { clientId },
       include: {
         framework: { select: { name: true, code: true } },
-        requirementStatuses: { select: { status: true } },
+        requirementStatuses: {
+          select: { status: true, requirement: { select: { code: true, title: true, category: true, isCritical: true } } },
+          orderBy: { requirement: { sortOrder: 'asc' } },
+        },
       },
     });
     data.compliance = frameworks.map(cf => {
@@ -64,6 +67,13 @@ export async function GET(
         score: total > 0 ? Math.round((compliant / total) * 100) : 0,
         totalRequirements: total,
         compliantRequirements: compliant,
+        requirements: cf.requirementStatuses.map(rs => ({
+          code: rs.requirement.code,
+          title: rs.requirement.title,
+          category: rs.requirement.category,
+          status: rs.status,
+          isCritical: rs.requirement.isCritical,
+        })),
       };
     });
   }

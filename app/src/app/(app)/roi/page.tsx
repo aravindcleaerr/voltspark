@@ -243,6 +243,44 @@ export default function ROIPage() {
                       {result.co2ReductionKg ? <div className="bg-green-50 rounded-lg p-3"><p className="text-xs text-gray-400">CO₂ Reduction</p><p className="font-bold text-green-600">{(result.co2ReductionKg / 1000).toFixed(1)} t/yr</p></div> : null}
                     </div>
 
+                    {/* Sensitivity Analysis */}
+                    <div className="mt-4 pt-4 border-t">
+                      <h4 className="font-semibold text-sm mb-3 text-gray-700">Sensitivity Analysis</h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="border-b text-left text-gray-500">
+                              <th className="pb-2 pr-4">Scenario</th>
+                              <th className="pb-2 pr-4 text-right">Monthly Savings</th>
+                              <th className="pb-2 pr-4 text-right">Payback</th>
+                              <th className="pb-2 text-right">5-Year ROI</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { label: 'Pessimistic (-20%)', factor: 0.8 },
+                              { label: 'Conservative (-10%)', factor: 0.9 },
+                              { label: 'Base Case', factor: 1.0 },
+                              { label: 'Optimistic (+10%)', factor: 1.1 },
+                              { label: 'Best Case (+20%)', factor: 1.2 },
+                            ].map(scenario => {
+                              const adjSavings = Math.round(result.monthlySavings * scenario.factor);
+                              const adjPayback = adjSavings > 0 ? Math.round(result.netInvestment / adjSavings) : 999;
+                              const adj5yr = adjSavings * 60 - result.netInvestment;
+                              return (
+                                <tr key={scenario.label} className={`border-b last:border-0 ${scenario.factor === 1 ? 'bg-blue-50 font-medium' : ''}`}>
+                                  <td className="py-1.5 pr-4">{scenario.label}</td>
+                                  <td className="py-1.5 pr-4 text-right">{fmt(adjSavings)}</td>
+                                  <td className="py-1.5 pr-4 text-right">{adjPayback} months</td>
+                                  <td className={`py-1.5 text-right ${adj5yr >= 0 ? 'text-green-600' : 'text-red-600'}`}>{fmt(adj5yr)}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
                     {/* Save */}
                     <div className="mt-4 flex items-end gap-3">
                       <div className="flex-1">

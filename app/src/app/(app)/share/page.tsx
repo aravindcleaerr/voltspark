@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Share2, Eye, Copy, PlusCircle, Link2, ExternalLink, Trash2 } from 'lucide-react';
+import { Share2, Eye, Copy, PlusCircle, Link2, ExternalLink, Trash2, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import PageHeader from '@/components/layout/PageHeader';
 
 interface ShareableView {
@@ -21,6 +22,7 @@ export default function SharePage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [showQR, setShowQR] = useState<string | null>(null);
 
   const fetchViews = () => {
     fetch('/api/share').then(r => r.json()).then(data => setViews(data.views)).finally(() => setLoading(false));
@@ -104,6 +106,12 @@ export default function SharePage() {
                     <Copy className="h-3 w-3" />
                     {copied === v.token ? 'Copied!' : 'Copy Link'}
                   </button>
+                  <button
+                    onClick={() => setShowQR(showQR === v.token ? null : v.token)}
+                    className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100"
+                  >
+                    <QrCode className="h-3 w-3" /> QR
+                  </button>
                   <a
                     href={`/share/${v.token}`}
                     target="_blank"
@@ -120,6 +128,33 @@ export default function SharePage() {
                   </button>
                 </div>
               </div>
+              {showQR === v.token && (
+                <div className="mt-3 pt-3 border-t flex items-center gap-4">
+                  <QRCodeSVG value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${v.token}`} size={120} />
+                  <div>
+                    <p className="text-sm font-medium mb-1">QR Code for Factory Display</p>
+                    <p className="text-xs text-gray-500 mb-2">Print this QR code and display it at your factory reception. Visitors can scan to view your compliance status.</p>
+                    <button
+                      onClick={() => {
+                        const svg = document.querySelector(`[data-qr="${v.token}"]`)?.parentElement?.querySelector('svg');
+                        if (!svg) return;
+                        const svgData = new XMLSerializer().serializeToString(svg);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 400;
+                        canvas.height = 400;
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        img.onload = () => { ctx?.drawImage(img, 0, 0, 400, 400); const a = document.createElement('a'); a.download = `qr-${v.token.substring(0, 8)}.png`; a.href = canvas.toDataURL('image/png'); a.click(); };
+                        img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+                      }}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-brand-50 text-brand-700 hover:bg-brand-100"
+                      data-qr={v.token}
+                    >
+                      Download PNG
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
           {views.length === 0 && (

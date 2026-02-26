@@ -92,5 +92,22 @@ export const RCA_METHODS = [
   { value: 'FISHBONE', label: 'Fishbone (Ishikawa)' },
 ] as const;
 
+export const INDUSTRY_TYPES = [
+  { value: 'MANUFACTURING', label: 'Manufacturing' },
+  { value: 'AUTOMOTIVE', label: 'Automotive' },
+  { value: 'TEXTILE', label: 'Textile' },
+  { value: 'PHARMACEUTICAL', label: 'Pharmaceutical' },
+  { value: 'FOOD_PROCESSING', label: 'Food Processing' },
+  { value: 'CHEMICAL', label: 'Chemical' },
+  { value: 'STEEL', label: 'Steel & Metal' },
+  { value: 'CEMENT', label: 'Cement' },
+  { value: 'PAPER', label: 'Paper & Pulp' },
+  { value: 'IT_SERVICES', label: 'IT / Services' },
+  { value: 'COMMERCIAL', label: 'Commercial Building' },
+  { value: 'HOSPITAL', label: 'Hospital / Healthcare' },
+  { value: 'EDUCATION', label: 'Education' },
+  { value: 'OTHER', label: 'Other' },
+] as const;
+
 export const DEVIATION_THRESHOLD_WARNING = 10;
 export const DEVIATION_THRESHOLD_CRITICAL = 20;

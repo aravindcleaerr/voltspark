@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Shield, ClipboardCheck, AlertTriangle, Award, Plus, Calendar } from 'lucide-react';
+import { Shield, ClipboardCheck, AlertTriangle, Award, Plus, Calendar, IndianRupee, Wrench } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { formatDate } from '@/lib/utils';
@@ -180,6 +180,58 @@ export default function SafetyPage() {
           ))}
         </div>
       </div>
+
+      {/* Manage Templates Link */}
+      <div className="flex gap-2">
+        <Link href="/safety/templates" className="btn-secondary text-sm flex items-center gap-2">
+          <Wrench className="h-4 w-4" /> Manage Inspection Templates
+        </Link>
+      </div>
+
+      {/* Liability Estimation */}
+      {(() => {
+        const SEVERITY_COSTS: Record<string, number> = { NEAR_MISS: 5000, MINOR: 50000, MAJOR: 500000, FATAL: 5000000 };
+        const openIncidents = data.incidents.filter((i: any) => i.status !== 'CLOSED');
+        const incidentLiability = openIncidents.reduce((sum: number, i: any) => sum + (SEVERITY_COSTS[i.severity] || 0), 0);
+        const expiredCerts = data.certifications.filter((c: any) => c.status === 'EXPIRED');
+        const certLiability = expiredCerts.length * 200000; // ₹2L per expired cert (penalty estimate)
+        const failedInspections = data.inspections.filter((i: any) => i.overallResult === 'FAIL');
+        const inspLiability = failedInspections.length * 100000; // ₹1L per failed inspection
+        const totalLiability = incidentLiability + certLiability + inspLiability;
+
+        if (totalLiability === 0) return null;
+        const fmt = (n: number) => n >= 100000 ? `₹${(n / 100000).toFixed(1)}L` : `₹${n.toLocaleString('en-IN')}`;
+
+        return (
+          <div className="card border-l-4 border-l-orange-500">
+            <h3 className="font-semibold text-orange-800 flex items-center gap-2 mb-3">
+              <IndianRupee className="h-4 w-4" /> Estimated Liability Exposure
+            </h3>
+            <p className="text-3xl font-bold text-orange-600 mb-3">{fmt(totalLiability)}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {incidentLiability > 0 && (
+                <div className="bg-orange-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Open Incidents ({openIncidents.length})</p>
+                  <p className="text-sm font-bold text-orange-600">{fmt(incidentLiability)}</p>
+                </div>
+              )}
+              {certLiability > 0 && (
+                <div className="bg-red-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Expired Certifications ({expiredCerts.length})</p>
+                  <p className="text-sm font-bold text-red-600">{fmt(certLiability)}</p>
+                </div>
+              )}
+              {inspLiability > 0 && (
+                <div className="bg-yellow-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500">Failed Inspections ({failedInspections.length})</p>
+                  <p className="text-sm font-bold text-yellow-700">{fmt(inspLiability)}</p>
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">Estimates based on typical Indian regulatory penalties. Actual liability may vary.</p>
+          </div>
+        );
+      })()}
 
       {/* Expiring Certifications Alert */}
       {expiringSoon.length > 0 && (

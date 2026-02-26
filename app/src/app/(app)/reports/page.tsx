@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Printer, Download, BarChart3, TrendingUp, Shield, AlertTriangle, IndianRupee, Users, Wrench, Award } from 'lucide-react';
+import { FileText, Printer, Download, BarChart3, TrendingUp, Shield, AlertTriangle, IndianRupee, Users, Wrench, Award, FileDown, Mail } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import { formatDate } from '@/lib/utils';
 import { useSettings } from '@/lib/hooks/useSettings';
+import { generateStandardReportPDF, generateImpactReportPDF } from '@/lib/pdf';
 
 const REPORT_TYPES = [
   { value: 'energy-register', label: 'Energy Source Register', description: 'Complete list of identified energy sources with meter details' },
@@ -38,6 +39,9 @@ export default function ReportsPage() {
   const [dateTo, setDateTo] = useState('');
   const [impactData, setImpactData] = useState<any>(null);
   const [impactPeriod, setImpactPeriod] = useState('year');
+  const [emailTo, setEmailTo] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const generateReport = async () => {
     setLoading(true);
@@ -104,7 +108,49 @@ export default function ReportsPage() {
             <FileText className="h-4 w-4" />{loading ? 'Generating...' : 'Generate Report'}
           </button>
           {(reportData || impactData) && (
-            <button onClick={handlePrint} className="btn-secondary flex items-center gap-2"><Printer className="h-4 w-4" /> Print</button>
+            <>
+              <button onClick={handlePrint} className="btn-secondary flex items-center gap-2"><Printer className="h-4 w-4" /> Print</button>
+              <button
+                onClick={() => {
+                  const name = settings?.company_name || 'Company';
+                  if (impactData) generateImpactReportPDF(impactData, name);
+                  else if (reportData) generateStandardReportPDF(reportData, name);
+                }}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <FileDown className="h-4 w-4" /> Download PDF
+              </button>
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  value={emailTo}
+                  onChange={e => { setEmailTo(e.target.value); setEmailSent(false); }}
+                  placeholder="recipient@email.com"
+                  className="input-field py-1.5 text-sm w-48"
+                />
+                <button
+                  onClick={async () => {
+                    if (!emailTo) return;
+                    setEmailSending(true);
+                    await fetch('/api/reports/email', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        to: emailTo,
+                        reportType: impactData ? 'impact' : reportData?.type,
+                        reportTitle: impactData ? 'Impact Report' : reportData?.title,
+                      }),
+                    });
+                    setEmailSending(false);
+                    setEmailSent(true);
+                  }}
+                  disabled={emailSending || !emailTo}
+                  className="btn-secondary flex items-center gap-2 text-sm"
+                >
+                  <Mail className="h-4 w-4" /> {emailSent ? 'Sent!' : emailSending ? 'Sending...' : 'Email Report'}
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
