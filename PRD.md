@@ -944,7 +944,7 @@ volt-spark.vercel.app/
 - [x] Power factor tracking with penalty risk estimate (₹ exposure per quarter)
 - [x] Peak demand utilization gauge (current vs. contracted kVA)
 - [ ] Time-of-Day consumption pattern (peak/off-peak/shoulder hours)
-- [ ] Predicted next month cost (linear trend projection)
+- [x] Predicted next month cost (linear trend projection)
 - [ ] Cost per unit of production (₹/kg, ₹/piece — requires production volume input field on Client)
 
 ### Phase 3: Action Plans, Savings & Documents (Weeks 9-12)
@@ -961,7 +961,7 @@ volt-spark.vercel.app/
 - [x] Per-improvement savings attribution (isolate savings from each specific change)
 - [x] Cumulative savings running total with month-by-month breakdown
 - [ ] Savings categories: energy cost reduction, penalty avoidance, maintenance reduction, subsidy income, insurance reduction
-- [ ] Consultant fee vs. savings comparison (ROI proof screen)
+- [x] Consultant fee vs. savings comparison (ROI proof screen)
 - [x] Savings dashboard — the screen consultants screenshot in every client meeting
 
 **3B — ROI Calculator**
@@ -990,7 +990,7 @@ volt-spark.vercel.app/
 
 **3D — Reports & Export**
 - [ ] Enhanced reports with PDF export
-- [ ] Impact report generation (quarterly/annual) — 8-section structure:
+- [x] Impact report generation (quarterly/annual) — 8-section structure:
   1. Executive Summary (one-page highlights with key ₹ numbers)
   2. Energy Performance (consumption trend, cost trend, savings, source mix)
   3. Compliance Status (framework-wise progress, certifications achieved)
@@ -1001,7 +1001,7 @@ volt-spark.vercel.app/
   8. Benchmarking (how client compares to industry peers)
 - [ ] Report distribution: PDF download, email to stakeholders, presentation mode
 - [ ] Configurable client access modes (consultant-managed, collaborative, self-service)
-- [ ] Data export (client can export all their data as CSV/JSON)
+- [x] Data export (client can export all their data as CSV/JSON)
 
 ### Phase 4: Notifications, Analytics & Launch (Weeks 13-16)
 
@@ -1012,13 +1012,13 @@ volt-spark.vercel.app/
 **4A — Notifications**
 - [ ] Email notification system (Resend)
 - [ ] WhatsApp notifications (Business API)
-- [ ] In-app notification center
+- [x] In-app notification center
 - [ ] Notification preferences per client
-- [ ] Trigger types: certification expiry (30/15/7 days), audit due, CAPA overdue, bill anomaly, safety risk change
+- [x] Trigger types: certification expiry (30/15/7 days), audit due, CAPA overdue, bill anomaly, safety risk change
 
 **4B — Analytics & Benchmarking**
-- [ ] Consultant analytics dashboard (cross-client insights, portfolio health)
-- [ ] Client health score (composite of compliance, safety, cost trend, engagement)
+- [x] Consultant analytics dashboard (cross-client insights, portfolio health)
+- [x] Client health score (composite of compliance, safety, cost trend, engagement)
 - [ ] Industry benchmarking (anonymous, aggregated — requires min 5 facilities per category):
   - Specific energy consumption (kWh/unit of output)
   - Energy cost per unit (₹/kg, ₹/piece)
@@ -1030,26 +1030,26 @@ volt-spark.vercel.app/
 - [ ] Trend charts and historical analysis (12-month, YoY)
 
 **4C — Government Schemes & Subsidies**
-- [ ] Government scheme database (ZED subsidy, PM-KUSUM, CLCSS, BEE awards, state incentives)
+- [x] Government scheme database (ZED subsidy, PM-KUSUM, CLCSS, BEE awards, state incentives)
 - [ ] Auto-eligibility matching based on client profile (Udyam number, industry, size, location, certifications)
-- [ ] Application checklist (documents needed, forms to fill)
-- [ ] Deadline tracking with reminders
-- [ ] Application status tracking
+- [x] Application checklist (documents needed, forms to fill)
+- [x] Deadline tracking with reminders
+- [x] Application status tracking
 - [ ] Historical record of subsidies claimed (total ₹ unlocked per client)
 
 **4D — Vendor Qualification & Shareable Views**
-- [ ] Vendor qualification / shareable compliance view (/share/[token])
-- [ ] Public URL with branded template (company logo, VoltSpark watermark)
+- [x] Vendor qualification / shareable compliance view (/share/[token])
+- [x] Public URL with branded template (company logo, VoltSpark watermark)
 - [ ] QR code for physical display in factory reception
 - [ ] Downloadable PDF compliance summary
-- [ ] Real-time status (not a stale certificate)
+- [x] Real-time status (not a stale certificate)
 - [ ] Evidence trail (auditor can drill down into specific requirements)
-- [ ] Expiry date visibility (buyer knows when re-certification is due)
+- [x] Expiry date visibility (buyer knows when re-certification is due)
 
 **4E — Launch Readiness**
 - [ ] Mobile-responsive optimization / PWA
 - [ ] Onboarding flow for new consultants (guided setup wizard)
-- [ ] Landing page at volt-spark.vercel.app
+- [x] Landing page at volt-spark.vercel.app
 - [ ] Demo environment with seed data (multiple industries)
 - [ ] Security audit (OWASP top 10, tenant isolation verification)
 - [ ] Performance optimization (page load <2s all routes)
