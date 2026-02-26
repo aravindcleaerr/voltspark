@@ -28,6 +28,10 @@ import {
   Calculator,
   ListChecks,
   FolderOpen,
+  Bell,
+  Landmark,
+  PieChart,
+  Share2,
 } from 'lucide-react';
 
 const workspaceNav = [
@@ -48,6 +52,10 @@ const workspaceNav = [
   { name: 'Documents', href: '/documents', icon: FolderOpen },
   { name: 'Calendar', href: '/calendar', icon: CalendarClock },
   { name: 'Reports', href: '/reports', icon: FileText },
+  { name: 'Notifications', href: '/notifications', icon: Bell },
+  { name: 'Schemes', href: '/schemes', icon: Landmark },
+  { name: 'Shareable Views', href: '/share', icon: Share2 },
+  { name: 'Analytics', href: '/analytics', icon: PieChart },
 ];
 
 const adminNav = [

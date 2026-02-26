@@ -22,6 +22,11 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Phase 4
+  await prisma.notification.deleteMany();
+  await prisma.schemeApplication.deleteMany();
+  await prisma.governmentScheme.deleteMany();
+  await prisma.shareableView.deleteMany();
   // Phase 3
   await prisma.document.deleteMany();
   await prisma.actionItem.deleteMany();
@@ -815,6 +820,67 @@ async function main() {
     },
   });
   console.log('5 documents created');
+
+  // ============================================================
+  // GOVERNMENT SCHEMES (Phase 4C)
+  // ============================================================
+  const zedScheme = await prisma.governmentScheme.create({
+    data: {
+      name: 'ZED Certification Subsidy', shortName: 'ZED', ministry: 'Ministry of MSME',
+      description: 'Financial assistance for MSMEs to adopt ZED (Zero Defect Zero Effect) certification. Covers consultancy and certification costs.',
+      maxSubsidy: 500000, subsidyPercent: 80, category: 'CERTIFICATION',
+      eligibility: 'Registered MSME with Udyam number',
+      documentsNeeded: 'Udyam Registration,GST Certificate,PAN Card,Bank Account Details,ZED Assessment Report',
+      applicationUrl: 'https://zed.msme.gov.in',
+    },
+  });
+  await prisma.governmentScheme.create({
+    data: {
+      name: 'PM-KUSUM Solar Scheme', shortName: 'PM-KUSUM', ministry: 'Ministry of New & Renewable Energy',
+      description: 'Subsidy for installation of solar pumps and grid-connected solar power plants for farmers and industries.',
+      maxSubsidy: 2000000, subsidyPercent: 40, category: 'ENERGY',
+      eligibility: 'Farmers, cooperatives, industrial establishments',
+      documentsNeeded: 'Land ownership proof,Electricity bill,Aadhaar,Bank details,DPR',
+      applicationUrl: 'https://pmkusum.mnre.gov.in',
+    },
+  });
+  await prisma.governmentScheme.create({
+    data: {
+      name: 'BEE Star Rating for Industries', shortName: 'BEE', ministry: 'Bureau of Energy Efficiency',
+      description: 'Recognition program for industries achieving high energy efficiency standards. Provides certification and marketing value.',
+      maxSubsidy: null, category: 'ENERGY',
+      eligibility: 'Manufacturing units with energy consumption > 500 TOE/year',
+      documentsNeeded: 'Energy audit report,Consumption data,Production data,Utility bills',
+    },
+  });
+  await prisma.governmentScheme.create({
+    data: {
+      name: 'CLCSS - Credit Linked Capital Subsidy', shortName: 'CLCSS', ministry: 'Ministry of MSME',
+      description: 'Capital subsidy of 15% for technology upgradation in MSME units. Covers energy-efficient equipment.',
+      maxSubsidy: 1500000, subsidyPercent: 15, category: 'EQUIPMENT',
+      eligibility: 'Micro and small enterprises',
+      documentsNeeded: 'Udyam Registration,Project report,Quotations,Bank loan sanction letter',
+    },
+  });
+  await prisma.governmentScheme.create({
+    data: {
+      name: 'Karnataka Industrial Policy Incentives', shortName: 'KIP', ministry: 'Karnataka DPIIT',
+      description: 'State-level incentives for industries investing in energy efficiency, renewable energy, and technology upgradation.',
+      maxSubsidy: 1000000, subsidyPercent: 25, category: 'GENERAL',
+      eligibility: 'Industries registered in Karnataka',
+      documentsNeeded: 'Factory registration,Investment proof,Employment details,State GST registration',
+    },
+  });
+
+  // Create a sample scheme application for Unnathi
+  await prisma.schemeApplication.create({
+    data: {
+      clientId: unnathiClient.id, schemeId: zedScheme.id, appliedById: consultant.id,
+      status: 'APPLIED', amountApplied: 400000, applicationRef: 'ZED/KA/2025/0234',
+      notes: 'Applied for ZED Bronze level subsidy. Documents submitted to DIC office.',
+    },
+  });
+  console.log('5 government schemes + 1 application created');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
