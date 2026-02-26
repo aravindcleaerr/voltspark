@@ -61,6 +61,11 @@ model Client {
   incidents          Incident[]
   certifications     Certification[]
   utilityBills       UtilityBill[]
+  // Phase 3
+  savingsMeasures    SavingsMeasure[]
+  roiCalculations    ROICalculation[]
+  actionPlans        ActionPlan[]
+  documents          Document[]
 }
 
 model Membership {
@@ -119,6 +124,12 @@ model User {
   incidentsReported  Incident[]           @relation("IncidentReporter")
   incidentsClosed    Incident[]           @relation("IncidentCloser")
   utilityBillsEntered UtilityBill[]
+  // Phase 3
+  savingsMeasuresCreated SavingsMeasure[]  @relation("SavingsCreatedBy")
+  roiCalculationsCreated ROICalculation[]  @relation("ROICreatedBy")
+  actionPlansCreated     ActionPlan[]      @relation("ActionPlanCreatedBy")
+  actionItemsAssigned    ActionItem[]      @relation("ActionItemAssignee")
+  documentsUploaded      Document[]        @relation("DocumentUploadedBy")
 }
 
 // ============================================================
@@ -142,6 +153,7 @@ model EnergySource {
 
   targets            EnergyTarget[]
   consumptionEntries ConsumptionEntry[]
+  savingsMeasures    SavingsMeasure[]
 }
 
 model EnergyTarget {
@@ -403,6 +415,7 @@ model ClientFramework {
   updatedAt     DateTime            @updatedAt
 
   requirementStatuses RequirementStatus[]
+  actionPlans         ActionPlan[]
 
   @@unique([clientId, frameworkId])
 }
@@ -582,4 +595,146 @@ model UtilityBill {
   updatedAt        DateTime @updatedAt
 
   @@unique([clientId, year, month])
+}
+
+// ============================================================
+// SAVINGS TRACKER (Phase 3A)
+// ============================================================
+
+model SavingsMeasure {
+  id                    String    @id @default(cuid())
+  clientId              String
+  client                Client    @relation(fields: [clientId], references: [id])
+  name                  String    // e.g., "VFD on CNC Machine #3"
+  description           String?
+  category              String    // SOLAR, VFD, LED, POWER_FACTOR, COMPRESSED_AIR, MOTOR, TRANSFORMER, HVAC, PROCESS, OTHER
+  energySourceId        String?   // Linked energy source
+  energySource          EnergySource? @relation(fields: [energySourceId], references: [id])
+  investmentCost        Float     // ₹
+  implementationDate    DateTime
+  status                String    @default("PLANNED") // PLANNED, IMPLEMENTED, VERIFIED
+  estimatedMonthlySavings Float?  // ₹/month expected
+  actualMonthlySavings  Float?    // ₹/month measured (auto or manual)
+  estimatedKwhSavings   Float?    // kWh/month expected
+  actualKwhSavings      Float?    // kWh/month measured
+  paybackMonths         Float?    // Auto-calculated: investmentCost / actualMonthlySavings
+  cumulativeSavings     Float?    // Running total of actual savings
+  notes                 String?
+  createdById           String
+  createdBy             User      @relation("SavingsCreatedBy", fields: [createdById], references: [id])
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  entries SavingsEntry[]
+}
+
+model SavingsEntry {
+  id              String         @id @default(cuid())
+  measureId       String
+  measure         SavingsMeasure @relation(fields: [measureId], references: [id], onDelete: Cascade)
+  month           Int            // 1-12
+  year            Int
+  savingsAmount   Float          // ₹ saved this month
+  kwhSaved        Float?         // kWh saved this month
+  method          String         @default("MANUAL") // MANUAL, CALCULATED (from consumption comparison)
+  notes           String?
+  createdAt       DateTime       @default(now())
+
+  @@unique([measureId, year, month])
+}
+
+// ============================================================
+// ROI CALCULATOR (Phase 3B)
+// ============================================================
+
+model ROICalculation {
+  id                  String   @id @default(cuid())
+  clientId            String
+  client              Client   @relation(fields: [clientId], references: [id])
+  name                String   // e.g., "Solar Rooftop 50kW"
+  templateType        String   // SOLAR, VFD, LED, POWER_FACTOR, COMPRESSED_AIR, MOTOR, TRANSFORMER, CUSTOM
+  // Inputs (JSON for flexibility — different templates have different inputs)
+  inputs              String   // JSON: { systemSizeKW, tariffRate, subsidyPercent, ... }
+  // Calculated outputs
+  investmentCost      Float    // ₹
+  subsidyAmount       Float?   // ₹
+  netInvestment       Float    // ₹ (after subsidy)
+  monthlySavings      Float    // ₹/month
+  annualSavings       Float    // ₹/year
+  paybackMonths       Float    // months
+  fiveYearSavings     Float?   // ₹
+  tenYearSavings      Float?   // ₹
+  lifetimeSavings     Float?   // ₹
+  irr                 Float?   // % Internal Rate of Return
+  npv                 Float?   // ₹ Net Present Value
+  co2ReductionKg      Float?   // kg CO2/year
+  // Status
+  status              String   @default("DRAFT") // DRAFT, SHARED, APPROVED, CONVERTED (→ SavingsMeasure)
+  savingsMeasureId    String?  // If converted to actual savings tracking
+  createdById         String
+  createdBy           User     @relation("ROICreatedBy", fields: [createdById], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// ============================================================
+// ACTION PLANS (Phase 3C)
+// ============================================================
+
+model ActionPlan {
+  id                  String           @id @default(cuid())
+  clientId            String
+  client              Client           @relation(fields: [clientId], references: [id])
+  clientFrameworkId   String?
+  clientFramework     ClientFramework? @relation(fields: [clientFrameworkId], references: [id])
+  title               String
+  description         String?
+  targetDate          DateTime?
+  status              String           @default("ACTIVE") // ACTIVE, COMPLETED, ON_HOLD
+  createdById         String
+  createdBy           User             @relation("ActionPlanCreatedBy", fields: [createdById], references: [id])
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  items ActionItem[]
+}
+
+model ActionItem {
+  id              String      @id @default(cuid())
+  actionPlanId    String
+  actionPlan      ActionPlan  @relation(fields: [actionPlanId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  assigneeId      String?
+  assignee        User?       @relation("ActionItemAssignee", fields: [assigneeId], references: [id])
+  dueDate         DateTime?
+  status          String      @default("PENDING") // PENDING, IN_PROGRESS, DONE, BLOCKED
+  priority        String      @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
+  sortOrder       Int         @default(0)
+  completedAt     DateTime?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// ============================================================
+// DOCUMENT LIBRARY (Phase 3C)
+// ============================================================
+
+model Document {
+  id              String   @id @default(cuid())
+  clientId        String
+  client          Client   @relation(fields: [clientId], references: [id])
+  name            String
+  category        String   // POLICY, CERTIFICATE, AUDIT_REPORT, TEST_REPORT, PHOTO, BILL, TRAINING_MATERIAL, OTHER
+  fileUrl         String   // Vercel Blob URL or external URL
+  fileSize        Int?     // bytes
+  mimeType        String?
+  linkedToType    String?  // AUDIT, TRAINING, INSPECTION, CAPA, CERTIFICATION, SAVINGS_MEASURE, ACTION_PLAN
+  linkedToId      String?  // ID of the linked entity
+  description     String?
+  uploadedById    String
+  uploadedBy      User     @relation("DocumentUploadedBy", fields: [uploadedById], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

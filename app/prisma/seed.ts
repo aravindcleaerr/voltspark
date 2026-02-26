@@ -22,6 +22,26 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Phase 3
+  await prisma.document.deleteMany();
+  await prisma.actionItem.deleteMany();
+  await prisma.actionPlan.deleteMany();
+  await prisma.rOICalculation.deleteMany();
+  await prisma.savingsEntry.deleteMany();
+  await prisma.savingsMeasure.deleteMany();
+  // Phase 2
+  await prisma.utilityBill.deleteMany();
+  await prisma.certification.deleteMany();
+  await prisma.incident.deleteMany();
+  await prisma.inspectionResponse.deleteMany();
+  await prisma.inspection.deleteMany();
+  await prisma.inspectionTemplateItem.deleteMany();
+  await prisma.inspectionTemplate.deleteMany();
+  await prisma.requirementStatus.deleteMany();
+  await prisma.clientFramework.deleteMany();
+  await prisma.frameworkRequirement.deleteMany();
+  await prisma.complianceFramework.deleteMany();
+  // Phase 1
   await prisma.cAPAComment.deleteMany();
   await prisma.cAPA.deleteMany();
   await prisma.auditFinding.deleteMany();
@@ -595,6 +615,204 @@ async function main() {
     });
   }
   console.log('12 utility bills created (Jul 2024 — Jun 2025)');
+
+  // ============================================================
+  // SAVINGS MEASURES (Phase 3A)
+  // ============================================================
+  const vfdMeasure = await prisma.savingsMeasure.create({
+    data: {
+      clientId: unnathiClient.id, name: 'VFD on CNC Turning Center #2', description: 'Variable Frequency Drive installed on 15HP CNC turning center to reduce energy consumption during partial load operations.',
+      category: 'VFD', energySourceId: mainGrid.id, investmentCost: 85000, implementationDate: new Date('2025-01-15'),
+      status: 'VERIFIED', estimatedMonthlySavings: 8500, actualMonthlySavings: 9200,
+      estimatedKwhSavings: 1133, actualKwhSavings: 1227,
+      paybackMonths: 9.2, cumulativeSavings: 46000,
+      notes: 'Savings exceeded estimates due to higher partial-load operation hours.',
+      createdById: consultant.id,
+    },
+  });
+
+  const ledMeasure = await prisma.savingsMeasure.create({
+    data: {
+      clientId: unnathiClient.id, name: 'LED Retrofit — Factory Floor', description: 'Replaced 40 fluorescent tubes (36W) with LED tubes (18W) across the factory floor and office area.',
+      category: 'LED', investmentCost: 32000, implementationDate: new Date('2025-03-01'),
+      status: 'VERIFIED', estimatedMonthlySavings: 2700, actualMonthlySavings: 2850,
+      estimatedKwhSavings: 360, actualKwhSavings: 380,
+      paybackMonths: 11.2, cumulativeSavings: 8550,
+      createdById: consultant.id,
+    },
+  });
+
+  const pfMeasure = await prisma.savingsMeasure.create({
+    data: {
+      clientId: unnathiClient.id, name: 'APFC Panel Installation', description: 'Automatic Power Factor Correction panel (50 kVAR) to maintain PF above 0.95 and avoid BESCOM penalties.',
+      category: 'POWER_FACTOR', energySourceId: mainGrid.id, investmentCost: 145000, implementationDate: new Date('2025-06-01'),
+      status: 'IMPLEMENTED', estimatedMonthlySavings: 6000, actualMonthlySavings: null,
+      estimatedKwhSavings: 0, actualKwhSavings: null,
+      notes: 'Estimated savings from avoiding PF penalties (avg ₹5,800/month) plus kVA demand reduction.',
+      createdById: consultant.id,
+    },
+  });
+
+  await prisma.savingsMeasure.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Solar Rooftop 25 kW', description: 'Proposed rooftop solar installation. 25 kW capacity, estimated generation 100 units/day.',
+      category: 'SOLAR', energySourceId: solarPV.id, investmentCost: 1250000, implementationDate: new Date('2025-09-01'),
+      status: 'PLANNED', estimatedMonthlySavings: 22500, estimatedKwhSavings: 3000,
+      notes: 'MNRE subsidy of 40% expected. Net investment ₹7.5L.',
+      createdById: consultant.id,
+    },
+  });
+  console.log('4 savings measures created');
+
+  // Savings entries (monthly actual savings for VFD and LED)
+  const vfdEntries = [
+    { month: 2, year: 2025, savingsAmount: 8800, kwhSaved: 1173 },
+    { month: 3, year: 2025, savingsAmount: 9100, kwhSaved: 1213 },
+    { month: 4, year: 2025, savingsAmount: 9500, kwhSaved: 1267 },
+    { month: 5, year: 2025, savingsAmount: 9400, kwhSaved: 1253 },
+    { month: 6, year: 2025, savingsAmount: 9200, kwhSaved: 1227 },
+  ];
+  for (const entry of vfdEntries) {
+    await prisma.savingsEntry.create({ data: { measureId: vfdMeasure.id, ...entry, method: 'CALCULATED' } });
+  }
+
+  const ledEntries = [
+    { month: 4, year: 2025, savingsAmount: 2700, kwhSaved: 360 },
+    { month: 5, year: 2025, savingsAmount: 2900, kwhSaved: 387 },
+    { month: 6, year: 2025, savingsAmount: 2850, kwhSaved: 380 },
+  ];
+  for (const entry of ledEntries) {
+    await prisma.savingsEntry.create({ data: { measureId: ledMeasure.id, ...entry, method: 'CALCULATED' } });
+  }
+  console.log('8 savings entries created');
+
+  // ============================================================
+  // ROI CALCULATIONS (Phase 3B)
+  // ============================================================
+  await prisma.rOICalculation.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Solar Rooftop 25 kW Analysis', templateType: 'SOLAR',
+      inputs: JSON.stringify({ systemSizeKW: 25, costPerKW: 50000, subsidyPercent: 40, tariffRate: 7.5, degradationRate: 0.5, dailyGenerationHrs: 4.5, lifetimeYears: 25 }),
+      investmentCost: 1250000, subsidyAmount: 500000, netInvestment: 750000,
+      monthlySavings: 22500, annualSavings: 270000, paybackMonths: 33,
+      fiveYearSavings: 1350000, tenYearSavings: 2700000, lifetimeSavings: 6750000,
+      irr: 28.5, npv: 2850000, co2ReductionKg: 27000,
+      status: 'SHARED', createdById: consultant.id,
+    },
+  });
+
+  await prisma.rOICalculation.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Compressed Air Leak Repair', templateType: 'COMPRESSED_AIR',
+      inputs: JSON.stringify({ compressorKW: 22, leakPercent: 25, targetLeakPercent: 5, operatingHrsPerMonth: 400, tariffRate: 7.5 }),
+      investmentCost: 45000, subsidyAmount: 0, netInvestment: 45000,
+      monthlySavings: 6600, annualSavings: 79200, paybackMonths: 6.8,
+      fiveYearSavings: 396000, irr: 170, npv: 340000, co2ReductionKg: 8400,
+      status: 'DRAFT', createdById: consultant.id,
+    },
+  });
+
+  await prisma.rOICalculation.create({
+    data: {
+      clientId: unnathiClient.id, name: 'IE3 Motor Replacement (Grinding)', templateType: 'MOTOR',
+      inputs: JSON.stringify({ motorHP: 10, oldEfficiency: 85, newEfficiency: 93.6, operatingHrsPerMonth: 350, tariffRate: 7.5, motorCost: 35000 }),
+      investmentCost: 35000, subsidyAmount: 0, netInvestment: 35000,
+      monthlySavings: 1680, annualSavings: 20160, paybackMonths: 20.8,
+      fiveYearSavings: 100800, irr: 52, npv: 62000, co2ReductionKg: 2150,
+      status: 'DRAFT', createdById: consultant.id,
+    },
+  });
+  console.log('3 ROI calculations created');
+
+  // ============================================================
+  // ACTION PLANS (Phase 3C)
+  // ============================================================
+  const zedPlan = await prisma.actionPlan.create({
+    data: {
+      clientId: unnathiClient.id, title: 'ZED Bronze Certification Roadmap',
+      description: 'Step-by-step action plan to achieve ZED Bronze certification by Q3 2025.',
+      targetDate: new Date('2025-09-30'), status: 'ACTIVE', createdById: consultant.id,
+    },
+  });
+
+  const actionItems = [
+    { title: 'Complete energy source identification and documentation', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-02-15'), completedAt: new Date('2025-02-10'), assigneeId: sandeep.id, sortOrder: 1 },
+    { title: 'Install energy sub-metering for CNC machines', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-03-01'), completedAt: new Date('2025-02-28'), assigneeId: vilas.id, sortOrder: 2 },
+    { title: 'Set energy reduction targets for all sources', status: 'DONE', priority: 'MEDIUM', dueDate: new Date('2025-03-15'), completedAt: new Date('2025-03-12'), assigneeId: sandeep.id, sortOrder: 3 },
+    { title: 'Conduct energy awareness training (batch 1)', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-04-01'), completedAt: new Date('2025-03-28'), assigneeId: suresh.id, sortOrder: 4 },
+    { title: 'Install APFC panel for power factor correction', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: new Date('2025-06-30'), assigneeId: vilas.id, sortOrder: 5 },
+    { title: 'Conduct internal energy audit', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: new Date('2025-07-15'), assigneeId: consultant.id, sortOrder: 6 },
+    { title: 'Prepare energy policy document', status: 'PENDING', priority: 'MEDIUM', dueDate: new Date('2025-07-30'), assigneeId: sandeep.id, sortOrder: 7 },
+    { title: 'Implement VFD on remaining CNC machines', status: 'PENDING', priority: 'MEDIUM', dueDate: new Date('2025-08-15'), assigneeId: vilas.id, sortOrder: 8 },
+    { title: 'Schedule ZED assessment with MSME DI', status: 'PENDING', priority: 'CRITICAL', dueDate: new Date('2025-09-01'), assigneeId: suresh.id, sortOrder: 9 },
+  ];
+  for (const item of actionItems) {
+    await prisma.actionItem.create({ data: { actionPlanId: zedPlan.id, ...item } });
+  }
+
+  const safetyPlan = await prisma.actionPlan.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Electrical Safety Compliance Plan',
+      description: 'Actions to address gaps identified in electrical safety audit.',
+      targetDate: new Date('2025-08-31'), status: 'ACTIVE', createdById: lnk.id,
+    },
+  });
+
+  const safetyItems = [
+    { title: 'Replace damaged cable trays in grinding section', status: 'DONE', priority: 'CRITICAL', dueDate: new Date('2025-02-28'), completedAt: new Date('2025-02-25'), assigneeId: vilas.id, sortOrder: 1 },
+    { title: 'Install earth leakage relay on all main circuits', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: new Date('2025-06-30'), assigneeId: vilas.id, sortOrder: 2 },
+    { title: 'Conduct insulation resistance testing (all motors)', status: 'PENDING', priority: 'HIGH', dueDate: new Date('2025-07-15'), assigneeId: vilas.id, sortOrder: 3 },
+    { title: 'Update single-line diagram to reflect current configuration', status: 'PENDING', priority: 'MEDIUM', dueDate: new Date('2025-07-31'), assigneeId: sandeep.id, sortOrder: 4 },
+  ];
+  for (const item of safetyItems) {
+    await prisma.actionItem.create({ data: { actionPlanId: safetyPlan.id, ...item } });
+  }
+  console.log('2 action plans with 13 items created');
+
+  // ============================================================
+  // DOCUMENTS (Phase 3C — sample entries, no actual files)
+  // ============================================================
+  await prisma.document.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Energy Policy — Unnathi CNC', category: 'POLICY',
+      fileUrl: '/documents/energy-policy-v1.pdf', fileSize: 245000, mimeType: 'application/pdf',
+      description: 'Signed energy policy document covering energy management objectives and targets.',
+      uploadedById: sandeep.id,
+    },
+  });
+  await prisma.document.create({
+    data: {
+      clientId: unnathiClient.id, name: 'CEIG Electrical Safety Certificate', category: 'CERTIFICATE',
+      fileUrl: '/documents/ceig-cert-2025.pdf', fileSize: 380000, mimeType: 'application/pdf',
+      linkedToType: 'CERTIFICATION', description: 'Annual electrical safety audit certificate from CEIG Karnataka.',
+      uploadedById: suresh.id,
+    },
+  });
+  await prisma.document.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Internal Energy Audit Report — Dec 2024', category: 'AUDIT_REPORT',
+      fileUrl: '/documents/energy-audit-dec2024.pdf', fileSize: 520000, mimeType: 'application/pdf',
+      linkedToType: 'AUDIT', description: 'Internal energy audit findings and recommendations.',
+      uploadedById: consultant.id,
+    },
+  });
+  await prisma.document.create({
+    data: {
+      clientId: unnathiClient.id, name: 'Training Attendance — Energy Awareness Batch 1', category: 'TRAINING_MATERIAL',
+      fileUrl: '/documents/training-batch1-attendance.pdf', fileSize: 150000, mimeType: 'application/pdf',
+      linkedToType: 'TRAINING', description: 'Signed attendance sheet for energy awareness training.',
+      uploadedById: consultant.id,
+    },
+  });
+  await prisma.document.create({
+    data: {
+      clientId: unnathiClient.id, name: 'VFD Installation Invoice', category: 'OTHER',
+      fileUrl: '/documents/vfd-invoice.pdf', fileSize: 95000, mimeType: 'application/pdf',
+      linkedToType: 'SAVINGS_MEASURE', description: 'Purchase invoice for VFD installation on CNC Turning Center #2.',
+      uploadedById: sandeep.id,
+    },
+  });
+  console.log('5 documents created');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');

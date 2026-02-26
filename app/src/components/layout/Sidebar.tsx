@@ -24,6 +24,10 @@ import {
   Receipt,
   HardHat,
   CalendarClock,
+  TrendingUp,
+  Calculator,
+  ListChecks,
+  FolderOpen,
 } from 'lucide-react';
 
 const workspaceNav = [
@@ -38,6 +42,10 @@ const workspaceNav = [
   { name: 'Compliance', href: '/compliance', icon: ShieldCheck },
   { name: 'Safety', href: '/safety', icon: HardHat },
   { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
+  { name: 'Savings', href: '/savings', icon: TrendingUp },
+  { name: 'ROI Calculator', href: '/roi', icon: Calculator },
+  { name: 'Action Plans', href: '/action-plans', icon: ListChecks },
+  { name: 'Documents', href: '/documents', icon: FolderOpen },
   { name: 'Calendar', href: '/calendar', icon: CalendarClock },
   { name: 'Reports', href: '/reports', icon: FileText },
 ];

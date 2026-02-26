@@ -902,18 +902,18 @@ volt-spark.vercel.app/
 - [x] Built-in Electrical Safety template (IE Rules, IS standards)
 - [x] Framework assignment to clients (multiple frameworks per client)
 - [x] Requirement tracking UI (status, evidence links, notes per requirement)
-- [ ] Evidence traceability chain (link module data → requirements automatically)
+- [x] Evidence traceability chain (link module data → requirements automatically)
 - [x] Gap analysis view (visual compliance matrix — what's done, what's missing)
 - [x] Per-framework compliance scoring (weighted by requirement criticality)
 - [ ] Baseline assessment / initial survey flow (onboarding questionnaire per framework)
-- [ ] Pre-audit readiness check (are all requirements met before the auditor arrives?)
+- [x] Pre-audit readiness check (are all requirements met before the auditor arrives?)
 
 **2B — Safety Modules**
 - [x] Inspection checklists module (configurable templates — electrical, fire, general safety)
 - [ ] Inspection template builder (consultants create custom checklists)
 - [x] Incident register module (incident reports, near-misses, RCA, follow-up actions)
 - [x] Certification tracker with expiry alerts (CEIG, BIS, Fire NOC, pressure vessels)
-- [ ] Compliance calendar view (all certifications/tests with due dates across clients)
+- [x] Compliance calendar view (all certifications/tests with due dates across clients)
 - [x] Safety Risk Score — weighted scoring model:
   - Earthing system integrity (20%)
   - Protection devices — ELCB/MCB/RCBO (15%)
