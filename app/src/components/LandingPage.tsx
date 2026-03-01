@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
   Zap, Shield, TrendingUp, BarChart3, Users, IndianRupee, CheckCircle2,
-  ArrowRight, Building2, FileText, GraduationCap, CalendarClock,
+  ArrowRight, Building2, FileText, GraduationCap, CalendarClock, Play,
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -41,6 +43,17 @@ const PLANS = [
 ];
 
 export default function LandingPage() {
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  const handleTryDemo = async () => {
+    setDemoLoading(true);
+    await signIn('credentials', {
+      email: 'demo@voltspark.in',
+      password: 'demo123',
+      callbackUrl: '/dashboard',
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Nav */}
@@ -54,6 +67,9 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
+            <button onClick={handleTryDemo} disabled={demoLoading} className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 px-3 py-2">
+              {demoLoading ? 'Loading...' : 'Try Demo'}
+            </button>
             <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">Login</Link>
             <Link href="/register" className="btn-primary text-sm px-4 py-2">Sign Up</Link>
           </div>
@@ -78,9 +94,14 @@ export default function LandingPage() {
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
               Get Started Free <ArrowRight className="h-5 w-5" />
             </Link>
-            <Link href="/login" className="btn-secondary text-base px-8 py-3">Sign In</Link>
+            <button onClick={handleTryDemo} disabled={demoLoading} className="text-base px-8 py-3 flex items-center gap-2 rounded-lg border-2 border-brand-600 text-brand-600 dark:text-brand-400 font-medium hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors disabled:opacity-50">
+              {demoLoading ? 'Loading...' : 'Try Live Demo'} <Play className="h-5 w-5" />
+            </button>
           </div>
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-sm text-gray-400">
+            Already have an account? <Link href="/login" className="text-brand-600 hover:underline">Sign in</Link>
+          </p>
+          <div className="mt-6 flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
             <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> Free to start</span>
             <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> No credit card</span>
             <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> Multi-tenant</span>

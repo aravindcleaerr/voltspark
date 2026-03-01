@@ -1032,9 +1032,513 @@ async function main() {
   });
   console.log('5 recurring schedules created');
 
+  // ============================================================
+  // DEMO ORGANIZATION — VoltSpark Demo (for potential customers)
+  // ============================================================
+  const demoOrg = await prisma.organization.create({
+    data: { name: 'VoltSpark Demo', slug: 'voltspark-demo', plan: 'PRO' },
+  });
+  console.log('Demo organization created: VoltSpark Demo');
+
+  const demoHash = await bcrypt.hash('demo123', 10);
+  const demoUser = await prisma.user.create({
+    data: { name: 'Demo User', email: 'demo@voltspark.in', passwordHash: demoHash, role: 'USER' },
+  });
+  await prisma.membership.create({ data: { userId: demoUser.id, organizationId: demoOrg.id, role: 'MEMBER' } });
+
+  const demoClient = await prisma.client.create({
+    data: {
+      organizationId: demoOrg.id,
+      name: 'Precision Engineering Pvt Ltd',
+      slug: 'precision-engineering',
+      address: 'Plot 42, 2nd Phase, Peenya Industrial Area, Bengaluru - 560058',
+      industry: 'CNC Precision Machining & Aerospace Components',
+      employeeCount: 45,
+      accessMode: 'COLLABORATIVE',
+      gridTariffRate: 8.2,
+      solarTariffRate: 0,
+      dgTariffRate: 18,
+      contractDemand: 250,
+      powerFactorTarget: 0.95,
+      baselineYear: 2024,
+      baselineMonth: 7,
+    },
+  });
+  await prisma.clientAccess.create({ data: { userId: demoUser.id, clientId: demoClient.id, role: 'VIEWER' } });
+  console.log('Demo client: Precision Engineering Pvt Ltd (VIEWER access)');
+
+  // Demo energy sources
+  const dGrid = await prisma.energySource.create({
+    data: { clientId: demoClient.id, name: 'Main Grid Supply (BESCOM)', type: 'ELECTRICITY', unit: 'kWh', description: 'BESCOM HT industrial supply — all production equipment, HVAC, lighting', location: 'Main Factory — Peenya Phase 2', meterNumber: 'HT-042-2024', costPerUnit: 8.2 },
+  });
+  const dSolar = await prisma.energySource.create({
+    data: { clientId: demoClient.id, name: 'Rooftop Solar 50 kW', type: 'ELECTRICITY', unit: 'kWh', description: '50 kW rooftop solar installation covering factory and office buildings', location: 'Factory & Office Rooftop', meterNumber: 'SOL-PE-001', costPerUnit: 0 },
+  });
+  const dDG = await prisma.energySource.create({
+    data: { clientId: demoClient.id, name: 'DG Set 125 kVA', type: 'DIESEL', unit: 'litres', description: '125 kVA Kirloskar DG set for backup power', location: 'DG Room', meterNumber: 'DG-001', costPerUnit: 18 },
+  });
+  await prisma.energySource.create({
+    data: { clientId: demoClient.id, name: 'Compressed Air System', type: 'COMPRESSED_AIR', unit: 'm³', description: '2x 30HP screw compressors with air dryer', location: 'Compressor Room', meterNumber: 'CA-PE-001' },
+  });
+  await prisma.energySource.create({
+    data: { clientId: demoClient.id, name: 'Coolant Circulation System', type: 'OTHER', unit: 'kWh', description: 'Centralized coolant pump system for CNC machines', location: 'Machine Shop', meterNumber: 'CCS-001' },
+  });
+
+  // Demo targets
+  const demoTargets = [
+    { energySourceId: dSolar.id, period: '2024-Q3', periodType: 'QUARTERLY', targetValue: 18000, unit: 'kWh', baselineValue: 18000, reductionPercent: 0, actualValue: 17850, isActive: false },
+    { energySourceId: dSolar.id, period: '2024-Q4', periodType: 'QUARTERLY', targetValue: 18000, unit: 'kWh', baselineValue: 18000, reductionPercent: 0, actualValue: 16900, isActive: false },
+    { energySourceId: dSolar.id, period: '2025-Q1', periodType: 'QUARTERLY', targetValue: 18000, unit: 'kWh', baselineValue: 18000, reductionPercent: 0, actualValue: 18650, isActive: false },
+    { energySourceId: dSolar.id, period: '2025-Q2', periodType: 'QUARTERLY', targetValue: 18000, unit: 'kWh', baselineValue: 18000, reductionPercent: 0, actualValue: 21200, isActive: false },
+    { energySourceId: dSolar.id, period: '2025-Q3', periodType: 'QUARTERLY', targetValue: 18900, unit: 'kWh', baselineValue: 18000, reductionPercent: -5, isActive: true },
+    { energySourceId: dGrid.id, period: '2024-Q3', periodType: 'QUARTERLY', targetValue: 120000, unit: 'kWh', baselineValue: 120000, reductionPercent: 0, actualValue: 118500, isActive: false },
+    { energySourceId: dGrid.id, period: '2024-Q4', periodType: 'QUARTERLY', targetValue: 120000, unit: 'kWh', baselineValue: 120000, reductionPercent: 0, actualValue: 115200, isActive: false },
+    { energySourceId: dGrid.id, period: '2025-Q1', periodType: 'QUARTERLY', targetValue: 120000, unit: 'kWh', baselineValue: 120000, reductionPercent: 0, actualValue: 117800, isActive: false },
+    { energySourceId: dGrid.id, period: '2025-Q2', periodType: 'QUARTERLY', targetValue: 120000, unit: 'kWh', baselineValue: 120000, reductionPercent: 0, actualValue: 108500, isActive: false },
+    { energySourceId: dGrid.id, period: '2025-Q3', periodType: 'QUARTERLY', targetValue: 108000, unit: 'kWh', baselineValue: 120000, reductionPercent: 10, isActive: true },
+  ];
+  for (const t of demoTargets) { await prisma.energyTarget.create({ data: t }); }
+
+  // Demo consumption (20 months)
+  const dConsumption: any[] = [];
+  const dSolarMonthly = [
+    { date: '2024-07-31', value: 6200 }, { date: '2024-08-31', value: 5800 },
+    { date: '2024-09-30', value: 5850 }, { date: '2024-10-31', value: 6100 },
+    { date: '2024-11-30', value: 5400 }, { date: '2024-12-31', value: 5400 },
+    { date: '2025-01-31', value: 5800 }, { date: '2025-02-28', value: 6250 },
+    { date: '2025-03-31', value: 6600 }, { date: '2025-04-30', value: 7400 },
+    { date: '2025-05-31', value: 7200 }, { date: '2025-06-30', value: 6600 },
+    { date: '2025-07-31', value: 5900 }, { date: '2025-08-31', value: 5500 },
+    { date: '2025-09-30', value: 6100 }, { date: '2025-10-31', value: 6350 },
+    { date: '2025-11-30', value: 5600 }, { date: '2025-12-31', value: 5200 },
+    { date: '2026-01-31', value: 5700 }, { date: '2026-02-28', value: 6300 },
+  ];
+  for (const entry of dSolarMonthly) {
+    const target = 6000;
+    const deviation = ((entry.value - target) / target) * 100;
+    const hasDeviation = entry.value < target;
+    dConsumption.push({
+      clientId: demoClient.id, energySourceId: dSolar.id, recordedById: demoUser.id,
+      date: new Date(entry.date), value: entry.value, unit: 'kWh', cost: 0,
+      hasDeviation, deviationPercent: hasDeviation ? Math.round(deviation * 10) / 10 : null,
+      deviationSeverity: hasDeviation ? (Math.abs(deviation) > 10 ? 'CRITICAL' : 'WARNING') : null,
+      deviationNote: hasDeviation ? `Solar ${Math.abs(Math.round(deviation * 10) / 10)}% below target` : null,
+    });
+  }
+
+  const dGridMonthly = [
+    { date: '2024-07-31', value: 38500 }, { date: '2024-08-31', value: 41200 },
+    { date: '2024-09-30', value: 38800 }, { date: '2024-10-31', value: 39500 },
+    { date: '2024-11-30', value: 37200 }, { date: '2024-12-31', value: 38500 },
+    { date: '2025-01-31', value: 42100 }, { date: '2025-02-28', value: 38200 },
+    { date: '2025-03-31', value: 37500 }, { date: '2025-04-30', value: 36800 },
+    { date: '2025-05-31', value: 37200 }, { date: '2025-06-30', value: 34500 },
+    { date: '2025-07-31', value: 33800 }, { date: '2025-08-31', value: 34200 },
+    { date: '2025-09-30', value: 33500 }, { date: '2025-10-31', value: 34100 },
+    { date: '2025-11-30', value: 32800 }, { date: '2025-12-31', value: 33200 },
+    { date: '2026-01-31', value: 32500 }, { date: '2026-02-28', value: 31800 },
+  ];
+  for (const entry of dGridMonthly) {
+    dConsumption.push({
+      clientId: demoClient.id, energySourceId: dGrid.id, recordedById: demoUser.id,
+      date: new Date(entry.date), value: entry.value, unit: 'kWh', cost: entry.value * 8.2,
+      hasDeviation: false, deviationPercent: null, deviationSeverity: null, deviationNote: null,
+    });
+  }
+  for (const entry of dConsumption) { await prisma.consumptionEntry.create({ data: entry }); }
+  console.log(`Demo: ${dConsumption.length} consumption entries`);
+
+  // Demo training
+  await prisma.trainingProgram.create({
+    data: {
+      clientId: demoClient.id, title: 'Energy Efficiency Best Practices',
+      description: 'Comprehensive training on energy conservation, monitoring, and best practices for shop floor.',
+      type: 'AWARENESS', trainer: 'Energy Audit Bureau', scheduledDate: new Date('2025-02-15'),
+      duration: 4, location: 'Precision Engineering Conference Room', maxParticipants: 50,
+      status: 'COMPLETED', completionDate: new Date('2025-02-15'),
+      notes: 'All attendees scored above 75%.',
+    },
+  });
+  await prisma.trainingProgram.create({
+    data: {
+      clientId: demoClient.id, title: 'Electrical Safety & Hazard Prevention',
+      type: 'SAFETY', trainer: 'National Safety Council', scheduledDate: new Date('2025-06-10'),
+      duration: 6, location: 'Precision Engineering', maxParticipants: 50,
+      status: 'COMPLETED', completionDate: new Date('2025-06-10'),
+    },
+  });
+  await prisma.trainingProgram.create({
+    data: {
+      clientId: demoClient.id, title: 'ISO 50001 EnMS Implementation Workshop',
+      type: 'SKILL_BUILDING', trainer: 'TUV SUD', scheduledDate: new Date('2026-04-01'),
+      duration: 8, location: 'Precision Engineering', maxParticipants: 30, status: 'SCHEDULED',
+    },
+  });
+
+  // Demo audits
+  const dAudit1 = await prisma.audit.create({
+    data: {
+      clientId: demoClient.id, title: 'Annual Energy Audit 2025', type: 'EXTERNAL',
+      auditDate: new Date('2025-03-20'), externalAuditor: 'BEE Certified Auditor',
+      scope: 'Comprehensive energy audit covering all sources, equipment, and processes.', status: 'COMPLETED',
+      summary: '3 major findings, 2 observations. Overall energy efficiency at 78%.', completedDate: new Date('2025-03-22'),
+      nextAuditDate: new Date('2026-03-20'),
+    },
+  });
+  const dAudit2 = await prisma.audit.create({
+    data: {
+      clientId: demoClient.id, title: 'Q3 Internal Energy Review', type: 'INTERNAL',
+      auditDate: new Date('2025-09-15'),
+      scope: 'Follow-up on annual audit findings.', status: 'COMPLETED',
+      summary: 'Good progress on VFD and LED. Compressed air leaks still pending.', completedDate: new Date('2025-09-17'),
+      nextAuditDate: new Date('2026-03-15'),
+    },
+  });
+  await prisma.audit.create({
+    data: {
+      clientId: demoClient.id, title: 'Pre-Certification Assessment Q1 2026', type: 'INTERNAL',
+      auditDate: new Date('2026-03-15'), scope: 'Readiness check before ISO 50001 certification.', status: 'PLANNED',
+    },
+  });
+
+  await prisma.auditFinding.create({ data: { auditId: dAudit1.id, findingNumber: 1, category: 'MAJOR', area: 'Compressed Air', description: 'Air leakage estimated at 30% of total compressed air production.', recommendation: 'Conduct ultrasonic leak detection and repair. Estimated savings ₹4.5L/year.', status: 'IN_PROGRESS', dueDate: new Date('2025-12-31') } });
+  await prisma.auditFinding.create({ data: { auditId: dAudit1.id, findingNumber: 2, category: 'MAJOR', area: 'Lighting', description: 'Factory floor still using fluorescent tubes. No motion sensors in stores.', recommendation: 'Replace with LED tubes + install occupancy sensors. Payback <12 months.', status: 'CLOSED', dueDate: new Date('2025-09-30'), closedDate: new Date('2025-08-25') } });
+  await prisma.auditFinding.create({ data: { auditId: dAudit1.id, findingNumber: 3, category: 'MAJOR', area: 'Motors', description: 'Two 15HP motors operating at <40% load. IE1 class motors in grinding section.', recommendation: 'Replace with IE3 motors and install VFDs for variable load.', status: 'OPEN', dueDate: new Date('2026-06-30') } });
+  await prisma.auditFinding.create({ data: { auditId: dAudit2.id, findingNumber: 1, category: 'OBSERVATION', area: 'Energy Monitoring', description: 'Sub-metering incomplete. Only 3 of 8 production lines monitored.', recommendation: 'Install smart meters on remaining lines for granular data.', status: 'OPEN', dueDate: new Date('2026-03-31') } });
+
+  // Demo CAPAs
+  const dCapa1 = await prisma.cAPA.create({
+    data: {
+      clientId: demoClient.id, capaNumber: 'CAPA-D-001', type: 'CORRECTIVE', source: 'AUDIT_FINDING',
+      title: 'Compressed Air Leak Reduction Program', description: 'Air leakage at 30% causing ₹4.5L/year waste.',
+      raisedById: demoUser.id, priority: 'HIGH', status: 'IN_IMPLEMENTATION',
+      rcaMethod: 'FIVE_WHY', rootCause: 'Aging fittings and no leak detection program.',
+      correctiveAction: 'Ultrasonic leak survey + repair all leaks.', preventiveAction: 'Monthly leak audits with handheld detector.',
+      actionDueDate: new Date('2025-12-31'),
+    },
+  });
+  const dCapa2 = await prisma.cAPA.create({
+    data: {
+      clientId: demoClient.id, capaNumber: 'CAPA-D-002', type: 'CORRECTIVE', source: 'AUDIT_FINDING',
+      title: 'LED Retrofit — Factory Floor', description: 'All fluorescent tubes to be replaced with LED.',
+      raisedById: demoUser.id, priority: 'MEDIUM', status: 'CLOSED',
+      rcaMethod: 'FIVE_WHY', rootCause: 'No energy-efficient lighting upgrade done since 2018.',
+      correctiveAction: 'Replace 120 fluorescent tubes with LED tubes.', preventiveAction: 'Include lighting in annual energy review.',
+      actionDueDate: new Date('2025-09-30'), actionCompletedDate: new Date('2025-08-20'),
+      verificationDate: new Date('2025-09-15'), verificationResult: 'LED installation complete. 48% lighting energy reduction confirmed.', verifiedBy: 'Energy Manager',
+    },
+  });
+  const dCapa3 = await prisma.cAPA.create({
+    data: {
+      clientId: demoClient.id, capaNumber: 'CAPA-D-003', type: 'PREVENTIVE', source: 'DEVIATION',
+      title: 'January 2025 Grid Consumption Spike', description: 'Grid consumption 42,100 kWh vs avg 38,500. 9.3% above baseline.',
+      raisedById: demoUser.id, priority: 'LOW', status: 'CLOSED',
+      rcaMethod: 'FIVE_WHY', rootCause: 'Year-end backlog clearance + 2 extra production shifts.',
+      correctiveAction: 'Spike within acceptable variance for workload.', preventiveAction: 'Alert threshold set at 15% deviation.',
+      actionDueDate: new Date('2025-04-30'), actionCompletedDate: new Date('2025-04-15'),
+      verificationDate: new Date('2025-06-30'), verificationResult: 'Feb-Jun consumption normalized. Closed.', verifiedBy: 'Operations Head',
+    },
+  });
+
+  await prisma.cAPAComment.createMany({
+    data: [
+      { capaId: dCapa1.id, userId: demoUser.id, comment: 'Ultrasonic leak survey scheduled for next week.', createdAt: new Date('2025-10-01T10:00:00') },
+      { capaId: dCapa1.id, userId: demoUser.id, comment: '47 leaks identified. Repair work 60% complete.', createdAt: new Date('2025-11-15T14:00:00') },
+      { capaId: dCapa2.id, userId: demoUser.id, comment: 'LED tubes ordered. Installation starting next week.', createdAt: new Date('2025-07-10T09:00:00') },
+      { capaId: dCapa2.id, userId: demoUser.id, comment: 'Installation complete. Measuring savings.', createdAt: new Date('2025-08-25T11:00:00') },
+      { capaId: dCapa3.id, userId: demoUser.id, comment: 'Spike due to extra shifts for order backlog.', createdAt: new Date('2025-02-10T10:00:00') },
+    ],
+  });
+
+  // Demo app settings
+  await prisma.appSetting.createMany({
+    data: [
+      { clientId: demoClient.id, key: 'company_name', value: 'Precision Engineering Pvt Ltd' },
+      { clientId: demoClient.id, key: 'company_address', value: 'Plot 42, 2nd Phase, Peenya Industrial Area, Bengaluru - 560058' },
+      { clientId: demoClient.id, key: 'company_certifications', value: 'ISO 9001:2015, ISO 14001:2015' },
+      { clientId: demoClient.id, key: 'certification', value: 'ISO 50001:2018' },
+      { clientId: demoClient.id, key: 'consultant', value: 'VoltSpark Energy Advisors' },
+      { clientId: demoClient.id, key: 'energy_policy_approved_by', value: 'Managing Director' },
+      { clientId: demoClient.id, key: 'energy_policy_date', value: '2025-01-15' },
+      { clientId: demoClient.id, key: 'solar_monthly_target', value: '6000' },
+      { clientId: demoClient.id, key: 'grid_monthly_target', value: '40000' },
+      { clientId: demoClient.id, key: 'consultant_fee_monthly', value: '35000' },
+      { clientId: demoClient.id, key: 'consultant_engagement_start', value: '2024-07-01' },
+      { clientId: demoClient.id, key: 'deviation_threshold_warning', value: '10' },
+      { clientId: demoClient.id, key: 'deviation_threshold_critical', value: '20' },
+    ],
+  });
+
+  // Demo framework assignments (reuse built-in frameworks)
+  const dCfZed = await prisma.clientFramework.create({
+    data: { clientId: demoClient.id, frameworkId: zedFramework.id, status: 'ACTIVE', targetDate: new Date('2026-09-30'), score: 80 },
+  });
+  await prisma.clientFramework.create({
+    data: { clientId: demoClient.id, frameworkId: isoFramework.id, status: 'ACTIVE', targetDate: new Date('2026-12-31'), score: 55 },
+  });
+  await prisma.clientFramework.create({
+    data: { clientId: demoClient.id, frameworkId: esFramework.id, status: 'ACTIVE', targetDate: new Date('2026-06-30'), score: 70 },
+  });
+
+  for (const req of zedReqs) {
+    const reqData = await prisma.frameworkRequirement.findUnique({ where: { id: req.id } });
+    const demoStatuses: Record<string, string> = { 'ZED-E1': 'COMPLIANT', 'ZED-E2': 'COMPLIANT', 'ZED-E3': 'IN_PROGRESS', 'ZED-E4': 'COMPLIANT', 'ZED-E5': 'IN_PROGRESS' };
+    await prisma.requirementStatus.create({
+      data: { clientFrameworkId: dCfZed.id, requirementId: req.id, status: demoStatuses[reqData!.code] || 'NOT_STARTED', updatedById: demoUser.id },
+    });
+  }
+
+  // Demo inspection
+  await prisma.inspection.create({
+    data: {
+      clientId: demoClient.id, templateId: elecTemplate.id, inspectorId: demoUser.id,
+      inspectionDate: new Date('2025-11-10'), location: 'Main Factory Floor & Panel Room',
+      status: 'COMPLETED', overallResult: 'PARTIAL', score: 85,
+      overallNotes: '13 of 15 items passed. Earth pit maintenance and cable tray issues noted.',
+      completedDate: new Date('2025-11-10'),
+    },
+  });
+
+  // Demo certifications
+  await prisma.certification.createMany({
+    data: [
+      { clientId: demoClient.id, name: 'ISO 9001:2015 QMS', category: 'OTHER', issuingBody: 'TUV SUD', certificateNumber: 'ISO9001/PE/2024', issueDate: new Date('2024-08-01'), expiryDate: new Date('2027-07-31'), renewalFrequency: 'TRIENNIAL', status: 'VALID', reminderDays: 90 },
+      { clientId: demoClient.id, name: 'CEIG Electrical Safety', category: 'ELECTRICAL', issuingBody: 'CEIG Karnataka', certificateNumber: 'CEIG/PE/2025/890', issueDate: new Date('2025-04-15'), expiryDate: new Date('2026-04-14'), renewalFrequency: 'ANNUAL', status: 'VALID', reminderDays: 60 },
+      { clientId: demoClient.id, name: 'Fire NOC', category: 'FIRE', issuingBody: 'Karnataka Fire Dept', certificateNumber: 'FIRE/PE/2025/123', issueDate: new Date('2025-03-01'), expiryDate: new Date('2026-02-28'), renewalFrequency: 'ANNUAL', status: 'EXPIRING_SOON', reminderDays: 30 },
+      { clientId: demoClient.id, name: 'Pollution Control Board Consent', category: 'ENVIRONMENTAL', issuingBody: 'KSPCB', certificateNumber: 'PCB/PE/2024/456', issueDate: new Date('2024-06-01'), expiryDate: new Date('2026-05-31'), renewalFrequency: 'BIENNIAL', status: 'VALID', reminderDays: 60 },
+      { clientId: demoClient.id, name: 'Boiler License', category: 'EQUIPMENT', issuingBody: 'Karnataka Boiler Directorate', certificateNumber: 'BLR/PE/2025/789', issueDate: new Date('2025-01-15'), expiryDate: new Date('2026-01-14'), renewalFrequency: 'ANNUAL', status: 'EXPIRED', reminderDays: 30, equipmentName: 'Steam Boiler 2 TPH' },
+    ],
+  });
+
+  // Demo incidents
+  await prisma.incident.create({
+    data: {
+      clientId: demoClient.id, type: 'ELECTRICAL', severity: 'NEAR_MISS',
+      title: 'Arc flash near MCC panel during changeover',
+      description: 'Minor arc flash observed during manual changeover from DG to grid. No injury. Switchgear inspected.',
+      location: 'Main LT Panel Room', incidentDate: new Date('2025-08-12'),
+      reportedById: demoUser.id, immediateAction: 'Panel isolated. Electrician inspected connections.',
+      rootCause: 'Worn contact tips on changeover switch.',
+      correctiveAction: 'Contact tips replaced. Changeover switch serviced.',
+      status: 'CLOSED', closedDate: new Date('2025-08-15'), closedById: demoUser.id,
+    },
+  });
+  await prisma.incident.create({
+    data: {
+      clientId: demoClient.id, type: 'MECHANICAL', severity: 'MINOR',
+      title: 'Coolant leak from CNC-12 causing slippery floor',
+      description: 'Coolant line fitting failed on CNC machine #12. Floor became slippery. One worker nearly slipped.',
+      location: 'CNC Machine Shop — Bay 3', incidentDate: new Date('2026-01-22'),
+      reportedById: demoUser.id, immediateAction: 'Area cordoned off. Spill cleaned. Machine stopped.',
+      rootCause: 'Corroded coolant fitting (copper tube).',
+      correctiveAction: 'Fitting replaced with stainless steel. All coolant lines inspected.',
+      preventiveAction: 'Quarterly coolant line inspection added to maintenance schedule.',
+      status: 'CLOSED', closedDate: new Date('2026-01-25'), closedById: demoUser.id,
+    },
+  });
+
+  // Demo utility bills (20 months)
+  const dBillData = [
+    { month: 7, year: 2024, unitsConsumed: 38500, demandKVA: 210, powerFactor: 0.88, energyCharges: 315700, demandCharges: 21000, pfPenalty: 12500, fuelSurcharge: 7700, electricityDuty: 15730, totalAmount: 372630 },
+    { month: 8, year: 2024, unitsConsumed: 41200, demandKVA: 225, powerFactor: 0.86, energyCharges: 337840, demandCharges: 22500, pfPenalty: 16800, fuelSurcharge: 8240, electricityDuty: 16840, totalAmount: 402220 },
+    { month: 9, year: 2024, unitsConsumed: 38800, demandKVA: 215, powerFactor: 0.89, energyCharges: 318160, demandCharges: 21500, pfPenalty: 9500, fuelSurcharge: 7760, electricityDuty: 15880, totalAmount: 372800 },
+    { month: 10, year: 2024, unitsConsumed: 39500, demandKVA: 218, powerFactor: 0.88, energyCharges: 323900, demandCharges: 21800, pfPenalty: 12500, fuelSurcharge: 7900, electricityDuty: 16150, totalAmount: 382250 },
+    { month: 11, year: 2024, unitsConsumed: 37200, demandKVA: 205, powerFactor: 0.90, energyCharges: 305040, demandCharges: 20500, pfPenalty: 0, fuelSurcharge: 7440, electricityDuty: 15200, totalAmount: 348180 },
+    { month: 12, year: 2024, unitsConsumed: 38500, demandKVA: 212, powerFactor: 0.87, energyCharges: 315700, demandCharges: 21200, pfPenalty: 14200, fuelSurcharge: 7700, electricityDuty: 15730, totalAmount: 374530 },
+    { month: 1, year: 2025, unitsConsumed: 42100, demandKVA: 235, powerFactor: 0.85, energyCharges: 345220, demandCharges: 23500, pfPenalty: 19500, fuelSurcharge: 8420, electricityDuty: 17210, totalAmount: 413850 },
+    { month: 2, year: 2025, unitsConsumed: 38200, demandKVA: 210, powerFactor: 0.89, energyCharges: 313240, demandCharges: 21000, pfPenalty: 9500, fuelSurcharge: 7640, electricityDuty: 15620, totalAmount: 367000 },
+    { month: 3, year: 2025, unitsConsumed: 37500, demandKVA: 208, powerFactor: 0.90, energyCharges: 307500, demandCharges: 20800, pfPenalty: 0, fuelSurcharge: 7500, electricityDuty: 15350, totalAmount: 351150 },
+    { month: 4, year: 2025, unitsConsumed: 36800, demandKVA: 205, powerFactor: 0.91, energyCharges: 301760, demandCharges: 20500, pfPenalty: 0, fuelSurcharge: 7360, electricityDuty: 15060, totalAmount: 344680 },
+    { month: 5, year: 2025, unitsConsumed: 37200, demandKVA: 208, powerFactor: 0.90, energyCharges: 305040, demandCharges: 20800, pfPenalty: 0, fuelSurcharge: 7440, electricityDuty: 15200, totalAmount: 348480 },
+    { month: 6, year: 2025, unitsConsumed: 34500, demandKVA: 195, powerFactor: 0.93, energyCharges: 282900, demandCharges: 19500, pfPenalty: 0, fuelSurcharge: 6900, electricityDuty: 14100, totalAmount: 323400 },
+    { month: 7, year: 2025, unitsConsumed: 33800, demandKVA: 192, powerFactor: 0.94, energyCharges: 277160, demandCharges: 19200, pfPenalty: 0, fuelSurcharge: 6760, electricityDuty: 13820, totalAmount: 316940 },
+    { month: 8, year: 2025, unitsConsumed: 34200, demandKVA: 194, powerFactor: 0.95, energyCharges: 280440, demandCharges: 19400, pfPenalty: 0, fuelSurcharge: 6840, electricityDuty: 13980, totalAmount: 320660 },
+    { month: 9, year: 2025, unitsConsumed: 33500, demandKVA: 190, powerFactor: 0.96, energyCharges: 274700, demandCharges: 19000, pfPenalty: 0, fuelSurcharge: 6700, electricityDuty: 13700, totalAmount: 314100 },
+    { month: 10, year: 2025, unitsConsumed: 34100, demandKVA: 193, powerFactor: 0.95, energyCharges: 279620, demandCharges: 19300, pfPenalty: 0, fuelSurcharge: 6820, electricityDuty: 13940, totalAmount: 319680 },
+    { month: 11, year: 2025, unitsConsumed: 32800, demandKVA: 188, powerFactor: 0.96, energyCharges: 268960, demandCharges: 18800, pfPenalty: 0, fuelSurcharge: 6560, electricityDuty: 13420, totalAmount: 307740 },
+    { month: 12, year: 2025, unitsConsumed: 33200, demandKVA: 190, powerFactor: 0.95, energyCharges: 272240, demandCharges: 19000, pfPenalty: 0, fuelSurcharge: 6640, electricityDuty: 13580, totalAmount: 311460 },
+    { month: 1, year: 2026, unitsConsumed: 32500, demandKVA: 186, powerFactor: 0.97, energyCharges: 266500, demandCharges: 18600, pfPenalty: 0, fuelSurcharge: 6500, electricityDuty: 13300, totalAmount: 304900 },
+    { month: 2, year: 2026, unitsConsumed: 31800, demandKVA: 182, powerFactor: 0.97, energyCharges: 260760, demandCharges: 18200, pfPenalty: 0, fuelSurcharge: 6360, electricityDuty: 13010, totalAmount: 298330 },
+  ];
+  for (const bill of dBillData) {
+    const hasPfPenalty = (bill.pfPenalty || 0) > 0;
+    const hasDemandOvershoot = (bill.demandKVA || 0) > 250;
+    const prevBill = dBillData.find(b => (b.month === bill.month - 1 && b.year === bill.year) || (bill.month === 1 && b.month === 12 && b.year === bill.year - 1));
+    const hasAnomaly = prevBill ? Math.abs(bill.totalAmount - prevBill.totalAmount) / prevBill.totalAmount > 0.15 : false;
+    await prisma.utilityBill.create({
+      data: {
+        clientId: demoClient.id, ...bill, provider: 'BESCOM', tariffCategory: 'HT_INDUSTRIAL',
+        hasPfPenalty, hasDemandOvershoot, hasAnomaly,
+        anomalyNote: hasAnomaly ? `${Math.round((bill.totalAmount / (prevBill?.totalAmount || bill.totalAmount) - 1) * 100)}% change from previous month` : null,
+        enteredById: demoUser.id,
+      },
+    });
+  }
+  console.log('Demo: 20 utility bills');
+
+  // Demo savings measures
+  const dVfd = await prisma.savingsMeasure.create({
+    data: {
+      clientId: demoClient.id, name: 'VFD Installation on CNC Centers (4 units)', description: 'Variable Frequency Drives on 4 CNC turning centers, reducing energy during partial load.',
+      category: 'VFD', energySourceId: dGrid.id, investmentCost: 340000, implementationDate: new Date('2025-01-15'),
+      status: 'VERIFIED', estimatedMonthlySavings: 28000, actualMonthlySavings: 31500,
+      estimatedKwhSavings: 3414, actualKwhSavings: 3841, paybackMonths: 10.8, cumulativeSavings: 315000,
+      createdById: demoUser.id,
+    },
+  });
+  const dLed = await prisma.savingsMeasure.create({
+    data: {
+      clientId: demoClient.id, name: 'LED Retrofit — Full Factory', description: 'Replaced 120 fluorescent tubes + 40 high-bay lights with LED equivalents.',
+      category: 'LED', investmentCost: 185000, implementationDate: new Date('2025-08-20'),
+      status: 'VERIFIED', estimatedMonthlySavings: 12000, actualMonthlySavings: 13500,
+      estimatedKwhSavings: 1463, actualKwhSavings: 1646, paybackMonths: 13.7, cumulativeSavings: 67500,
+      createdById: demoUser.id,
+    },
+  });
+  await prisma.savingsMeasure.create({
+    data: {
+      clientId: demoClient.id, name: 'APFC Panel 100 kVAR', description: 'Automatic Power Factor Correction panel to eliminate PF penalties.',
+      category: 'POWER_FACTOR', energySourceId: dGrid.id, investmentCost: 225000, implementationDate: new Date('2025-05-15'),
+      status: 'VERIFIED', estimatedMonthlySavings: 12000, actualMonthlySavings: 13800,
+      notes: 'Eliminated all PF penalties from Jun 2025 onwards. PF improved from 0.87 to 0.95+.',
+      createdById: demoUser.id,
+    },
+  });
+  await prisma.savingsMeasure.create({
+    data: {
+      clientId: demoClient.id, name: 'Compressed Air Leak Repair Program', description: 'Ultrasonic leak detection and systematic repair program.',
+      category: 'COMPRESSED_AIR', investmentCost: 65000, implementationDate: new Date('2025-11-01'),
+      status: 'IMPLEMENTED', estimatedMonthlySavings: 18000, estimatedKwhSavings: 2195,
+      notes: '47 leaks found. 32 repaired so far. Full completion expected by Mar 2026.',
+      createdById: demoUser.id,
+    },
+  });
+
+  // Demo savings entries
+  const dVfdEntries = [
+    { month: 2, year: 2025, savingsAmount: 28500, kwhSaved: 3476 },
+    { month: 3, year: 2025, savingsAmount: 30200, kwhSaved: 3683 },
+    { month: 4, year: 2025, savingsAmount: 31000, kwhSaved: 3780 },
+    { month: 5, year: 2025, savingsAmount: 32500, kwhSaved: 3963 },
+    { month: 6, year: 2025, savingsAmount: 31800, kwhSaved: 3878 },
+    { month: 7, year: 2025, savingsAmount: 30500, kwhSaved: 3720 },
+    { month: 8, year: 2025, savingsAmount: 32000, kwhSaved: 3902 },
+    { month: 9, year: 2025, savingsAmount: 31500, kwhSaved: 3841 },
+    { month: 10, year: 2025, savingsAmount: 32200, kwhSaved: 3927 },
+    { month: 11, year: 2025, savingsAmount: 31000, kwhSaved: 3780 },
+    { month: 12, year: 2025, savingsAmount: 30800, kwhSaved: 3756 },
+    { month: 1, year: 2026, savingsAmount: 32800, kwhSaved: 4000 },
+    { month: 2, year: 2026, savingsAmount: 33200, kwhSaved: 4049 },
+  ];
+  for (const e of dVfdEntries) { await prisma.savingsEntry.create({ data: { measureId: dVfd.id, ...e, method: 'CALCULATED' } }); }
+
+  const dLedEntries = [
+    { month: 9, year: 2025, savingsAmount: 13000, kwhSaved: 1585 },
+    { month: 10, year: 2025, savingsAmount: 13500, kwhSaved: 1646 },
+    { month: 11, year: 2025, savingsAmount: 13200, kwhSaved: 1610 },
+    { month: 12, year: 2025, savingsAmount: 13800, kwhSaved: 1683 },
+    { month: 1, year: 2026, savingsAmount: 14000, kwhSaved: 1707 },
+    { month: 2, year: 2026, savingsAmount: 13500, kwhSaved: 1646 },
+  ];
+  for (const e of dLedEntries) { await prisma.savingsEntry.create({ data: { measureId: dLed.id, ...e, method: 'CALCULATED' } }); }
+
+  // Demo ROI calculations
+  await prisma.rOICalculation.create({
+    data: {
+      clientId: demoClient.id, name: 'Solar Rooftop 100 kW Expansion', templateType: 'SOLAR',
+      inputs: JSON.stringify({ systemSizeKW: 100, costPerKW: 45000, subsidyPercent: 40, tariffRate: 8.2, degradationRate: 0.5, dailyGenerationHrs: 4.5, lifetimeYears: 25 }),
+      investmentCost: 4500000, subsidyAmount: 1800000, netInvestment: 2700000,
+      monthlySavings: 110700, annualSavings: 1328400, paybackMonths: 24,
+      fiveYearSavings: 6642000, tenYearSavings: 13284000, lifetimeSavings: 33210000,
+      irr: 35, npv: 18500000, co2ReductionKg: 108000, status: 'SHARED', createdById: demoUser.id,
+    },
+  });
+  await prisma.rOICalculation.create({
+    data: {
+      clientId: demoClient.id, name: 'IE3 Motor Replacement Program', templateType: 'MOTOR',
+      inputs: JSON.stringify({ motorHP: 60, motorCount: 4, oldEfficiency: 87, newEfficiency: 94.5, operatingHrsPerMonth: 400, tariffRate: 8.2 }),
+      investmentCost: 480000, subsidyAmount: 0, netInvestment: 480000,
+      monthlySavings: 19200, annualSavings: 230400, paybackMonths: 25,
+      fiveYearSavings: 1152000, irr: 42, npv: 750000, co2ReductionKg: 22500,
+      status: 'DRAFT', createdById: demoUser.id,
+    },
+  });
+
+  // Demo action plans
+  const dActionPlan = await prisma.actionPlan.create({
+    data: {
+      clientId: demoClient.id, title: 'ISO 50001 Certification Roadmap',
+      description: 'Step-by-step plan to achieve ISO 50001:2018 certification by Dec 2026.',
+      targetDate: new Date('2026-12-31'), status: 'ACTIVE', createdById: demoUser.id,
+    },
+  });
+  const dActionItems = [
+    { title: 'Establish energy management team', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-02-28'), completedAt: new Date('2025-02-20'), sortOrder: 1 },
+    { title: 'Document energy policy and get top management sign-off', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-03-15'), completedAt: new Date('2025-03-10'), sortOrder: 2 },
+    { title: 'Conduct initial energy review (identify SEUs)', status: 'DONE', priority: 'HIGH', dueDate: new Date('2025-04-30'), completedAt: new Date('2025-04-25'), sortOrder: 3 },
+    { title: 'Install sub-metering on all SEUs', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: new Date('2026-03-31'), sortOrder: 4 },
+    { title: 'Implement energy action plans for top 5 SEUs', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: new Date('2026-06-30'), sortOrder: 5 },
+    { title: 'Conduct internal audit', status: 'PENDING', priority: 'MEDIUM', dueDate: new Date('2026-09-30'), sortOrder: 6 },
+    { title: 'Management review meeting', status: 'PENDING', priority: 'MEDIUM', dueDate: new Date('2026-10-15'), sortOrder: 7 },
+    { title: 'Stage 1 certification audit', status: 'PENDING', priority: 'CRITICAL', dueDate: new Date('2026-11-15'), sortOrder: 8 },
+    { title: 'Stage 2 certification audit', status: 'PENDING', priority: 'CRITICAL', dueDate: new Date('2026-12-15'), sortOrder: 9 },
+  ];
+  for (const item of dActionItems) { await prisma.actionItem.create({ data: { actionPlanId: dActionPlan.id, ...item } }); }
+
+  // Demo documents
+  await prisma.document.createMany({
+    data: [
+      { clientId: demoClient.id, name: 'Energy Policy Document', category: 'POLICY', fileUrl: '/documents/energy-policy.pdf', fileSize: 285000, mimeType: 'application/pdf', description: 'Board-approved energy management policy.', uploadedById: demoUser.id },
+      { clientId: demoClient.id, name: 'Annual Energy Audit Report 2025', category: 'AUDIT_REPORT', fileUrl: '/documents/energy-audit-2025.pdf', fileSize: 1250000, mimeType: 'application/pdf', linkedToType: 'AUDIT', description: 'BEE certified auditor report.', uploadedById: demoUser.id },
+      { clientId: demoClient.id, name: 'CEIG Certificate 2025-26', category: 'CERTIFICATE', fileUrl: '/documents/ceig-cert.pdf', fileSize: 420000, mimeType: 'application/pdf', linkedToType: 'CERTIFICATION', description: 'CEIG electrical safety certification.', uploadedById: demoUser.id },
+      { clientId: demoClient.id, name: 'VFD Savings Verification Report', category: 'OTHER', fileUrl: '/documents/vfd-savings.pdf', fileSize: 560000, mimeType: 'application/pdf', linkedToType: 'SAVINGS_MEASURE', description: 'Third-party verification of VFD energy savings.', uploadedById: demoUser.id },
+      { clientId: demoClient.id, name: 'Training Materials — Energy Efficiency', category: 'TRAINING_MATERIAL', fileUrl: '/documents/training-energy.pdf', fileSize: 3200000, mimeType: 'application/pdf', linkedToType: 'TRAINING', description: 'Presentation slides and handouts.', uploadedById: demoUser.id },
+    ],
+  });
+
+  // Demo scheme application
+  await prisma.schemeApplication.create({
+    data: {
+      clientId: demoClient.id, schemeId: zedScheme.id, appliedById: demoUser.id,
+      status: 'DOCUMENTS_READY', amountApplied: 400000,
+      notes: 'ZED Bronze assessment scheduled. Documents compiled for subsidy claim.',
+    },
+  });
+
+  // Demo notifications
+  await prisma.notification.createMany({
+    data: [
+      { clientId: demoClient.id, userId: demoUser.id, type: 'CERT_EXPIRY', title: 'Boiler License Expired', message: 'Steam Boiler 2 TPH license expired on Jan 14, 2026. Immediate renewal required.', severity: 'CRITICAL', actionUrl: '/certifications', isRead: false },
+      { clientId: demoClient.id, userId: demoUser.id, type: 'CERT_EXPIRY', title: 'Fire NOC Expiring Soon', message: 'Fire NOC expires on Feb 28, 2026. Start renewal process.', severity: 'WARNING', actionUrl: '/certifications', isRead: false },
+      { clientId: demoClient.id, userId: demoUser.id, type: 'CAPA_OVERDUE', title: 'CAPA-D-001 Action Overdue', message: 'Compressed air leak repair program past due date (Dec 31, 2025).', severity: 'WARNING', actionUrl: '/capa', isRead: true },
+      { clientId: demoClient.id, userId: demoUser.id, type: 'BILL_ANOMALY', title: 'Jan 2025 Bill Anomaly', message: 'January 2025 bill ₹4.14L — 10.5% higher than December. Review recommended.', severity: 'INFO', actionUrl: '/costs', isRead: true },
+      { clientId: demoClient.id, userId: demoUser.id, type: 'SYSTEM', title: 'Monthly Energy Review Due', message: 'February 2026 energy data entry and review pending.', severity: 'INFO', actionUrl: '/consumption', isRead: false },
+    ],
+  });
+
+  // Demo recurring schedules
+  await prisma.recurringSchedule.create({
+    data: { clientId: demoClient.id, title: 'Monthly Electrical Inspection', category: 'INSPECTION', frequency: 'MONTHLY', dayOfMonth: 10, startDate: new Date('2025-01-10'), reminderDays: 7, assignedToId: demoUser.id, createdById: demoUser.id, description: 'Standard electrical safety inspection of panel rooms and factory.' },
+  });
+  await prisma.recurringSchedule.create({
+    data: { clientId: demoClient.id, title: 'Quarterly Compressed Air Audit', category: 'INSPECTION', frequency: 'QUARTERLY', dayOfMonth: 1, startDate: new Date('2025-01-01'), reminderDays: 14, createdById: demoUser.id, description: 'Leak detection, pressure drop measurement, and efficiency check.' },
+  });
+  await prisma.recurringSchedule.create({
+    data: { clientId: demoClient.id, title: 'Monthly Energy Data Review', category: 'DATA_ENTRY', frequency: 'MONTHLY', dayOfMonth: 5, startDate: new Date('2025-01-05'), reminderDays: 3, assignedToId: demoUser.id, createdById: demoUser.id, description: 'Enter utility bill data and review consumption trends.' },
+  });
+  await prisma.recurringSchedule.create({
+    data: { clientId: demoClient.id, title: 'Annual Energy Audit', category: 'AUDIT', frequency: 'ANNUAL', dayOfMonth: 20, monthOfYear: 3, startDate: new Date('2025-03-20'), reminderDays: 30, createdById: demoUser.id, description: 'Comprehensive annual energy audit by BEE certified auditor.' },
+  });
+  await prisma.recurringSchedule.create({
+    data: { clientId: demoClient.id, title: 'Biannual Safety Training', category: 'TRAINING', frequency: 'BIANNUAL', dayOfMonth: 15, monthOfYear: 6, startDate: new Date('2025-06-15'), reminderDays: 14, createdById: demoUser.id, description: 'Safety refresher training for all shop floor employees.' },
+  });
+
+  console.log('Demo data seeded successfully!');
+
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');
+  console.log('Demo:        demo@voltspark.in / demo123 (Precision Engineering)');
 }
 
 main()
