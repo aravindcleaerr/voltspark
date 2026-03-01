@@ -1,161 +1,281 @@
 'use client';
 
 import Link from 'next/link';
-import { Zap, Shield, TrendingUp, BarChart3, Users, IndianRupee, CheckCircle2, ArrowRight } from 'lucide-react';
+import {
+  Zap, Shield, TrendingUp, BarChart3, Users, IndianRupee, CheckCircle2,
+  ArrowRight, Building2, FileText, GraduationCap, CalendarClock,
+} from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const FEATURES = [
-  { icon: IndianRupee, title: 'Save Energy Costs', desc: 'Track consumption, identify waste, and prove savings with hard numbers. Know exactly where every rupee goes.', color: 'text-green-600 bg-green-100' },
-  { icon: Shield, title: 'Stay Compliant', desc: 'Multi-framework compliance tracking — ZED, ISO 50001, Electrical Safety. Always audit-ready.', color: 'text-blue-600 bg-blue-100' },
-  { icon: TrendingUp, title: 'Prove ROI', desc: 'Pre-built ROI calculators, savings tracking, and consultant fee justification. Numbers that speak.', color: 'text-purple-600 bg-purple-100' },
-  { icon: BarChart3, title: 'Impact Reports', desc: 'Generate comprehensive impact reports. Eight sections covering energy, safety, compliance, and financials.', color: 'text-orange-600 bg-orange-100' },
-  { icon: Users, title: 'Multi-Client Portfolio', desc: 'Manage multiple industrial clients from one dashboard. Health scores, risk alerts, and cross-client insights.', color: 'text-indigo-600 bg-indigo-100' },
-  { icon: CheckCircle2, title: 'Vendor Qualification', desc: 'Share real-time compliance dashboards with buyers. Win new customers with proof, not promises.', color: 'text-teal-600 bg-teal-100' },
+  { icon: IndianRupee, title: 'Save Energy Costs', desc: 'Track consumption, identify waste, and prove savings with hard numbers. Know exactly where every rupee goes.' },
+  { icon: Shield, title: 'Stay Compliant', desc: 'Multi-framework compliance tracking — ZED, ISO 50001, Electrical Safety. Always audit-ready.' },
+  { icon: TrendingUp, title: 'Prove ROI', desc: 'Pre-built ROI calculators, savings tracking, and consultant fee justification. Numbers that speak.' },
+  { icon: BarChart3, title: 'Utility Bill Analysis', desc: 'Auto-detect PF penalties, demand overshoot, and anomalies in monthly utility bills.' },
+  { icon: GraduationCap, title: 'Training & Safety', desc: 'Manage training programs, inspections, incidents, and certifications in one place.' },
+  { icon: CalendarClock, title: 'Compliance Calendar', desc: 'Never miss a deadline. Audit dates, cert renewals, and CAPA due dates in one view.' },
 ];
 
-const STATS = [
-  { value: '₹', label: 'Track every rupee of energy spend' },
-  { value: '3x', label: 'Average ROI for consultant clients' },
-  { value: '100%', label: 'Audit-ready compliance evidence' },
-  { value: '24/7', label: 'Real-time monitoring & alerts' },
+const STEPS = [
+  { num: '1', title: 'Sign Up & Add Clients', desc: 'Create your consulting organization and onboard industrial clients in minutes.' },
+  { num: '2', title: 'Collect & Analyze Data', desc: 'Enter energy data, utility bills, and safety records. Get instant compliance scores.' },
+  { num: '3', title: 'Prove Value & Grow', desc: 'Generate reports, track savings, and demonstrate ROI to win more clients.' },
+];
+
+const PLANS = [
+  {
+    name: 'Free', price: '0', desc: 'Get started with basic energy management',
+    features: ['1 Client workspace', 'Energy monitoring', 'Basic compliance tracking', 'Monthly reports', 'Up to 3 users'],
+    cta: 'Start Free', href: '/register', highlight: false,
+  },
+  {
+    name: 'Pro', price: '4,999', desc: 'For consultants managing multiple clients',
+    features: ['Unlimited clients', 'All compliance frameworks', 'Savings & ROI tracking', 'PDF exports & shareable views', 'Priority email support', 'Up to 25 users per client'],
+    cta: 'Start Free Trial', href: '/register', highlight: true,
+  },
+  {
+    name: 'Enterprise', price: 'Custom', desc: 'For large consultancies and ESCOs',
+    features: ['Everything in Pro', 'Custom frameworks', 'API access', 'Dedicated account manager', 'SLA & uptime guarantee', 'Unlimited users'],
+    cta: 'Contact Sales', href: 'mailto:hello@voltspark.in', highlight: false,
+  },
 ];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Nav */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="fixed top-0 inset-x-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-brand-600" />
-            <span className="text-xl font-bold text-gray-900">VoltSpark</span>
+            <div className="h-8 w-8 rounded-lg bg-brand-600 flex items-center justify-center">
+              <Zap className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">VoltSpark</span>
           </div>
-          <Link href="/login" className="bg-brand-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors">
-            Sign In
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">Login</Link>
+            <Link href="/register" className="btn-primary text-sm px-4 py-2">Sign Up</Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 text-brand-700 text-sm font-medium mb-6">
-          <Zap className="h-4 w-4" /> Energy Management for Industrial India
-        </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-          Save Energy. Stay Safe.<br />
-          <span className="text-brand-600">Win Customers.</span>
-        </h1>
-        <p className="text-lg text-gray-500 mt-6 max-w-2xl mx-auto">
-          VoltSpark helps industrial facilities save energy costs, stay compliant, and prove their value —
-          managed by trusted compliance consultants through a single platform.
-        </p>
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <Link href="/login" className="bg-brand-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-brand-700 transition-colors flex items-center gap-2">
-            Get Started <ArrowRight className="h-4 w-4" />
-          </Link>
+      <section className="pt-32 pb-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-sm font-medium mb-6">
+            <Zap className="h-4 w-4" /> Energy Management for Industrial India
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+            Save Energy. Stay Safe.<br />
+            <span className="text-brand-600">Win Customers.</span>
+          </h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
+            The all-in-one platform for energy consultants to manage industrial compliance,
+            track savings, and prove ROI — all in one place.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+            <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
+              Get Started Free <ArrowRight className="h-5 w-5" />
+            </Link>
+            <Link href="/login" className="btn-secondary text-base px-8 py-3">Sign In</Link>
+          </div>
+          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+            <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> Free to start</span>
+            <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> No credit card</span>
+            <span className="flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-green-500" /> Multi-tenant</span>
+          </div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="bg-gray-50 py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {STATS.map((stat, i) => (
-              <div key={i} className="text-center">
-                <p className="text-3xl font-bold text-brand-600">{stat.value}</p>
-                <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+      <section className="bg-gray-50 dark:bg-gray-800/50 border-y border-gray-200 dark:border-gray-700 py-12">
+        <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+          {[
+            { val: '30+', label: 'Compliance modules' },
+            { val: '₹ Lakhs', label: 'Savings tracked' },
+            { val: '100%', label: 'Indian regulations' },
+            { val: '24/7', label: 'Cloud access' },
+          ].map((s) => (
+            <div key={s.label}>
+              <p className="text-2xl sm:text-3xl font-bold text-brand-600">{s.val}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Everything you need for compliance</h2>
+            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">From energy audits to safety inspections — one platform, every module.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="card hover:shadow-md transition-shadow">
+                <div className="h-10 w-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-4">
+                  <f.icon className="h-5 w-5 text-brand-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{f.title}</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-6xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900">Everything You Need</h2>
-          <p className="text-gray-500 mt-2">One platform for energy management, compliance, safety, and financial proof.</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="border rounded-xl p-6 hover:shadow-md transition-shadow">
-              <div className={`inline-flex p-3 rounded-lg ${f.color} mb-4`}>
-                <f.icon className="h-6 w-6" />
+      {/* How it works */}
+      <section className="py-20 bg-gray-50 dark:bg-gray-800/50 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">How it works</h2>
+            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Get started in 3 simple steps</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-8">
+            {STEPS.map((s) => (
+              <div key={s.num} className="text-center">
+                <div className="mx-auto h-12 w-12 rounded-full bg-brand-600 text-white flex items-center justify-center text-xl font-bold mb-4">{s.num}</div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{s.title}</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{s.desc}</p>
               </div>
-              <h3 className="font-semibold text-lg text-gray-900">{f.title}</h3>
-              <p className="text-sm text-gray-500 mt-2">{f.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who is it for */}
+      <section className="py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Built for</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              { icon: Users, title: 'Energy Consultants', desc: 'Manage multiple clients, track compliance, and prove your value with data-driven reports.' },
+              { icon: Building2, title: 'Industrial Units', desc: 'MSMEs and factories — track energy costs, stay compliant, and access government subsidies.' },
+              { icon: FileText, title: 'ESCOs & Auditors', desc: 'Streamline audits, manage findings, and generate professional compliance documentation.' },
+            ].map((w) => (
+              <div key={w.title} className="card text-center">
+                <div className="mx-auto h-12 w-12 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-4">
+                  <w.icon className="h-6 w-6 text-brand-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{w.title}</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{w.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Value Chain */}
-      <section className="bg-gray-900 text-white py-20">
-        <div className="max-w-6xl mx-auto px-4">
+      <section className="bg-gray-900 dark:bg-gray-950 text-white py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">The Value Chain</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-brand-600/20 mb-4">
-                <Zap className="h-8 w-8 text-brand-400" />
-              </div>
+              <div className="inline-flex p-4 rounded-full bg-brand-600/20 mb-4"><Zap className="h-8 w-8 text-brand-400" /></div>
               <h3 className="font-semibold text-lg mb-2">Platform Features</h3>
               <ul className="text-sm text-gray-400 space-y-1">
-                <li>Energy Cost Dashboard</li>
-                <li>Savings Tracker</li>
-                <li>ROI Calculator</li>
-                <li>Utility Bill Analyzer</li>
-                <li>Impact Reports</li>
+                <li>Energy Cost Dashboard</li><li>Savings Tracker</li><li>ROI Calculator</li><li>Utility Bill Analyzer</li><li>Impact Reports</li>
               </ul>
             </div>
             <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-purple-600/20 mb-4">
-                <Users className="h-8 w-8 text-purple-400" />
-              </div>
+              <div className="inline-flex p-4 rounded-full bg-purple-600/20 mb-4"><Users className="h-8 w-8 text-purple-400" /></div>
               <h3 className="font-semibold text-lg mb-2">Consultant Value</h3>
               <ul className="text-sm text-gray-400 space-y-1">
-                <li>Data-backed advisory</li>
-                <li>Prove ROI to client</li>
-                <li>Pitch improvements</li>
-                <li>Find hidden charges</li>
-                <li>Retain & upsell</li>
+                <li>Data-backed advisory</li><li>Prove ROI to client</li><li>Pitch improvements</li><li>Find hidden charges</li><li>Retain & upsell</li>
               </ul>
             </div>
             <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-green-600/20 mb-4">
-                <IndianRupee className="h-8 w-8 text-green-400" />
-              </div>
+              <div className="inline-flex p-4 rounded-full bg-green-600/20 mb-4"><IndianRupee className="h-8 w-8 text-green-400" /></div>
               <h3 className="font-semibold text-lg mb-2">Client Wins</h3>
               <ul className="text-sm text-gray-400 space-y-1">
-                <li>₹ saved on energy</li>
-                <li>Justify consultant fee</li>
-                <li>Smart investments</li>
-                <li>Avoid penalties</li>
-                <li>Win new customers</li>
+                <li>₹ saved on energy</li><li>Justify consultant fee</li><li>Smart investments</li><li>Avoid penalties</li><li>Win new customers</li>
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-20 bg-gray-50 dark:bg-gray-800/50 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Simple pricing</h2>
+            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Start free. Upgrade as you grow.</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {PLANS.map((p) => (
+              <div key={p.name} className={`card flex flex-col ${p.highlight ? 'ring-2 ring-brand-600 relative' : ''}`}>
+                {p.highlight && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</div>
+                )}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{p.name}</h3>
+                <div className="mt-2">
+                  <span className="text-3xl font-bold text-gray-900 dark:text-white">{p.price === 'Custom' ? '' : '₹'}{p.price}</span>
+                  {p.price !== 'Custom' && p.price !== '0' && <span className="text-sm text-gray-500 dark:text-gray-400">/month</span>}
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{p.desc}</p>
+                <ul className="mt-6 space-y-2 flex-1">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                      <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={p.href} className={`mt-6 block text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
+                  p.highlight ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}>{p.cta}</Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-3xl font-bold text-gray-900">Ready to Transform Your Practice?</h2>
-        <p className="text-gray-500 mt-3 max-w-xl mx-auto">
-          Join consultants who deliver measurable outcomes. Start tracking energy, proving ROI, and winning clients.
-        </p>
-        <Link href="/login" className="inline-flex items-center gap-2 bg-brand-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-brand-700 transition-colors mt-8">
-          Get Started <ArrowRight className="h-4 w-4" />
-        </Link>
+      <section className="py-20 px-4 text-center">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Ready to save energy and grow your business?</h2>
+          <p className="text-lg text-gray-500 dark:text-gray-400 mt-4">Join India&apos;s energy management platform. Free to start, no credit card required.</p>
+          <Link href="/register" className="btn-primary text-base px-8 py-3 mt-8 inline-flex items-center gap-2">
+            Create Free Account <ArrowRight className="h-5 w-5" />
+          </Link>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-gray-50 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-gray-400">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Zap className="h-4 w-4 text-brand-600" />
-            <span className="font-semibold text-gray-600">VoltSpark</span>
+      <footer className="bg-gray-900 dark:bg-gray-950 text-gray-400 py-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-4 gap-8">
+            <div className="sm:col-span-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="h-7 w-7 rounded-lg bg-brand-600 flex items-center justify-center"><Zap className="h-4 w-4 text-white" /></div>
+                <span className="text-lg font-bold text-white">VoltSpark</span>
+              </div>
+              <p className="text-sm max-w-sm">Energy management compliance suite for Indian industry. Save energy. Stay safe. Win customers.</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Login</Link></li>
+                <li><Link href="/register" className="hover:text-white transition-colors">Sign Up</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-3">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              </ul>
+            </div>
           </div>
-          <p>Energy Management for Industrial India</p>
-          <p className="mt-1">Save energy. Stay safe. Win customers.</p>
+          <div className="mt-10 pt-6 border-t border-gray-800 text-sm text-center">
+            &copy; {new Date().getFullYear()} VoltSpark. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>

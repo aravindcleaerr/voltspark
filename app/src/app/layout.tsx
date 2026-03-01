@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import ThemeProvider from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -18,9 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
