@@ -27,7 +27,7 @@ export default function SettingsPage() {
   const [inviteResult, setInviteResult] = useState<{ ok?: boolean; error?: string } | null>(null);
 
   useEffect(() => {
-    fetch('/api/users').then(r => r.json()).then(setUsers).finally(() => setLoading(false));
+    fetch('/api/users').then(r => r.ok ? r.json() : []).then(setUsers).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
