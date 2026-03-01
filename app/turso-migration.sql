@@ -1,3 +1,5 @@
+Loaded Prisma config from prisma.config.ts.
+
 -- CreateTable
 CREATE TABLE "Organization" (
     "id" TEXT NOT NULL PRIMARY KEY,
@@ -603,49 +605,7 @@ CREATE TABLE "Document" (
     CONSTRAINT "Document_uploadedById_fkey" FOREIGN KEY ("uploadedById") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Organization_slug_key" ON "Organization"("slug");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Client_slug_key" ON "Client"("slug");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Membership_userId_organizationId_key" ON "Membership"("userId", "organizationId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ClientAccess_userId_clientId_key" ON "ClientAccess"("userId", "clientId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "EnergyTarget_energySourceId_period_key" ON "EnergyTarget"("energySourceId", "period");
-
--- CreateIndex
-CREATE UNIQUE INDEX "TrainingAttendance_trainingProgramId_userId_key" ON "TrainingAttendance"("trainingProgramId", "userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CAPA_capaNumber_key" ON "CAPA"("capaNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "AppSetting_clientId_key_key" ON "AppSetting"("clientId", "key");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ComplianceFramework_code_key" ON "ComplianceFramework"("code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ClientFramework_clientId_frameworkId_key" ON "ClientFramework"("clientId", "frameworkId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "RequirementStatus_clientFrameworkId_requirementId_key" ON "RequirementStatus"("clientFrameworkId", "requirementId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "UtilityBill_clientId_year_month_key" ON "UtilityBill"("clientId", "year", "month");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SavingsEntry_measureId_year_month_key" ON "SavingsEntry"("measureId", "year", "month");
-
--- CreateTable (Phase 4)
+-- CreateTable
 CREATE TABLE "Notification" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "clientId" TEXT NOT NULL,
@@ -717,6 +677,73 @@ CREATE TABLE "ShareableView" (
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "ShareableView_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateTable
+CREATE TABLE "RecurringSchedule" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "category" TEXT NOT NULL,
+    "frequency" TEXT NOT NULL,
+    "dayOfMonth" INTEGER,
+    "dayOfWeek" INTEGER,
+    "monthOfYear" INTEGER,
+    "startDate" DATETIME NOT NULL,
+    "endDate" DATETIME,
+    "reminderDays" INTEGER NOT NULL DEFAULT 7,
+    "assignedToId" TEXT,
+    "createdById" TEXT,
+    "lastTriggered" DATETIME,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "RecurringSchedule_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "RecurringSchedule_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "RecurringSchedule_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Organization_slug_key" ON "Organization"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Client_slug_key" ON "Client"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Membership_userId_organizationId_key" ON "Membership"("userId", "organizationId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ClientAccess_userId_clientId_key" ON "ClientAccess"("userId", "clientId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EnergyTarget_energySourceId_period_key" ON "EnergyTarget"("energySourceId", "period");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TrainingAttendance_trainingProgramId_userId_key" ON "TrainingAttendance"("trainingProgramId", "userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CAPA_capaNumber_key" ON "CAPA"("capaNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AppSetting_clientId_key_key" ON "AppSetting"("clientId", "key");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ComplianceFramework_code_key" ON "ComplianceFramework"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ClientFramework_clientId_frameworkId_key" ON "ClientFramework"("clientId", "frameworkId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "RequirementStatus_clientFrameworkId_requirementId_key" ON "RequirementStatus"("clientFrameworkId", "requirementId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UtilityBill_clientId_year_month_key" ON "UtilityBill"("clientId", "year", "month");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SavingsEntry_measureId_year_month_key" ON "SavingsEntry"("measureId", "year", "month");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SchemeApplication_clientId_schemeId_key" ON "SchemeApplication"("clientId", "schemeId");

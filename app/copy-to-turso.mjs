@@ -24,6 +24,8 @@ const tables = [
   'ActionPlan', 'ActionItem', 'Document',
   // Phase 4 tables
   'Notification', 'GovernmentScheme', 'SchemeApplication', 'ShareableView',
+  // Phase 5+ tables
+  'RecurringSchedule',
 ];
 
 async function main() {

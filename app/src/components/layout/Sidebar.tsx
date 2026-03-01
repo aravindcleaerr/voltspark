@@ -18,6 +18,7 @@ import {
   Settings,
   X,
   ChevronsUpDown,
+  ChevronDown,
   Building2,
   IndianRupee,
   Briefcase,
@@ -36,30 +37,66 @@ import {
   Upload,
 } from 'lucide-react';
 
-const workspaceNav = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Assessment', href: '/assessment', icon: ClipboardList },
-  { name: 'Energy Sources', href: '/energy-sources', icon: Zap },
-  { name: 'Consumption', href: '/consumption', icon: BarChart3 },
-  { name: 'Energy Costs', href: '/costs', icon: IndianRupee },
-  { name: 'Targets', href: '/targets', icon: Target },
-  { name: 'Training', href: '/training', icon: GraduationCap },
-  { name: 'Audits', href: '/audits', icon: ClipboardCheck },
-  { name: 'CAPA', href: '/capa', icon: Shield },
-  { name: 'Compliance', href: '/compliance', icon: ShieldCheck },
-  { name: 'Safety', href: '/safety', icon: HardHat },
-  { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
-  { name: 'Savings', href: '/savings', icon: TrendingUp },
-  { name: 'ROI Calculator', href: '/roi', icon: Calculator },
-  { name: 'Action Plans', href: '/action-plans', icon: ListChecks },
-  { name: 'Documents', href: '/documents', icon: FolderOpen },
-  { name: 'Calendar', href: '/calendar', icon: CalendarClock },
-  { name: 'Reports', href: '/reports', icon: FileText },
-  { name: 'Notifications', href: '/notifications', icon: Bell },
-  { name: 'Schemes', href: '/schemes', icon: Landmark },
-  { name: 'Shareable Views', href: '/share', icon: Share2 },
-  { name: 'Bulk Import', href: '/import', icon: Upload },
-  { name: 'Analytics', href: '/analytics', icon: PieChart },
+interface NavItem {
+  name: string;
+  href: string;
+  icon: any;
+}
+
+interface NavSection {
+  label: string;
+  items: NavItem[];
+}
+
+const navSections: NavSection[] = [
+  {
+    label: 'Overview',
+    items: [
+      { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { name: 'Assessment', href: '/assessment', icon: ClipboardList },
+      { name: 'Calendar', href: '/calendar', icon: CalendarClock },
+      { name: 'Notifications', href: '/notifications', icon: Bell },
+    ],
+  },
+  {
+    label: 'Energy',
+    items: [
+      { name: 'Energy Sources', href: '/energy-sources', icon: Zap },
+      { name: 'Consumption', href: '/consumption', icon: BarChart3 },
+      { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
+      { name: 'Energy Costs', href: '/costs', icon: IndianRupee },
+      { name: 'Targets', href: '/targets', icon: Target },
+    ],
+  },
+  {
+    label: 'Compliance & Safety',
+    items: [
+      { name: 'Compliance', href: '/compliance', icon: ShieldCheck },
+      { name: 'Audits', href: '/audits', icon: ClipboardCheck },
+      { name: 'CAPA', href: '/capa', icon: Shield },
+      { name: 'Safety', href: '/safety', icon: HardHat },
+      { name: 'Training', href: '/training', icon: GraduationCap },
+    ],
+  },
+  {
+    label: 'Financial',
+    items: [
+      { name: 'Savings', href: '/savings', icon: TrendingUp },
+      { name: 'ROI Calculator', href: '/roi', icon: Calculator },
+      { name: 'Schemes', href: '/schemes', icon: Landmark },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { name: 'Action Plans', href: '/action-plans', icon: ListChecks },
+      { name: 'Reports', href: '/reports', icon: FileText },
+      { name: 'Documents', href: '/documents', icon: FolderOpen },
+      { name: 'Shareable Views', href: '/share', icon: Share2 },
+      { name: 'Bulk Import', href: '/import', icon: Upload },
+      { name: 'Analytics', href: '/analytics', icon: PieChart },
+    ],
+  },
 ];
 
 const adminNav = [
@@ -71,6 +108,51 @@ interface ClientOption {
   name: string;
   slug: string;
   industry?: string;
+}
+
+function NavSectionGroup({ section, pathname, onClose }: { section: NavSection; pathname: string; onClose: () => void }) {
+  const hasActive = section.items.some(item => pathname.startsWith(item.href));
+  const [expanded, setExpanded] = useState(hasActive);
+
+  // Auto-expand when a child becomes active
+  useEffect(() => {
+    if (hasActive) setExpanded(true);
+  }, [hasActive]);
+
+  return (
+    <div>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-brand-400 hover:text-brand-200 transition-colors"
+      >
+        {section.label}
+        <ChevronDown className={cn('h-3 w-3 transition-transform', expanded ? '' : '-rotate-90')} />
+      </button>
+      {expanded && (
+        <div className="space-y-0.5">
+          {section.items.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onClose}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-brand-700 text-white'
+                    : 'text-brand-200 hover:bg-brand-800 hover:text-white'
+                )}
+              >
+                <item.icon className="h-4 w-4 flex-shrink-0" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Sidebar({
@@ -191,29 +273,13 @@ export default function Sidebar({
           </div>
         )}
 
-        {/* Main navigation */}
-        <nav className="mt-2 px-2 space-y-1 flex-1 overflow-y-auto">
-          {workspaceNav.map((item) => {
-            const isActive = pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-brand-700 text-white'
-                    : 'text-brand-200 hover:bg-brand-800 hover:text-white'
-                )}
-              >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
-                {item.name}
-              </Link>
-            );
-          })}
+        {/* Main navigation — collapsible sections */}
+        <nav className="mt-2 px-2 space-y-2 flex-1 overflow-y-auto pb-2">
+          {navSections.map((section) => (
+            <NavSectionGroup key={section.label} section={section} pathname={pathname} onClose={onClose} />
+          ))}
 
-          <div className="pt-4 mt-4 border-t border-brand-800">
+          <div className="pt-3 mt-2 border-t border-brand-800">
             {adminNav.map((item) => {
               const isActive = pathname.startsWith(item.href);
               return (
@@ -222,13 +288,13 @@ export default function Sidebar({
                   href={item.href}
                   onClick={onClose}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     isActive
                       ? 'bg-brand-700 text-white'
                       : 'text-brand-200 hover:bg-brand-800 hover:text-white'
                   )}
                 >
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <item.icon className="h-4 w-4 flex-shrink-0" />
                   {item.name}
                 </Link>
               );

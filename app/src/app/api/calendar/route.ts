@@ -11,7 +11,7 @@ export async function GET() {
   if ('error' in result) return result.error;
   const { clientId } = result;
 
-  const [certifications, audits, trainings, capas, inspections] = await Promise.all([
+  const [certifications, audits, trainings, capas, inspections, schedules] = await Promise.all([
     prisma.certification.findMany({
       where: { clientId },
       select: { id: true, name: true, category: true, expiryDate: true, status: true, issuingBody: true, renewalFrequency: true },
@@ -36,6 +36,10 @@ export async function GET() {
       where: { clientId, status: { not: 'COMPLETED' } },
       select: { id: true, inspectionDate: true, status: true, location: true, template: { select: { name: true } } },
       orderBy: { inspectionDate: 'asc' },
+    }),
+    prisma.recurringSchedule.findMany({
+      where: { clientId, isActive: true },
+      include: { assignedTo: { select: { name: true } } },
     }),
   ]);
 
@@ -161,6 +165,60 @@ export async function GET() {
       module: 'inspections',
       href: '/safety',
     });
+  }
+
+  // Generate future occurrences from recurring schedules (next 90 days)
+  const horizon = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+  for (const sched of schedules) {
+    const start = new Date(sched.startDate);
+    const end = sched.endDate ? new Date(sched.endDate) : horizon;
+    const limit = end < horizon ? end : horizon;
+
+    // Generate occurrences from startDate forward
+    const occurrences: Date[] = [];
+    let cursor = new Date(start);
+
+    const addMonths = (d: Date, n: number) => {
+      const r = new Date(d);
+      r.setMonth(r.getMonth() + n);
+      if (sched.dayOfMonth) r.setDate(Math.min(sched.dayOfMonth, 28));
+      return r;
+    };
+
+    for (let i = 0; i < 52 && cursor <= limit; i++) {
+      if (cursor >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)) {
+        occurrences.push(new Date(cursor));
+      }
+      switch (sched.frequency) {
+        case 'DAILY': cursor = new Date(cursor.getTime() + 24 * 60 * 60 * 1000); break;
+        case 'WEEKLY': cursor = new Date(cursor.getTime() + 7 * 24 * 60 * 60 * 1000); break;
+        case 'BIWEEKLY': cursor = new Date(cursor.getTime() + 14 * 24 * 60 * 60 * 1000); break;
+        case 'MONTHLY': cursor = addMonths(cursor, 1); break;
+        case 'QUARTERLY': cursor = addMonths(cursor, 3); break;
+        case 'BIANNUAL': cursor = addMonths(cursor, 6); break;
+        case 'ANNUAL': cursor = addMonths(cursor, 12); break;
+        default: cursor = addMonths(cursor, 1);
+      }
+    }
+
+    for (const occ of occurrences) {
+      const daysUntil = Math.floor((occ.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      let urgency: 'overdue' | 'urgent' | 'upcoming' | 'future' = 'future';
+      if (daysUntil < 0) urgency = 'overdue';
+      else if (daysUntil <= sched.reminderDays) urgency = 'urgent';
+      else if (daysUntil <= 30) urgency = 'upcoming';
+
+      events.push({
+        id: `${sched.id}-${occ.toISOString().slice(0, 10)}`,
+        type: `SCHEDULE_${sched.category}`,
+        title: `${sched.title}${sched.assignedTo ? ` — ${sched.assignedTo.name}` : ''}`,
+        date: occ.toISOString(),
+        status: daysUntil < 0 ? 'OVERDUE' : 'SCHEDULED',
+        urgency,
+        module: 'schedules',
+        href: '/calendar',
+      });
+    }
   }
 
   // Sort by date

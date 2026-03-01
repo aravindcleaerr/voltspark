@@ -22,6 +22,8 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Phase 5+
+  await prisma.recurringSchedule.deleteMany();
   // Phase 4
   await prisma.notification.deleteMany();
   await prisma.schemeApplication.deleteMany();
@@ -200,6 +202,10 @@ async function main() {
     { date: '2025-01-31', value: 7456 }, { date: '2025-02-28', value: 8815 },
     { date: '2025-03-31', value: 8934 }, { date: '2025-04-30', value: 10866 },
     { date: '2025-05-31', value: 10301 }, { date: '2025-06-30', value: 9551 },
+    { date: '2025-07-31', value: 8732 }, { date: '2025-08-31', value: 7180 },
+    { date: '2025-09-30', value: 9015 }, { date: '2025-10-31', value: 9540 },
+    { date: '2025-11-30', value: 8250 }, { date: '2025-12-31', value: 7350 },
+    { date: '2026-01-31', value: 7810 }, { date: '2026-02-28', value: 8920 },
   ];
 
   for (const entry of solarMonthly) {
@@ -223,6 +229,10 @@ async function main() {
     { date: '2025-01-31', value: 20645 }, { date: '2025-02-28', value: 17100 },
     { date: '2025-03-31', value: 17683 }, { date: '2025-04-30', value: 19061 },
     { date: '2025-05-31', value: 19783 }, { date: '2025-06-30', value: 16186 },
+    { date: '2025-07-31', value: 15200 }, { date: '2025-08-31', value: 15800 },
+    { date: '2025-09-30', value: 14900 }, { date: '2025-10-31', value: 15500 },
+    { date: '2025-11-30', value: 14600 }, { date: '2025-12-31', value: 15100 },
+    { date: '2026-01-31', value: 14800 }, { date: '2026-02-28', value: 14200 },
   ];
 
   for (const entry of gridMonthly) {
@@ -531,7 +541,82 @@ async function main() {
   for (const item of fireItems) {
     await prisma.inspectionTemplateItem.create({ data: { templateId: fireTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
   }
-  console.log('Inspection templates created: Electrical (15 items), Fire (10 items)');
+  // IS 3043 Earthing Compliance (detailed earthing per IS standard)
+  const earthingTemplate = await prisma.inspectionTemplate.create({
+    data: { name: 'IS 3043 Earthing Compliance', category: 'ELECTRICAL', isBuiltIn: true, description: 'Comprehensive earthing inspection per IS 3043 standard for industrial installations.' },
+  });
+  const earthingItems = [
+    { section: 'Earth Electrodes', itemText: 'Earth electrode material compliant (GI/Copper per IS 3043)', isCritical: true, sortOrder: 1 },
+    { section: 'Earth Electrodes', itemText: 'Minimum 2 earth electrodes per installation', sortOrder: 2 },
+    { section: 'Earth Electrodes', itemText: 'Electrode depth as per soil resistivity report', isCritical: true, sortOrder: 3 },
+    { section: 'Earth Electrodes', itemText: 'Earth pit accessible with proper cover plate', sortOrder: 4 },
+    { section: 'Earth Electrodes', itemText: 'Charcoal/salt/coke backfill maintained', sortOrder: 5 },
+    { section: 'Resistance Measurement', itemText: 'Earth resistance ≤ 2Ω (power systems)', isCritical: true, sortOrder: 6 },
+    { section: 'Resistance Measurement', itemText: 'Earth resistance ≤ 1Ω (IT equipment)', sortOrder: 7 },
+    { section: 'Resistance Measurement', itemText: 'Earth resistance ≤ 5Ω (lightning protection)', sortOrder: 8 },
+    { section: 'Resistance Measurement', itemText: 'Measurement taken during dry season', sortOrder: 9 },
+    { section: 'Conductors', itemText: 'Earth conductor size as per table in IS 3043', isCritical: true, sortOrder: 10 },
+    { section: 'Conductors', itemText: 'No joints in earth conductor below ground', sortOrder: 11 },
+    { section: 'Conductors', itemText: 'Green/yellow identification on earth wires', sortOrder: 12 },
+    { section: 'Bonding', itemText: 'Equipment bonding conductor connected to main earth bar', isCritical: true, sortOrder: 13 },
+    { section: 'Bonding', itemText: 'Metallic water/gas pipes bonded', sortOrder: 14 },
+    { section: 'Bonding', itemText: 'Lightning protection system bonded to main earth', sortOrder: 15 },
+    { section: 'Documentation', itemText: 'Earth resistance test report available', sortOrder: 16 },
+    { section: 'Documentation', itemText: 'Earth layout diagram maintained', sortOrder: 17 },
+    { section: 'Documentation', itemText: 'Periodic testing schedule documented', sortOrder: 18 },
+  ];
+  for (const item of earthingItems) {
+    await prisma.inspectionTemplateItem.create({ data: { templateId: earthingTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
+  }
+
+  // Panel & Transformer Inspection
+  const panelTemplate = await prisma.inspectionTemplate.create({
+    data: { name: 'Panel & Transformer Inspection', category: 'ELECTRICAL', isBuiltIn: true, description: 'Switchboard, panel board, and transformer condition check.' },
+  });
+  const panelItems = [
+    { section: 'Main Panel', itemText: 'Incoming supply voltage within ±6% of nominal', isCritical: true, sortOrder: 1 },
+    { section: 'Main Panel', itemText: 'Current balance across phases (< 10% imbalance)', isCritical: true, sortOrder: 2 },
+    { section: 'Main Panel', itemText: 'Bus bar connections tight (torque checked)', sortOrder: 3 },
+    { section: 'Main Panel', itemText: 'No overheating signs on bus bars or cables', isCritical: true, sortOrder: 4 },
+    { section: 'Main Panel', itemText: 'CT/PT metering calibration current', sortOrder: 5 },
+    { section: 'Breakers & Protection', itemText: 'ACB/MCCB trip testing done (quarterly)', isCritical: true, sortOrder: 6 },
+    { section: 'Breakers & Protection', itemText: 'Relay coordination verified', sortOrder: 7 },
+    { section: 'Breakers & Protection', itemText: 'Overcurrent protection settings documented', sortOrder: 8 },
+    { section: 'Transformer', itemText: 'Oil level satisfactory (if oil-type)', sortOrder: 9 },
+    { section: 'Transformer', itemText: 'Silica gel breather not saturated', sortOrder: 10 },
+    { section: 'Transformer', itemText: 'Winding resistance ratio test completed', sortOrder: 11 },
+    { section: 'Transformer', itemText: 'Oil BDV test ≥ 30kV (if oil-type)', isCritical: true, sortOrder: 12 },
+    { section: 'Environment', itemText: 'Adequate ventilation around transformer', sortOrder: 13 },
+    { section: 'Environment', itemText: 'No water ingress in panel room', isCritical: true, sortOrder: 14 },
+  ];
+  for (const item of panelItems) {
+    await prisma.inspectionTemplateItem.create({ data: { templateId: panelTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
+  }
+
+  // General Workplace Safety
+  const workplaceTemplate = await prisma.inspectionTemplate.create({
+    data: { name: 'Workplace Safety Walkthrough', category: 'GENERAL', isBuiltIn: true, description: 'General workplace safety walkthrough for factories and industrial units.' },
+  });
+  const workplaceItems = [
+    { section: 'PPE', itemText: 'Workers wearing appropriate PPE', isCritical: true, sortOrder: 1 },
+    { section: 'PPE', itemText: 'PPE in good condition (no damage)', sortOrder: 2 },
+    { section: 'PPE', itemText: 'Safety shoes, helmets, goggles available', sortOrder: 3 },
+    { section: 'Housekeeping', itemText: 'Aisles and walkways clear of obstructions', sortOrder: 4 },
+    { section: 'Housekeeping', itemText: 'Spill kits available and stocked', sortOrder: 5 },
+    { section: 'Housekeeping', itemText: 'Waste segregation followed (hazardous/non-hazardous)', sortOrder: 6 },
+    { section: 'Machine Safety', itemText: 'Machine guards in place and functional', isCritical: true, sortOrder: 7 },
+    { section: 'Machine Safety', itemText: 'Emergency stop buttons accessible', isCritical: true, sortOrder: 8 },
+    { section: 'Machine Safety', itemText: 'Lockout/tagout (LOTO) procedures followed', isCritical: true, sortOrder: 9 },
+    { section: 'Signage', itemText: 'Safety signs visible and legible', sortOrder: 10 },
+    { section: 'Signage', itemText: 'Chemical hazard labels (GHS/MSDS)', sortOrder: 11 },
+    { section: 'First Aid', itemText: 'First aid box available and stocked', sortOrder: 12 },
+    { section: 'First Aid', itemText: 'Trained first aider on shift', sortOrder: 13 },
+  ];
+  for (const item of workplaceItems) {
+    await prisma.inspectionTemplateItem.create({ data: { templateId: workplaceTemplate.id, ...item, type: 'PASS_FAIL', isCritical: item.isCritical || false } });
+  }
+
+  console.log('Inspection templates created: Electrical (15), Fire (10), IS 3043 Earthing (18), Panel/Transformer (14), Workplace Safety (13)');
 
   // --- Sample completed inspection ---
   const sampleInspection = await prisma.inspection.create({
@@ -605,6 +690,15 @@ async function main() {
     { month: 4, year: 2025, unitsConsumed: 19061, demandKVA: 94, powerFactor: 0.87, energyCharges: 129163, demandCharges: 9400, pfPenalty: 6500, fuelSurcharge: 3812, electricityDuty: 6481, totalAmount: 155356 },
     { month: 5, year: 2025, unitsConsumed: 19783, demandKVA: 96, powerFactor: 0.86, energyCharges: 134030, demandCharges: 9600, pfPenalty: 7300, fuelSurcharge: 3957, electricityDuty: 6726, totalAmount: 161613 },
     { month: 6, year: 2025, unitsConsumed: 16186, demandKVA: 85, powerFactor: 0.92, energyCharges: 109660, demandCharges: 8500, pfPenalty: 0, fuelSurcharge: 3237, electricityDuty: 5503, totalAmount: 126900 },
+    // Jul 2025 — Feb 2026 (showing improvement after APFC + VFD savings)
+    { month: 7, year: 2025, unitsConsumed: 15200, demandKVA: 82, powerFactor: 0.94, energyCharges: 103000, demandCharges: 8200, pfPenalty: 0, fuelSurcharge: 3040, electricityDuty: 5168, totalAmount: 119408 },
+    { month: 8, year: 2025, unitsConsumed: 15800, demandKVA: 84, powerFactor: 0.95, energyCharges: 107100, demandCharges: 8400, pfPenalty: 0, fuelSurcharge: 3160, electricityDuty: 5372, totalAmount: 124032 },
+    { month: 9, year: 2025, unitsConsumed: 14900, demandKVA: 80, powerFactor: 0.96, energyCharges: 101000, demandCharges: 8000, pfPenalty: 0, fuelSurcharge: 2980, electricityDuty: 5066, totalAmount: 117046 },
+    { month: 10, year: 2025, unitsConsumed: 15500, demandKVA: 83, powerFactor: 0.95, energyCharges: 105100, demandCharges: 8300, pfPenalty: 0, fuelSurcharge: 3100, electricityDuty: 5270, totalAmount: 121770 },
+    { month: 11, year: 2025, unitsConsumed: 14600, demandKVA: 78, powerFactor: 0.96, energyCharges: 98900, demandCharges: 7800, pfPenalty: 0, fuelSurcharge: 2920, electricityDuty: 4964, totalAmount: 114584 },
+    { month: 12, year: 2025, unitsConsumed: 15100, demandKVA: 81, powerFactor: 0.95, energyCharges: 102300, demandCharges: 8100, pfPenalty: 0, fuelSurcharge: 3020, electricityDuty: 5134, totalAmount: 118554 },
+    { month: 1, year: 2026, unitsConsumed: 14800, demandKVA: 79, powerFactor: 0.97, energyCharges: 100300, demandCharges: 7900, pfPenalty: 0, fuelSurcharge: 2960, electricityDuty: 5032, totalAmount: 116192 },
+    { month: 2, year: 2026, unitsConsumed: 14200, demandKVA: 76, powerFactor: 0.97, energyCharges: 96250, demandCharges: 7600, pfPenalty: 0, fuelSurcharge: 2840, electricityDuty: 4828, totalAmount: 111518 },
   ];
   for (const bill of utilityBillData) {
     const hasPfPenalty = (bill.pfPenalty || 0) > 0;
@@ -621,7 +715,7 @@ async function main() {
       },
     });
   }
-  console.log('12 utility bills created (Jul 2024 — Jun 2025)');
+  console.log('20 utility bills created (Jul 2024 — Feb 2026)');
 
   // ============================================================
   // SAVINGS MEASURES (Phase 3A)
@@ -678,6 +772,14 @@ async function main() {
     { month: 4, year: 2025, savingsAmount: 9500, kwhSaved: 1267 },
     { month: 5, year: 2025, savingsAmount: 9400, kwhSaved: 1253 },
     { month: 6, year: 2025, savingsAmount: 9200, kwhSaved: 1227 },
+    { month: 7, year: 2025, savingsAmount: 9300, kwhSaved: 1240 },
+    { month: 8, year: 2025, savingsAmount: 9600, kwhSaved: 1280 },
+    { month: 9, year: 2025, savingsAmount: 9700, kwhSaved: 1293 },
+    { month: 10, year: 2025, savingsAmount: 9500, kwhSaved: 1267 },
+    { month: 11, year: 2025, savingsAmount: 9800, kwhSaved: 1307 },
+    { month: 12, year: 2025, savingsAmount: 9400, kwhSaved: 1253 },
+    { month: 1, year: 2026, savingsAmount: 9900, kwhSaved: 1320 },
+    { month: 2, year: 2026, savingsAmount: 10100, kwhSaved: 1347 },
   ];
   for (const entry of vfdEntries) {
     await prisma.savingsEntry.create({ data: { measureId: vfdMeasure.id, ...entry, method: 'CALCULATED' } });
@@ -687,11 +789,19 @@ async function main() {
     { month: 4, year: 2025, savingsAmount: 2700, kwhSaved: 360 },
     { month: 5, year: 2025, savingsAmount: 2900, kwhSaved: 387 },
     { month: 6, year: 2025, savingsAmount: 2850, kwhSaved: 380 },
+    { month: 7, year: 2025, savingsAmount: 2800, kwhSaved: 373 },
+    { month: 8, year: 2025, savingsAmount: 2900, kwhSaved: 387 },
+    { month: 9, year: 2025, savingsAmount: 2850, kwhSaved: 380 },
+    { month: 10, year: 2025, savingsAmount: 2900, kwhSaved: 387 },
+    { month: 11, year: 2025, savingsAmount: 2850, kwhSaved: 380 },
+    { month: 12, year: 2025, savingsAmount: 2800, kwhSaved: 373 },
+    { month: 1, year: 2026, savingsAmount: 2900, kwhSaved: 387 },
+    { month: 2, year: 2026, savingsAmount: 2950, kwhSaved: 393 },
   ];
   for (const entry of ledEntries) {
     await prisma.savingsEntry.create({ data: { measureId: ledMeasure.id, ...entry, method: 'CALCULATED' } });
   }
-  console.log('8 savings entries created');
+  console.log('24 savings entries created');
 
   // ============================================================
   // ROI CALCULATIONS (Phase 3B)
@@ -881,6 +991,46 @@ async function main() {
     },
   });
   console.log('5 government schemes + 1 application created');
+
+  // ============================================================
+  // RECURRING SCHEDULES (Phase 5+)
+  // ============================================================
+  await prisma.recurringSchedule.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Monthly Electrical Safety Inspection', category: 'INSPECTION',
+      frequency: 'MONTHLY', dayOfMonth: 15, startDate: new Date('2025-01-15'), reminderDays: 7,
+      assignedToId: vilas.id, createdById: consultant.id, description: 'Panel room and factory floor electrical safety check using standard template.',
+    },
+  });
+  await prisma.recurringSchedule.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Quarterly Earth Resistance Testing', category: 'INSPECTION',
+      frequency: 'QUARTERLY', dayOfMonth: 1, startDate: new Date('2025-01-01'), reminderDays: 14,
+      assignedToId: vilas.id, createdById: consultant.id, description: 'IS 3043 earth resistance measurement at all earth pits.',
+    },
+  });
+  await prisma.recurringSchedule.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Monthly Energy Data Entry Reminder', category: 'DATA_ENTRY',
+      frequency: 'MONTHLY', dayOfMonth: 5, startDate: new Date('2025-01-05'), reminderDays: 3,
+      assignedToId: sandeep.id, createdById: consultant.id, description: 'Enter monthly consumption readings and utility bill data.',
+    },
+  });
+  await prisma.recurringSchedule.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Annual Internal Energy Audit', category: 'AUDIT',
+      frequency: 'ANNUAL', dayOfMonth: 15, monthOfYear: 3, startDate: new Date('2025-03-15'), reminderDays: 30,
+      createdById: consultant.id, description: 'Comprehensive internal energy audit covering all energy sources and efficiency measures.',
+    },
+  });
+  await prisma.recurringSchedule.create({
+    data: {
+      clientId: unnathiClient.id, title: 'Biannual Safety Training Refresher', category: 'TRAINING',
+      frequency: 'BIANNUAL', dayOfMonth: 1, monthOfYear: 6, startDate: new Date('2025-06-01'), reminderDays: 14,
+      createdById: consultant.id, description: 'Electrical safety and energy awareness refresher for all shop floor employees.',
+    },
+  });
+  console.log('5 recurring schedules created');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
