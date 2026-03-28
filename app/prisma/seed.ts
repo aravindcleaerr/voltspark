@@ -1056,7 +1056,7 @@ async function main() {
 
   const demoClient = await prisma.client.create({
     data: {
-      organizationId: demoOrg.id,
+      organizationId: org.id,
       name: 'Precision Engineering Pvt Ltd',
       slug: 'precision-engineering',
       address: 'Plot 42, 2nd Phase, Peenya Industrial Area, Bengaluru - 560058',
