@@ -31,5 +31,7 @@ export const config = {
     '/schemes/:path*',
     '/analytics/:path*',
     '/share',
+    '/kitchen/:path*',
+    '/kitchen',
   ],
 };
