@@ -35,6 +35,12 @@ import {
   Share2,
   ClipboardList,
   Upload,
+  Gauge,
+  LayoutGrid,
+  SlidersHorizontal,
+  AlertTriangle,
+  ChefHat,
+  Wrench,
 } from 'lucide-react';
 
 interface NavItem {
@@ -98,6 +104,17 @@ const navSections: NavSection[] = [
     ],
   },
 ];
+
+const kitchenNavSection: NavSection = {
+  label: 'Kitchen Intelligence',
+  items: [
+    { name: 'Kitchen Dashboard', href: '/kitchen', icon: Gauge },
+    { name: 'Zones', href: '/kitchen/zones', icon: LayoutGrid },
+    { name: 'Load Management', href: '/kitchen/load-management', icon: SlidersHorizontal },
+    { name: 'Demand Events', href: '/kitchen/demand-events', icon: AlertTriangle },
+    { name: 'Kitchen Setup', href: '/kitchen/setup', icon: Wrench },
+  ],
+};
 
 const adminNav = [
   { name: 'Settings', href: '/settings', icon: Settings },
@@ -166,6 +183,7 @@ export default function Sidebar({
   const { data: session, update } = useSession();
   const [clients, setClients] = useState<ClientOption[]>([]);
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [hasKitchen, setHasKitchen] = useState(false);
 
   const activeClientName = (session?.user as any)?.activeClientName;
   const activeClientId = (session?.user as any)?.activeClientId;
@@ -180,6 +198,15 @@ export default function Sidebar({
         .catch(() => {});
     }
   }, [isConsultant]);
+
+  useEffect(() => {
+    if (activeClientId) {
+      fetch('/api/kitchen')
+        .then(r => r.json())
+        .then(data => setHasKitchen(!!data?.id))
+        .catch(() => setHasKitchen(false));
+    }
+  }, [activeClientId]);
 
   const switchClient = async (client: ClientOption) => {
     const res = await fetch('/api/auth/switch-client', {
@@ -278,6 +305,9 @@ export default function Sidebar({
           {navSections.map((section) => (
             <NavSectionGroup key={section.label} section={section} pathname={pathname} onClose={onClose} />
           ))}
+          {hasKitchen && (
+            <NavSectionGroup section={kitchenNavSection} pathname={pathname} onClose={onClose} />
+          )}
 
           <div className="pt-3 mt-2 border-t border-brand-800">
             {adminNav.map((item) => {

@@ -26,6 +26,9 @@ const tables = [
   'Notification', 'GovernmentScheme', 'SchemeApplication', 'ShareableView',
   // Phase 5+ tables
   'RecurringSchedule',
+  // Kitchen Intelligence tables
+  'DiscomTemplate', 'Kitchen', 'KitchenZone', 'KitchenApiKey',
+  'TitanReading', 'DemandEvent', 'MonthlyKitchenSummary',
 ];
 
 async function main() {

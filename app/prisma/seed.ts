@@ -22,6 +22,14 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Kitchen Intelligence
+  await prisma.kitchenApiKey.deleteMany();
+  await prisma.monthlyKitchenSummary.deleteMany();
+  await prisma.demandEvent.deleteMany();
+  await prisma.titanReading.deleteMany();
+  await prisma.kitchenZone.deleteMany();
+  await prisma.kitchen.deleteMany();
+  await prisma.discomTemplate.deleteMany();
   // Phase 5+
   await prisma.recurringSchedule.deleteMany();
   // Phase 4
@@ -1534,6 +1542,350 @@ async function main() {
   });
 
   console.log('Demo data seeded successfully!');
+
+  // ============================================================
+  // DISCOM TEMPLATES (reference data)
+  // ============================================================
+  const bescomHT = await prisma.discomTemplate.create({
+    data: {
+      code: 'BESCOM_HT_2A',
+      discomName: 'BESCOM',
+      state: 'Karnataka',
+      category: 'HT',
+      tariffRatePerKwh: 7.15,
+      demandChargePerKVA: 400,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.0,
+      pfIncentiveRatePercent: 0.5,
+      mdPenaltyMultiplier: 2.0,
+      todSlabsJson: JSON.stringify([
+        { name: 'Morning Peak', startHour: 6, endHour: 10, rateMultiplier: 1.40 },
+        { name: 'Normal', startHour: 10, endHour: 18, rateMultiplier: 1.00 },
+        { name: 'Evening Peak', startHour: 18, endHour: 22, rateMultiplier: 1.40 },
+        { name: 'Off-Peak', startHour: 22, endHour: 6, rateMultiplier: 0.85 },
+      ]),
+    },
+  });
+
+  await prisma.discomTemplate.create({
+    data: {
+      code: 'BESCOM_LT_COMMERCIAL',
+      discomName: 'BESCOM',
+      state: 'Karnataka',
+      category: 'LT',
+      tariffRatePerKwh: 8.50,
+      demandChargePerKVA: 300,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.0,
+      mdPenaltyMultiplier: 2.0,
+    },
+  });
+
+  await prisma.discomTemplate.create({
+    data: {
+      code: 'MSEDCL_HT_INDUSTRIAL',
+      discomName: 'MSEDCL',
+      state: 'Maharashtra',
+      category: 'HT',
+      tariffRatePerKwh: 8.05,
+      demandChargePerKVA: 350,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.5,
+      pfIncentiveRatePercent: 0.5,
+      mdPenaltyMultiplier: 2.0,
+      todSlabsJson: JSON.stringify([
+        { name: 'Peak', startHour: 6, endHour: 9, rateMultiplier: 1.50 },
+        { name: 'Normal', startHour: 9, endHour: 18, rateMultiplier: 1.00 },
+        { name: 'Evening Peak', startHour: 18, endHour: 22, rateMultiplier: 1.50 },
+        { name: 'Off-Peak', startHour: 22, endHour: 6, rateMultiplier: 0.75 },
+      ]),
+    },
+  });
+
+  await prisma.discomTemplate.create({
+    data: {
+      code: 'TANGEDCO_HT',
+      discomName: 'TANGEDCO',
+      state: 'Tamil Nadu',
+      category: 'HT',
+      tariffRatePerKwh: 6.35,
+      demandChargePerKVA: 300,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.0,
+      mdPenaltyMultiplier: 2.0,
+      todSlabsJson: JSON.stringify([
+        { name: 'Peak', startHour: 6, endHour: 9, rateMultiplier: 1.20 },
+        { name: 'Normal', startHour: 9, endHour: 18, rateMultiplier: 1.00 },
+        { name: 'Evening Peak', startHour: 18, endHour: 22, rateMultiplier: 1.20 },
+        { name: 'Off-Peak', startHour: 22, endHour: 6, rateMultiplier: 0.90 },
+      ]),
+    },
+  });
+
+  await prisma.discomTemplate.create({
+    data: {
+      code: 'CESC_KOLKATA',
+      discomName: 'CESC',
+      state: 'West Bengal',
+      category: 'HT',
+      tariffRatePerKwh: 7.80,
+      demandChargePerKVA: 325,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.0,
+      mdPenaltyMultiplier: 2.0,
+    },
+  });
+
+  console.log('DISCOM templates seeded: BESCOM, MSEDCL, TANGEDCO, CESC');
+
+  // ============================================================
+  // KITCHEN — Demo Kitchen for Unnathi CNC (or demoClient)
+  // ============================================================
+  const kitchen = await prisma.kitchen.create({
+    data: {
+      clientId: demoClient.id,
+      name: 'Precision Engineering Kitchen Lab',
+      address: 'Peenya Industrial Area, Bengaluru',
+      discomCode: 'BESCOM',
+      connectionType: 'HT',
+      contractedDemandKVA: 50,
+      sanctionedLoadKW: 45,
+      demandChargePerKVA: 400,
+      mdPenaltyMultiplier: 2.0,
+      pfTarget: 0.90,
+      pfPenaltyRatePercent: 1.0,
+      pfIncentiveRatePercent: 0.5,
+      tariffRatePerKwh: 7.15,
+      todSlabsJson: JSON.stringify([
+        { name: 'Morning Peak', startHour: 6, endHour: 10, rateMultiplier: 1.40 },
+        { name: 'Normal', startHour: 10, endHour: 18, rateMultiplier: 1.00 },
+        { name: 'Evening Peak', startHour: 18, endHour: 22, rateMultiplier: 1.40 },
+        { name: 'Off-Peak', startHour: 22, endHour: 6, rateMultiplier: 0.85 },
+      ]),
+      billingCycleDay: 1,
+      warningThresholdPct: 80,
+      criticalThresholdPct: 92,
+      autoShedEnabled: true,
+      shedTier3AtPct: 80,
+      shedTier2AtPct: 92,
+      restoreBelowPct: 75,
+    },
+  });
+
+  // Kitchen Zones
+  const zoneCNC1 = await prisma.kitchenZone.create({
+    data: { kitchenId: kitchen.id, name: 'CNC Bay 1', zoneType: 'CNC', meterId: 'TITAN-313-0001', priorityTier: 1, maxLoadKW: 15, sortOrder: 0 },
+  });
+  const zoneCNC2 = await prisma.kitchenZone.create({
+    data: { kitchenId: kitchen.id, name: 'CNC Bay 2', zoneType: 'CNC', meterId: 'TITAN-313-0002', priorityTier: 2, maxLoadKW: 15, sortOrder: 1 },
+  });
+  const zoneCompressor = await prisma.kitchenZone.create({
+    data: { kitchenId: kitchen.id, name: 'Compressor Room', zoneType: 'COMPRESSOR', meterId: 'TITAN-313-0003', priorityTier: 1, maxLoadKW: 10, sortOrder: 2 },
+  });
+  const zoneOffice = await prisma.kitchenZone.create({
+    data: { kitchenId: kitchen.id, name: 'Office & Admin', zoneType: 'UTILITY', meterId: 'TITAN-212-0001', priorityTier: 3, maxLoadKW: 5, sortOrder: 3 },
+  });
+
+  // API Key for demo
+  await prisma.kitchenApiKey.create({
+    data: { kitchenId: kitchen.id, keyHash: 'vsk_demo1234567890abcdefghijklmnop', keyPrefix: 'vsk_demo1234', name: 'Demo Meter Key' },
+  });
+
+  console.log('Kitchen created with 4 zones + API key');
+
+  // ============================================================
+  // TITAN READINGS — 24 hours of 5-min data (288 readings per meter)
+  // ============================================================
+  const now = new Date();
+  const readingsData: any[] = [];
+
+  // Generate realistic demand curve for a factory day
+  function getDemandProfile(hour: number): number {
+    // Night (0-6): low 15-25%
+    if (hour < 6) return 0.15 + Math.random() * 0.10;
+    // Morning ramp (6-8): 25-60%
+    if (hour < 8) return 0.25 + ((hour - 6) / 2) * 0.35 + Math.random() * 0.08;
+    // Morning peak (8-12): 60-90%
+    if (hour < 12) return 0.60 + Math.random() * 0.30;
+    // Lunch dip (12-13): 40-55%
+    if (hour < 13) return 0.40 + Math.random() * 0.15;
+    // Afternoon (13-17): 55-85%
+    if (hour < 17) return 0.55 + Math.random() * 0.30;
+    // Evening ramp down (17-20): 30-50%
+    if (hour < 20) return 0.30 + Math.random() * 0.20;
+    // Night (20-24): 15-25%
+    return 0.15 + Math.random() * 0.10;
+  }
+
+  const meters = [
+    { meterId: 'TITAN-313-0001', zoneId: zoneCNC1.id, maxKW: 15 },
+    { meterId: 'TITAN-313-0002', zoneId: zoneCNC2.id, maxKW: 15 },
+    { meterId: 'TITAN-313-0003', zoneId: zoneCompressor.id, maxKW: 10 },
+    { meterId: 'TITAN-212-0001', zoneId: zoneOffice.id, maxKW: 5 },
+  ];
+
+  for (let minutesAgo = 24 * 60; minutesAgo >= 0; minutesAgo -= 5) {
+    const ts = new Date(now.getTime() - minutesAgo * 60 * 1000);
+    const hour = ts.getHours() + ts.getMinutes() / 60;
+    const profile = getDemandProfile(hour);
+
+    for (const meter of meters) {
+      const loadFactor = profile * (0.85 + Math.random() * 0.30); // vary per meter
+      const kw = Math.max(0.1, Math.min(meter.maxKW, meter.maxKW * loadFactor));
+      const pf = 0.85 + Math.random() * 0.13; // 0.85 - 0.98
+      const kva = kw / pf;
+
+      readingsData.push({
+        kitchenId: kitchen.id,
+        zoneId: meter.zoneId,
+        meterId: meter.meterId,
+        timestamp: ts,
+        activePowerKW: Math.round(kw * 100) / 100,
+        apparentPowerKVA: Math.round(kva * 100) / 100,
+        reactivePowerKVAR: Math.round(Math.sqrt(kva * kva - kw * kw) * 100) / 100,
+        powerFactor: Math.round(pf * 1000) / 1000,
+        voltageR: 228 + Math.random() * 8,
+        voltageY: 227 + Math.random() * 8,
+        voltageB: 229 + Math.random() * 8,
+        currentR: kw / (0.230 * 3) * (0.9 + Math.random() * 0.2),
+        frequencyHz: 49.9 + Math.random() * 0.2,
+        thdVoltage: 1.5 + Math.random() * 2,
+        thdCurrent: 3 + Math.random() * 4,
+      });
+    }
+  }
+
+  // Batch insert readings
+  const BATCH_SIZE = 200;
+  for (let i = 0; i < readingsData.length; i += BATCH_SIZE) {
+    await prisma.titanReading.createMany({ data: readingsData.slice(i, i + BATCH_SIZE) });
+  }
+  console.log(`Titan readings seeded: ${readingsData.length} readings (24h × 4 meters)`);
+
+  // ============================================================
+  // DEMAND EVENTS — sample events
+  // ============================================================
+  await prisma.demandEvent.create({
+    data: {
+      kitchenId: kitchen.id,
+      type: 'WARNING',
+      severity: 'WARNING',
+      demandKVA: 41.2,
+      thresholdKVA: 40,
+      contractedDemandKVA: 50,
+      pf: 0.91,
+      message: 'Demand warning: 41.2 kVA (82% of contracted)',
+      createdAt: new Date(now.getTime() - 6 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.demandEvent.create({
+    data: {
+      kitchenId: kitchen.id,
+      type: 'CRITICAL',
+      severity: 'CRITICAL',
+      demandKVA: 47.5,
+      thresholdKVA: 46,
+      contractedDemandKVA: 50,
+      pf: 0.88,
+      message: 'Critical demand: 47.5 kVA (95% of contracted)',
+      createdAt: new Date(now.getTime() - 4 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.demandEvent.create({
+    data: {
+      kitchenId: kitchen.id,
+      type: 'BREACH',
+      severity: 'CRITICAL',
+      demandKVA: 52.1,
+      thresholdKVA: 50,
+      contractedDemandKVA: 50,
+      pf: 0.87,
+      message: 'Demand breach: 52.1 kVA exceeds contracted 50 kVA',
+      createdAt: new Date(now.getTime() - 3.5 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.demandEvent.create({
+    data: {
+      kitchenId: kitchen.id,
+      type: 'SHED_INITIATED',
+      severity: 'WARNING',
+      demandKVA: 52.1,
+      contractedDemandKVA: 50,
+      message: 'Auto-shed: Office & Admin (T3) disconnected to reduce demand',
+      zonesAffectedJson: JSON.stringify(['Office & Admin']),
+      createdAt: new Date(now.getTime() - 3.5 * 60 * 60 * 1000 + 5000),
+      resolvedAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.demandEvent.create({
+    data: {
+      kitchenId: kitchen.id,
+      type: 'WARNING',
+      severity: 'WARNING',
+      demandKVA: 42.8,
+      thresholdKVA: 40,
+      contractedDemandKVA: 50,
+      pf: 0.92,
+      message: 'Demand warning: 42.8 kVA (86% of contracted)',
+      createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000),
+    },
+  });
+
+  console.log('Demand events seeded: 5 events');
+
+  // ============================================================
+  // MONTHLY KITCHEN SUMMARIES — last 2 months
+  // ============================================================
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevPrevMonth = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+
+  await prisma.monthlyKitchenSummary.create({
+    data: {
+      kitchenId: kitchen.id,
+      year: prevPrevMonth.getFullYear(),
+      month: prevPrevMonth.getMonth() + 1,
+      totalKwh: 8420,
+      peakDemandKVA: 48.3,
+      avgPf: 0.912,
+      demandWarnings: 12,
+      demandBreaches: 2,
+      estimatedBillAmount: 72500,
+      mdPenaltyAmount: 0,
+      mdPenaltiesAvoided: 15600,
+      pfPenaltyAmount: 0,
+      pfIncentiveAmount: 1200,
+      todPeakKwh: 2840,
+      todOffPeakKwh: 1650,
+      todSavingsAmount: 3200,
+      totalSavings: 20000,
+      loadShedEvents: 4,
+    },
+  });
+
+  await prisma.monthlyKitchenSummary.create({
+    data: {
+      kitchenId: kitchen.id,
+      year: prevMonth.getFullYear(),
+      month: prevMonth.getMonth() + 1,
+      totalKwh: 9150,
+      peakDemandKVA: 51.2,
+      avgPf: 0.895,
+      demandWarnings: 18,
+      demandBreaches: 3,
+      estimatedBillAmount: 81200,
+      mdPenaltyAmount: 960,
+      mdPenaltiesAvoided: 12400,
+      pfPenaltyAmount: 2100,
+      pfIncentiveAmount: 0,
+      todPeakKwh: 3200,
+      todOffPeakKwh: 1800,
+      todSavingsAmount: 2800,
+      totalSavings: 15200,
+      loadShedEvents: 6,
+    },
+  });
+
+  console.log('Monthly kitchen summaries seeded: 2 months');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');

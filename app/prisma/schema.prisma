@@ -72,6 +72,8 @@ model Client {
   governmentSchemes  SchemeApplication[]
   // Phase 5+
   recurringSchedules RecurringSchedule[]
+  // Kitchen Intelligence
+  kitchen            Kitchen?
 }
 
 model Membership {
@@ -859,4 +861,186 @@ model RecurringSchedule {
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// ============================================================
+// KITCHEN INTELLIGENCE MODULE
+// ============================================================
+
+model Kitchen {
+  id                     String   @id @default(cuid())
+  clientId               String   @unique
+  client                 Client   @relation(fields: [clientId], references: [id])
+  name                   String
+  address                String?
+  discomCode             String   // BESCOM, MSEDCL, TNEB, KSEB, TSSPDCL, CESC, OTHER
+  connectionType         String   @default("LT_COMMERCIAL") // LT_COMMERCIAL, HT
+  contractedDemandKVA    Float
+  sanctionedLoadKW       Float?
+  // Tariff config
+  demandChargePerKVA     Float?   // ₹/kVA/month
+  mdPenaltyMultiplier    Float    @default(2.0) // 2× rate for excess demand
+  pfTarget               Float    @default(0.90)
+  pfPenaltyRatePercent   Float?   // % surcharge per 0.01 below target
+  pfIncentiveRatePercent Float?   // % incentive per 0.01 above target
+  tariffRatePerKwh       Float?   // base ₹/kWh
+  todSlabsJson           String?  // JSON: [{name, startHour, endHour, rateMultiplier}]
+  billingCycleDay        Int      @default(1)
+  // Thresholds
+  warningThresholdPct    Float    @default(80)  // demand warning at 80% of CD
+  criticalThresholdPct   Float    @default(92)  // demand critical at 92% of CD
+  // Load management
+  autoShedEnabled        Boolean  @default(false)
+  shedTier3AtPct         Float    @default(80)  // shed tier 3 zones at this %
+  shedTier2AtPct         Float    @default(92)  // shed tier 2 zones at this %
+  restoreBelowPct        Float    @default(75)  // restore zones when demand drops below
+  // Status
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  zones            KitchenZone[]
+  titanReadings    TitanReading[]
+  demandEvents     DemandEvent[]
+  monthlySummaries MonthlyKitchenSummary[]
+  apiKeys          KitchenApiKey[]
+}
+
+model KitchenZone {
+  id             String   @id @default(cuid())
+  kitchenId      String
+  kitchen        Kitchen  @relation(fields: [kitchenId], references: [id])
+  name           String   // e.g., "Burner 1", "Tawa Station", "Stock Pot"
+  zoneType       String   @default("OTHER") // BURNER, TAWA, FRYER, STOCK_POT, WARMER, UTILITY, CNC, COMPRESSOR, OTHER
+  meterId        String?  // Titan meter ID mapped to this zone
+  titanDoChannel Int?     // 1 or 2 — Titan digital output channel for load control
+  priorityTier   Int      @default(2) // 1=never shed, 2=shed if critical, 3=shed at warning
+  maxLoadKW      Float?   // rated max power
+  // HACCP
+  haccpEnabled   Boolean  @default(false)
+  haccpAiChannel Int?     // Titan analog input channel for temp probe
+  targetTempC    Float?
+  minTempC       Float?
+  maxTempC       Float?
+  // Status
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  titanReadings TitanReading[]
+}
+
+model TitanReading {
+  id          String    @id @default(cuid())
+  kitchenId   String
+  kitchen     Kitchen   @relation(fields: [kitchenId], references: [id])
+  zoneId      String?
+  zone        KitchenZone? @relation(fields: [zoneId], references: [id])
+  meterId     String
+  timestamp   DateTime
+  // Electrical
+  activePowerKW     Float
+  apparentPowerKVA  Float?
+  reactivePowerKVAR Float?
+  powerFactor       Float?
+  voltageR          Float?
+  voltageY          Float?
+  voltageB          Float?
+  currentR          Float?
+  currentY          Float?
+  currentB          Float?
+  frequencyHz       Float?
+  energyKwh         Float?  // cumulative meter reading
+  demandMaxKVA      Float?  // cumulative max demand from meter
+  demandCurrentKVA  Float?  // instantaneous demand
+  thdVoltage        Float?
+  thdCurrent        Float?
+  // I/O
+  ai1Value    Float?   // analog input 1 (temperature)
+  ai2Value    Float?   // analog input 2
+  do1State    Boolean? // digital output 1 state
+  do2State    Boolean? // digital output 2 state
+  // Meta
+  createdAt   DateTime @default(now())
+
+  @@index([kitchenId, timestamp])
+  @@index([meterId, timestamp])
+}
+
+model DemandEvent {
+  id                   String    @id @default(cuid())
+  kitchenId            String
+  kitchen              Kitchen   @relation(fields: [kitchenId], references: [id])
+  type                 String    // WARNING, CRITICAL, BREACH, SHED_INITIATED, SHED_RELEASED, PF_ALERT, METER_OFFLINE
+  severity             String    @default("WARNING") // INFO, WARNING, CRITICAL
+  demandKVA            Float?
+  thresholdKVA         Float?
+  contractedDemandKVA  Float?
+  pf                   Float?
+  message              String
+  zonesAffectedJson    String?   // JSON array of zone names/IDs
+  resolvedAt           DateTime?
+  createdAt            DateTime  @default(now())
+
+  @@index([kitchenId, createdAt])
+}
+
+model MonthlyKitchenSummary {
+  id                   String  @id @default(cuid())
+  kitchenId            String
+  kitchen              Kitchen @relation(fields: [kitchenId], references: [id])
+  year                 Int
+  month                Int
+  totalKwh             Float
+  peakDemandKVA        Float
+  avgPf                Float?
+  demandWarnings       Int     @default(0)
+  demandBreaches       Int     @default(0)
+  estimatedBillAmount  Float?
+  mdPenaltyAmount      Float?
+  mdPenaltiesAvoided   Float?
+  pfPenaltyAmount      Float?
+  pfIncentiveAmount    Float?
+  todPeakKwh           Float?
+  todOffPeakKwh        Float?
+  todSavingsAmount     Float?
+  totalSavings         Float?
+  haccpComplianceRate  Float?
+  loadShedEvents       Int     @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([kitchenId, year, month])
+}
+
+model KitchenApiKey {
+  id          String    @id @default(cuid())
+  kitchenId   String
+  kitchen     Kitchen   @relation(fields: [kitchenId], references: [id])
+  keyHash     String    // bcrypt hash of the full API key
+  keyPrefix   String    // first 8 chars for identification
+  name        String    // descriptive label
+  isActive    Boolean   @default(true)
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model DiscomTemplate {
+  id                     String   @id @default(cuid())
+  code                   String   @unique // e.g., BESCOM_HT_2A
+  discomName             String   // e.g., "BESCOM"
+  state                  String   // e.g., "Karnataka"
+  category               String   // HT, LT, INDUSTRIAL, COMMERCIAL
+  tariffRatePerKwh       Float
+  demandChargePerKVA     Float?
+  pfTarget               Float    @default(0.90)
+  pfPenaltyRatePercent   Float?
+  pfIncentiveRatePercent Float?
+  mdPenaltyMultiplier    Float    @default(2.0)
+  todSlabsJson           String?  // JSON: [{name, startHour, endHour, rateMultiplier}]
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }
