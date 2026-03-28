@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -201,10 +202,19 @@ export default function Sidebar({
 
   useEffect(() => {
     if (activeClientId) {
-      fetch('/api/kitchen')
-        .then(r => r.json())
-        .then(data => setHasKitchen(!!data?.id))
-        .catch(() => setHasKitchen(false));
+      // Fetch with a small delay to ensure session cookie is set after client switch
+      const fetchKitchen = () => {
+        fetch('/api/kitchen')
+          .then(r => { if (!r.ok) throw new Error('not ok'); return r.json(); })
+          .then(data => setHasKitchen(!!data?.id))
+          .catch(() => setHasKitchen(false));
+      };
+      fetchKitchen();
+      // Retry once after 1s in case session wasn't ready
+      const timer = setTimeout(fetchKitchen, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setHasKitchen(false);
     }
   }, [activeClientId]);
 
@@ -302,12 +312,15 @@ export default function Sidebar({
 
         {/* Main navigation — collapsible sections */}
         <nav className="mt-2 px-2 space-y-2 flex-1 overflow-y-auto pb-2">
-          {navSections.map((section) => (
-            <NavSectionGroup key={section.label} section={section} pathname={pathname} onClose={onClose} />
+          {navSections.map((section, idx) => (
+            <React.Fragment key={section.label}>
+              <NavSectionGroup section={section} pathname={pathname} onClose={onClose} />
+              {/* Show Kitchen Intelligence right after Overview */}
+              {idx === 0 && hasKitchen && (
+                <NavSectionGroup section={kitchenNavSection} pathname={pathname} onClose={onClose} />
+              )}
+            </React.Fragment>
           ))}
-          {hasKitchen && (
-            <NavSectionGroup section={kitchenNavSection} pathname={pathname} onClose={onClose} />
-          )}
 
           <div className="pt-3 mt-2 border-t border-brand-800">
             {adminNav.map((item) => {
