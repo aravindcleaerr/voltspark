@@ -1073,7 +1073,10 @@ async function main() {
     },
   });
   await prisma.clientAccess.create({ data: { userId: demoUser.id, clientId: demoClient.id, role: 'VIEWER' } });
-  console.log('Demo client: Precision Engineering Pvt Ltd (VIEWER access)');
+  // Give consultants access to demo client too (so they can switch and see Kitchen)
+  await prisma.clientAccess.create({ data: { userId: consultant.id, clientId: demoClient.id, role: 'CLIENT_ADMIN' } });
+  await prisma.clientAccess.create({ data: { userId: lnk.id, clientId: demoClient.id, role: 'CLIENT_ADMIN' } });
+  console.log('Demo client: Precision Engineering Pvt Ltd (VIEWER + consultant access)');
 
   // Demo energy sources
   const dGrid = await prisma.energySource.create({
