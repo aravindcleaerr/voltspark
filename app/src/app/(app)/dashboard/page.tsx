@@ -317,7 +317,7 @@ export default function DashboardPage() {
           <div className="space-y-2">
             {deviationAlerts.map((alert: any) => (
               <div key={alert.id} className="flex items-center justify-between text-sm bg-red-50 rounded px-3 py-2">
-                <span><strong>{alert.energySource.name}</strong> — {alert.deviationNote}</span>
+                <span><strong>{alert.energySource?.name ?? 'Unknown Source'}</strong> — {alert.deviationNote}</span>
                 <span className="text-gray-500">{new Date(alert.date).toLocaleDateString()}</span>
               </div>
             ))}
