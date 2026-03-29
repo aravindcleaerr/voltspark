@@ -75,6 +75,10 @@ model Client {
   recurringSchedules RecurringSchedule[]
   // Kitchen Intelligence
   kitchen            Kitchen?
+  // IoT Metering
+  iotGateways        IoTGateway[]
+  iotMeters          IoTMeter[]
+  meterAlerts        MeterAlert[]
 }
 
 model Membership {
@@ -169,6 +173,7 @@ model EnergySource {
   targets            EnergyTarget[]
   consumptionEntries ConsumptionEntry[]
   savingsMeasures    SavingsMeasure[]
+  iotMeters          IoTMeter[]
 }
 
 model EnergyTarget {
@@ -1026,6 +1031,179 @@ model KitchenApiKey {
   lastUsedAt  DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// ============================================================
+// IOT METERING MODULE
+// ============================================================
+
+model IoTGateway {
+  id              String   @id @default(cuid())
+  clientId        String
+  client          Client   @relation(fields: [clientId], references: [id])
+  name            String                          // e.g., "Main Panel Gateway"
+  serialNumber    String?                         // physical device serial
+  gatewayType     String   @default("PAS600")     // PAS600, RASPBERRY_PI, INDUSTRIAL_PC, OTHER
+  make            String?                         // SCHNEIDER, LOTUS, OTHER
+  firmwareVersion String?
+  ipAddress       String?                         // local network IP
+  location        String?                         // physical location description
+  // MQTT config
+  mqttBrokerUrl   String?                         // e.g., mqtts://broker.hivemq.com:8883
+  mqttTopicPrefix String?                         // e.g., voltspark/{clientId}/site1
+  mqttClientId    String?                         // MQTT client ID for this gateway
+  // Push config
+  pushIntervalSeconds Int  @default(60)           // how often gateway pushes data
+  protocol        String   @default("MQTT_WEBHOOK") // REST, MQTT_WEBHOOK, MQTT_DIRECT
+  // Status
+  isOnline        Boolean  @default(false)
+  lastSeenAt      DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  meters          IoTMeter[]
+  apiKeys         IoTApiKey[]
+
+  @@index([clientId])
+}
+
+model IoTMeter {
+  id             String       @id @default(cuid())
+  clientId       String
+  client         Client       @relation(fields: [clientId], references: [id])
+  gatewayId      String
+  gateway        IoTGateway   @relation(fields: [gatewayId], references: [id])
+  energySourceId String?
+  energySource   EnergySource? @relation(fields: [energySourceId], references: [id])
+  // Meter identity
+  name           String                          // e.g., "Incomer Meter", "Compressor Panel"
+  meterSerial    String?                         // physical meter serial number
+  modbusAddress  Int?                            // Modbus slave address (1-247)
+  make           String?                         // SCHNEIDER, ABB, SIEMENS, SECURE, ELMEASURE, OTHER
+  model          String?                         // EM6400NG+, EM7230, ION9000, PM8000, etc.
+  meterType      String   @default("SUBMETER")   // INCOMER, SUBMETER, DG, SOLAR, OTHER
+  // Measurement config
+  ctRatio        Float?                          // CT ratio (e.g., 200 for 200/5A CT)
+  ptRatio        Float?                          // PT ratio (if applicable)
+  ratedVoltage   Float?                          // nominal voltage (415V, 11kV, etc.)
+  // Thresholds for alerts
+  demandWarningPct  Float?  @default(80)         // % of contracted demand for warning
+  demandCriticalPct Float?  @default(92)         // % of contracted demand for critical
+  pfLowThreshold    Float?  @default(0.85)       // PF below this triggers alert
+  // Location
+  panelName      String?                         // which panel this meter is in
+  circuitName    String?                         // which circuit/feeder
+  location       String?
+  // Status
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  readings         MeterReading[]
+  alerts           MeterAlert[]
+  monthlySummaries IoTMonthlySummary[]
+
+  @@index([clientId])
+  @@index([gatewayId])
+}
+
+model MeterReading {
+  id                String   @id @default(cuid())
+  meterId           String
+  meter             IoTMeter @relation(fields: [meterId], references: [id])
+  timestamp         DateTime
+  // Power
+  activePowerKW     Float
+  apparentPowerKVA  Float?
+  reactivePowerKVAR Float?
+  powerFactor       Float?
+  // Voltage (per phase)
+  voltageR          Float?
+  voltageY          Float?
+  voltageB          Float?
+  voltageAvg        Float?
+  // Current (per phase)
+  currentR          Float?
+  currentY          Float?
+  currentB          Float?
+  currentAvg        Float?
+  // Energy (cumulative from meter)
+  energyKwh         Float?     // cumulative active energy import
+  energyKwhExport   Float?     // cumulative active energy export (solar)
+  energyKvarhImport Float?     // cumulative reactive energy import
+  energyKvarhExport Float?     // cumulative reactive energy export
+  // Demand
+  demandKW          Float?     // current demand
+  demandKVA         Float?     // current apparent demand
+  maxDemandKW       Float?     // max demand since last reset
+  maxDemandKVA      Float?     // max apparent demand since last reset
+  // Quality
+  frequencyHz       Float?
+  thdVoltage        Float?     // total harmonic distortion - voltage %
+  thdCurrent        Float?     // total harmonic distortion - current %
+  voltageUnbalance  Float?     // % unbalance
+  currentUnbalance  Float?     // % unbalance
+  // Vendor-specific extra data
+  extraDataJson     String?    // JSON for fields not in standard schema
+  createdAt         DateTime   @default(now())
+
+  @@index([meterId, timestamp])
+  @@index([timestamp])
+}
+
+model IoTApiKey {
+  id          String     @id @default(cuid())
+  gatewayId   String
+  gateway     IoTGateway @relation(fields: [gatewayId], references: [id])
+  keyHash     String     // full key stored (MVP); upgrade to bcrypt later
+  keyPrefix   String     // first 12 chars for lookup (vsi_ + 8 chars)
+  name        String     // descriptive label
+  isActive    Boolean    @default(true)
+  lastUsedAt  DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model MeterAlert {
+  id               String    @id @default(cuid())
+  clientId         String
+  client           Client    @relation(fields: [clientId], references: [id])
+  meterId          String?
+  meter            IoTMeter? @relation(fields: [meterId], references: [id])
+  type             String    // DEMAND_WARNING, DEMAND_CRITICAL, DEMAND_BREACH, PF_LOW, VOLTAGE_SAG, VOLTAGE_SWELL, THD_HIGH, METER_OFFLINE, GATEWAY_OFFLINE
+  severity         String    @default("WARNING") // INFO, WARNING, CRITICAL
+  parameterName    String?   // which parameter triggered: demandKVA, powerFactor, voltageR, etc.
+  actualValue      Float?
+  thresholdValue   Float?
+  message          String
+  acknowledgedAt   DateTime?
+  resolvedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@index([clientId, createdAt])
+  @@index([meterId, createdAt])
+}
+
+model IoTMonthlySummary {
+  id              String   @id @default(cuid())
+  meterId         String
+  meter           IoTMeter @relation(fields: [meterId], references: [id])
+  year            Int
+  month           Int
+  totalKwh        Float
+  peakDemandKW    Float?
+  peakDemandKVA   Float?
+  avgPowerFactor  Float?
+  minVoltage      Float?
+  maxVoltage      Float?
+  avgFrequency    Float?
+  alertCount      Int      @default(0)
+  readingCount    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([meterId, year, month])
 }
 
 model DiscomTemplate {

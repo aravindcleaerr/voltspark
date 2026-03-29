@@ -22,6 +22,13 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // IoT Metering
+  await prisma.ioTMonthlySummary.deleteMany();
+  await prisma.meterAlert.deleteMany();
+  await prisma.meterReading.deleteMany();
+  await prisma.ioTApiKey.deleteMany();
+  await prisma.ioTMeter.deleteMany();
+  await prisma.ioTGateway.deleteMany();
   // Kitchen Intelligence
   await prisma.kitchenApiKey.deleteMany();
   await prisma.monthlyKitchenSummary.deleteMany();
@@ -1063,7 +1070,7 @@ async function main() {
       industry: 'CNC Precision Machining & Aerospace Components',
       employeeCount: 45,
       accessMode: 'COLLABORATIVE',
-      enabledAddons: JSON.stringify(['KITCHEN']),
+      enabledAddons: JSON.stringify(['KITCHEN', 'IOT_METERING']),
       gridTariffRate: 8.2,
       solarTariffRate: 0,
       dgTariffRate: 18,
@@ -1890,6 +1897,244 @@ async function main() {
   });
 
   console.log('Monthly kitchen summaries seeded: 2 months');
+
+  // ============================================================
+  // IOT METERING — Gateway + Meters + Readings + Alerts
+  // ============================================================
+
+  const iotGateway = await prisma.ioTGateway.create({
+    data: {
+      clientId: demoClient.id,
+      name: 'Main LT Panel Gateway',
+      serialNumber: 'PAS600-PE-001',
+      gatewayType: 'PAS600',
+      make: 'SCHNEIDER',
+      firmwareVersion: '3.2.1',
+      ipAddress: '192.168.1.100',
+      location: 'Main LT Panel Room, Ground Floor',
+      mqttBrokerUrl: 'mqtts://broker.hivemq.com:8883',
+      mqttTopicPrefix: 'voltspark/precision-engineering/main-lt',
+      protocol: 'MQTT_WEBHOOK',
+      pushIntervalSeconds: 60,
+      isOnline: true,
+      lastSeenAt: new Date(),
+    },
+  });
+
+  // Create 3 IoT meters
+  const iotIncomer = await prisma.ioTMeter.create({
+    data: {
+      clientId: demoClient.id,
+      gatewayId: iotGateway.id,
+      energySourceId: dGrid.id,
+      name: 'Main Incomer',
+      meterSerial: 'EM7230-PE-001',
+      modbusAddress: 1,
+      make: 'SCHNEIDER',
+      model: 'EM7230',
+      meterType: 'INCOMER',
+      ctRatio: 500,
+      ratedVoltage: 415,
+      demandWarningPct: 80,
+      demandCriticalPct: 92,
+      pfLowThreshold: 0.90,
+      panelName: 'Main LT Panel',
+      circuitName: 'Incomer',
+      location: 'Ground Floor',
+    },
+  });
+
+  const iotCnc = await prisma.ioTMeter.create({
+    data: {
+      clientId: demoClient.id,
+      gatewayId: iotGateway.id,
+      name: 'CNC Bay Feeder',
+      meterSerial: 'EM6400-PE-001',
+      modbusAddress: 2,
+      make: 'SCHNEIDER',
+      model: 'EM6400NG+',
+      meterType: 'SUBMETER',
+      ctRatio: 200,
+      ratedVoltage: 415,
+      panelName: 'Main LT Panel',
+      circuitName: 'CNC Bay',
+      location: 'Production Floor',
+    },
+  });
+
+  const iotSolar = await prisma.ioTMeter.create({
+    data: {
+      clientId: demoClient.id,
+      gatewayId: iotGateway.id,
+      energySourceId: dSolar.id,
+      name: 'Solar Inverter',
+      meterSerial: 'EM6400-PE-002',
+      modbusAddress: 3,
+      make: 'SCHNEIDER',
+      model: 'EM6400NG+',
+      meterType: 'SOLAR',
+      ctRatio: 100,
+      ratedVoltage: 415,
+      panelName: 'Solar ACDB',
+      circuitName: 'Solar Output',
+      location: 'Rooftop',
+    },
+  });
+
+  // Create IoT API key
+  await prisma.ioTApiKey.create({
+    data: {
+      gatewayId: iotGateway.id,
+      keyHash: 'vsi_iot_demo_key_precision_eng_2026',
+      keyPrefix: 'vsi_iot_demo',
+      name: 'Production Gateway Key',
+    },
+  });
+
+  console.log('IoT Gateway created with 3 meters + API key');
+
+  // Generate 48 hours of meter readings (15-min intervals = 192 readings per meter)
+  const iotReadings: any[] = [];
+  const iotNow = new Date();
+  const metersToSeed = [
+    { meter: iotIncomer, baseKW: 120, pfBase: 0.94, vBase: 415, energyBase: 450000, iBase: 180 },
+    { meter: iotCnc, baseKW: 65, pfBase: 0.88, vBase: 412, energyBase: 200000, iBase: 100 },
+    { meter: iotSolar, baseKW: 0, pfBase: 0.99, vBase: 418, energyBase: 80000, iBase: 0 },
+  ];
+
+  for (const { meter, baseKW, pfBase, vBase, energyBase, iBase } of metersToSeed) {
+    let cumulativeKwh = energyBase;
+    for (let h = 48; h >= 0; h--) {
+      for (let m = 0; m < 60; m += 15) {
+        const ts = new Date(iotNow.getTime() - h * 3600 * 1000 - m * 60 * 1000);
+        const hour = ts.getHours();
+        // Simulate daily load curve: low at night, high during work hours
+        let loadFactor = 0.3; // night
+        if (hour >= 8 && hour < 18) loadFactor = 0.8 + Math.random() * 0.2; // work
+        else if (hour >= 6 && hour < 8) loadFactor = 0.5 + Math.random() * 0.2; // ramp-up
+        else if (hour >= 18 && hour < 21) loadFactor = 0.5 + Math.random() * 0.15; // ramp-down
+
+        // Solar: generates only during daytime
+        if (meter.id === iotSolar.id) {
+          if (hour >= 7 && hour < 17) {
+            const solarPeak = 42; // kW peak
+            const solarFactor = Math.sin((hour - 7) * Math.PI / 10) * (0.7 + Math.random() * 0.3);
+            loadFactor = solarFactor;
+            const kw = solarPeak * loadFactor;
+            cumulativeKwh += kw * 0.25;
+            iotReadings.push({
+              meterId: meter.id, timestamp: ts,
+              activePowerKW: kw,
+              apparentPowerKVA: kw / 0.99,
+              powerFactor: 0.99,
+              voltageR: vBase + (Math.random() - 0.5) * 6,
+              voltageY: vBase + (Math.random() - 0.5) * 6,
+              voltageB: vBase + (Math.random() - 0.5) * 6,
+              voltageAvg: vBase + (Math.random() - 0.5) * 3,
+              currentR: kw / (vBase * 1.732 * 0.99) * 1000 / 3,
+              frequencyHz: 49.95 + Math.random() * 0.1,
+              energyKwh: cumulativeKwh,
+              energyKwhExport: cumulativeKwh,
+              demandKW: kw,
+              demandKVA: kw / 0.99,
+              thdVoltage: 1.5 + Math.random() * 0.5,
+              thdCurrent: 3.0 + Math.random() * 2,
+            });
+          }
+          continue;
+        }
+
+        const kw = baseKW * loadFactor + (Math.random() - 0.5) * baseKW * 0.1;
+        const pf = pfBase + (Math.random() - 0.5) * 0.04;
+        const kva = kw / Math.max(pf, 0.5);
+        const kvar = Math.sqrt(Math.max(kva * kva - kw * kw, 0));
+        cumulativeKwh += kw * 0.25;
+        const v = vBase + (Math.random() - 0.5) * 8;
+        const i = iBase * loadFactor + (Math.random() - 0.5) * 10;
+
+        iotReadings.push({
+          meterId: meter.id, timestamp: ts,
+          activePowerKW: kw,
+          apparentPowerKVA: kva,
+          reactivePowerKVAR: kvar,
+          powerFactor: pf,
+          voltageR: v + (Math.random() - 0.5) * 3,
+          voltageY: v + (Math.random() - 0.5) * 3,
+          voltageB: v + (Math.random() - 0.5) * 3,
+          voltageAvg: v,
+          currentR: i + (Math.random() - 0.5) * 5,
+          currentY: i + (Math.random() - 0.5) * 5,
+          currentB: i + (Math.random() - 0.5) * 5,
+          currentAvg: i,
+          frequencyHz: 49.95 + Math.random() * 0.1,
+          energyKwh: cumulativeKwh,
+          demandKW: kw,
+          demandKVA: kva,
+          maxDemandKW: baseKW * 0.95,
+          maxDemandKVA: baseKW * 0.95 / pfBase,
+          thdVoltage: 2.0 + Math.random() * 1.5,
+          thdCurrent: 5.0 + Math.random() * 4,
+          voltageUnbalance: 0.5 + Math.random() * 1,
+          currentUnbalance: 1 + Math.random() * 2,
+        });
+      }
+    }
+  }
+
+  // Batch insert readings
+  for (let i = 0; i < iotReadings.length; i += 200) {
+    const batch = iotReadings.slice(i, i + 200);
+    for (const reading of batch) {
+      await prisma.meterReading.create({ data: reading });
+    }
+  }
+  console.log(`IoT readings seeded: ${iotReadings.length} readings`);
+
+  // Seed IoT alerts
+  const alertsData = [
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'DEMAND_WARNING', severity: 'WARNING', parameterName: 'demandKVA', actualValue: 210, thresholdValue: 200, message: 'Demand 210 kVA (84% of 250 kVA contracted)', createdAt: new Date(iotNow.getTime() - 12 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'PF_LOW', severity: 'WARNING', parameterName: 'powerFactor', actualValue: 0.87, thresholdValue: 0.90, message: 'Power factor 0.870 below threshold 0.90', createdAt: new Date(iotNow.getTime() - 8 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotCnc.id, type: 'THD_HIGH', severity: 'WARNING', parameterName: 'thdCurrent', actualValue: 12.5, thresholdValue: 10, message: 'Current THD 12.5% exceeds 10% threshold', createdAt: new Date(iotNow.getTime() - 4 * 3600 * 1000) },
+  ];
+  for (const alert of alertsData) {
+    await prisma.meterAlert.create({ data: alert });
+  }
+  console.log('IoT alerts seeded: 3 sample alerts');
+
+  // Seed IoT monthly summary
+  await prisma.ioTMonthlySummary.create({
+    data: {
+      meterId: iotIncomer.id,
+      year: 2026,
+      month: 2,
+      totalKwh: 85200,
+      peakDemandKW: 145,
+      peakDemandKVA: 156,
+      avgPowerFactor: 0.93,
+      minVoltage: 398,
+      maxVoltage: 428,
+      avgFrequency: 49.98,
+      alertCount: 5,
+      readingCount: 2880,
+    },
+  });
+  await prisma.ioTMonthlySummary.create({
+    data: {
+      meterId: iotIncomer.id,
+      year: 2026,
+      month: 3,
+      totalKwh: 78400,
+      peakDemandKW: 138,
+      peakDemandKVA: 148,
+      avgPowerFactor: 0.94,
+      minVoltage: 401,
+      maxVoltage: 425,
+      avgFrequency: 49.99,
+      alertCount: 3,
+      readingCount: 2784,
+    },
+  });
+  console.log('IoT monthly summaries seeded: 2 months');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');

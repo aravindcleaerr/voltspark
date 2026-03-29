@@ -33,5 +33,7 @@ export const config = {
     '/share',
     '/kitchen/:path*',
     '/kitchen',
+    '/iot/:path*',
+    '/iot',
   ],
 };

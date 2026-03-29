@@ -111,3 +111,55 @@ export const INDUSTRY_TYPES = [
 
 export const DEVIATION_THRESHOLD_WARNING = 10;
 export const DEVIATION_THRESHOLD_CRITICAL = 20;
+
+// ============================================================
+// IOT METERING CONSTANTS
+// ============================================================
+
+export const IOT_GATEWAY_TYPES = [
+  { value: 'PAS600', label: 'Schneider PAS600 Panel Server' },
+  { value: 'RASPBERRY_PI', label: 'Raspberry Pi Gateway' },
+  { value: 'INDUSTRIAL_PC', label: 'Industrial PC' },
+  { value: 'OTHER', label: 'Other' },
+] as const;
+
+export const IOT_METER_MAKES = [
+  { value: 'SCHNEIDER', label: 'Schneider Electric' },
+  { value: 'ABB', label: 'ABB' },
+  { value: 'SIEMENS', label: 'Siemens' },
+  { value: 'SECURE', label: 'Secure Meters' },
+  { value: 'ELMEASURE', label: 'Elmeasure' },
+  { value: 'OTHER', label: 'Other' },
+] as const;
+
+export const IOT_METER_TYPES = [
+  { value: 'INCOMER', label: 'Incomer / Main Panel' },
+  { value: 'SUBMETER', label: 'Sub-meter / Feeder' },
+  { value: 'DG', label: 'DG Set' },
+  { value: 'SOLAR', label: 'Solar Inverter' },
+  { value: 'OTHER', label: 'Other' },
+] as const;
+
+export const IOT_PROTOCOLS = [
+  { value: 'REST', label: 'REST API (direct push)' },
+  { value: 'MQTT_WEBHOOK', label: 'MQTT → Webhook' },
+  { value: 'MQTT_DIRECT', label: 'MQTT Direct (future)' },
+] as const;
+
+export const IOT_ALERT_TYPES = [
+  { value: 'DEMAND_WARNING', label: 'Demand Warning', color: 'yellow' },
+  { value: 'DEMAND_CRITICAL', label: 'Demand Critical', color: 'orange' },
+  { value: 'DEMAND_BREACH', label: 'Demand Breach', color: 'red' },
+  { value: 'PF_LOW', label: 'Low Power Factor', color: 'yellow' },
+  { value: 'VOLTAGE_SAG', label: 'Voltage Sag', color: 'orange' },
+  { value: 'VOLTAGE_SWELL', label: 'Voltage Swell', color: 'orange' },
+  { value: 'THD_HIGH', label: 'High THD', color: 'yellow' },
+  { value: 'METER_OFFLINE', label: 'Meter Offline', color: 'red' },
+  { value: 'GATEWAY_OFFLINE', label: 'Gateway Offline', color: 'red' },
+] as const;
+
+export const IOT_ALERT_SEVERITIES = [
+  { value: 'INFO', label: 'Info', color: 'blue' },
+  { value: 'WARNING', label: 'Warning', color: 'yellow' },
+  { value: 'CRITICAL', label: 'Critical', color: 'red' },
+] as const;

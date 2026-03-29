@@ -42,6 +42,8 @@ import {
   AlertTriangle,
   ChefHat,
   Wrench,
+  Cpu,
+  Radio,
 } from 'lucide-react';
 
 interface NavItem {
@@ -116,6 +118,15 @@ const kitchenNavSection: NavSection = {
   ],
 };
 
+const iotNavSection: NavSection = {
+  label: 'IoT Metering',
+  items: [
+    { name: 'IoT Dashboard', href: '/iot/dashboard', icon: Radio },
+    { name: 'Devices', href: '/iot/devices', icon: Cpu },
+    { name: 'IoT Alerts', href: '/iot/alerts', icon: AlertTriangle },
+  ],
+};
+
 const adminNav = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -184,6 +195,7 @@ export default function Sidebar({
   const [clients, setClients] = useState<ClientOption[]>([]);
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [hasKitchen, setHasKitchen] = useState(false);
+  const [hasIoT, setHasIoT] = useState(false);
 
   const activeClientName = (session?.user as any)?.activeClientName;
   const activeClientId = (session?.user as any)?.activeClientId;
@@ -208,15 +220,17 @@ export default function Sidebar({
             try {
               const addons: string[] = JSON.parse(data?.enabledAddons || '[]');
               setHasKitchen(addons.includes('KITCHEN'));
-            } catch { setHasKitchen(false); }
+              setHasIoT(addons.includes('IOT_METERING'));
+            } catch { setHasKitchen(false); setHasIoT(false); }
           })
-          .catch(() => setHasKitchen(false));
+          .catch(() => { setHasKitchen(false); setHasIoT(false); });
       };
       checkAddons();
       const timer = setTimeout(checkAddons, 1000);
       return () => clearTimeout(timer);
     } else {
       setHasKitchen(false);
+      setHasIoT(false);
     }
   }, [activeClientId]);
 
@@ -320,6 +334,10 @@ export default function Sidebar({
               {/* Show Kitchen Intelligence right after Overview */}
               {idx === 0 && hasKitchen && (
                 <NavSectionGroup section={kitchenNavSection} pathname={pathname} onClose={onClose} />
+              )}
+              {/* Show IoT Metering after Energy section */}
+              {idx === 1 && hasIoT && (
+                <NavSectionGroup section={iotNavSection} pathname={pathname} onClose={onClose} />
               )}
             </React.Fragment>
           ))}

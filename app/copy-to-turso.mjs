@@ -29,6 +29,9 @@ const tables = [
   // Kitchen Intelligence tables
   'DiscomTemplate', 'Kitchen', 'KitchenZone', 'KitchenApiKey',
   'TitanReading', 'DemandEvent', 'MonthlyKitchenSummary',
+  // IoT Metering tables
+  'IoTGateway', 'IoTMeter', 'IoTApiKey',
+  'MeterReading', 'MeterAlert', 'IoTMonthlySummary',
 ];
 
 async function main() {
