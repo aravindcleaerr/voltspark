@@ -43,6 +43,7 @@ model Client {
   powerFactorTarget Float?
   baselineYear      Int?
   baselineMonth     Int?
+  enabledAddons  String   @default("[]") // JSON array of enabled add-on codes: ["KITCHEN"]
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

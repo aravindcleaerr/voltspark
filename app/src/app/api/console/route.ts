@@ -53,6 +53,7 @@ export async function GET() {
         slug: client.slug,
         industry: client.industry,
         accessMode: client.accessMode,
+        enabledAddons: client.enabledAddons,
         stats: client._count,
         complianceScore: score,
         capaClosureRate: capaRate,

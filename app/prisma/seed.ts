@@ -1063,6 +1063,7 @@ async function main() {
       industry: 'CNC Precision Machining & Aerospace Components',
       employeeCount: 45,
       accessMode: 'COLLABORATIVE',
+      enabledAddons: JSON.stringify(['KITCHEN']),
       gridTariffRate: 8.2,
       solarTariffRate: 0,
       dgTariffRate: 18,

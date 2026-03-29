@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
-import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap } from 'lucide-react';
+import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat } from 'lucide-react';
 
 interface ClientSummary {
   id: string;
@@ -13,6 +13,7 @@ interface ClientSummary {
   slug: string;
   industry: string | null;
   accessMode: string;
+  enabledAddons: string;
   complianceScore: number;
   capaClosureRate: number;
   openFindings: number;
@@ -70,6 +71,25 @@ export default function ConsolePage() {
       await update(sessionData);
       router.push('/dashboard');
     }
+  };
+
+  const toggleKitchen = async (e: React.MouseEvent, client: ClientSummary) => {
+    e.stopPropagation();
+    const addons: string[] = JSON.parse(client.enabledAddons || '[]');
+    const enabled = !addons.includes('KITCHEN');
+    const res = await fetch(`/api/clients/${client.id}/addons`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ addon: 'KITCHEN', enabled }),
+    });
+    if (res.ok) {
+      // Refresh data
+      fetch('/api/console').then(r => r.json()).then(setData).catch(() => {});
+    }
+  };
+
+  const hasAddon = (client: ClientSummary, addon: string) => {
+    try { return JSON.parse(client.enabledAddons || '[]').includes(addon); } catch { return false; }
   };
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-gray-200 rounded w-48" /><div className="grid grid-cols-1 lg:grid-cols-2 gap-4">{[1,2].map(i => <div key={i} className="h-48 bg-gray-200 rounded-lg" />)}</div></div>;
@@ -160,6 +180,22 @@ export default function ConsolePage() {
                 {client.openFindings > 0 && (
                   <span className="text-orange-600 font-medium">{client.openFindings} open finding{client.openFindings !== 1 ? 's' : ''}</span>
                 )}
+              </div>
+
+              {/* Add-ons */}
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+                <span className="text-xs text-gray-400">Add-ons:</span>
+                <button
+                  onClick={(e) => toggleKitchen(e, client)}
+                  className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
+                    hasAddon(client, 'KITCHEN')
+                      ? 'bg-brand-50 border-brand-300 text-brand-700'
+                      : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-400'
+                  }`}
+                >
+                  <ChefHat className="h-3 w-3" />
+                  Kitchen {hasAddon(client, 'KITCHEN') ? '✓' : ''}
+                </button>
               </div>
             </button>
           ))}

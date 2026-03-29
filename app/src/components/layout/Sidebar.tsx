@@ -113,7 +113,6 @@ const kitchenNavSection: NavSection = {
     { name: 'Zones', href: '/kitchen/zones', icon: LayoutGrid },
     { name: 'Load Management', href: '/kitchen/load-management', icon: SlidersHorizontal },
     { name: 'Demand Events', href: '/kitchen/demand-events', icon: AlertTriangle },
-    { name: 'Kitchen Setup', href: '/kitchen/setup', icon: Wrench },
   ],
 };
 
@@ -202,16 +201,19 @@ export default function Sidebar({
 
   useEffect(() => {
     if (activeClientId) {
-      // Fetch with a small delay to ensure session cookie is set after client switch
-      const fetchKitchen = () => {
-        fetch('/api/kitchen')
+      const checkAddons = () => {
+        fetch('/api/clients/current')
           .then(r => { if (!r.ok) throw new Error('not ok'); return r.json(); })
-          .then(data => setHasKitchen(!!data?.id))
+          .then(data => {
+            try {
+              const addons: string[] = JSON.parse(data?.enabledAddons || '[]');
+              setHasKitchen(addons.includes('KITCHEN'));
+            } catch { setHasKitchen(false); }
+          })
           .catch(() => setHasKitchen(false));
       };
-      fetchKitchen();
-      // Retry once after 1s in case session wasn't ready
-      const timer = setTimeout(fetchKitchen, 1000);
+      checkAddons();
+      const timer = setTimeout(checkAddons, 1000);
       return () => clearTimeout(timer);
     } else {
       setHasKitchen(false);
