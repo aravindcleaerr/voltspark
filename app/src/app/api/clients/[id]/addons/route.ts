@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'addon (string) and enabled (boolean) required' }, { status: 400 });
   }
 
-  const VALID_ADDONS = ['KITCHEN', 'IOT_METERING'];
+  const VALID_ADDONS = ['KITCHEN', 'IOT_METERING', 'POWER_QUALITY'];
   if (!VALID_ADDONS.includes(addon)) {
     return NextResponse.json({ error: `Invalid add-on: ${addon}. Valid: ${VALID_ADDONS.join(', ')}` }, { status: 400 });
   }

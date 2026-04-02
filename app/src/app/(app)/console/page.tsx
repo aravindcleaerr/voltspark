@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
-import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat, Radio } from 'lucide-react';
+import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat, Radio, Activity } from 'lucide-react';
 
 interface ClientSummary {
   id: string;
@@ -205,6 +205,17 @@ export default function ConsolePage() {
                 >
                   <Radio className="h-3 w-3" />
                   IoT Metering {hasAddon(client, 'IOT_METERING') ? '✓' : ''}
+                </button>
+                <button
+                  onClick={(e) => toggleAddon(e, client, 'POWER_QUALITY')}
+                  className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
+                    hasAddon(client, 'POWER_QUALITY')
+                      ? 'bg-brand-50 border-brand-300 text-brand-700'
+                      : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-400'
+                  }`}
+                >
+                  <Activity className="h-3 w-3" />
+                  Power Quality {hasAddon(client, 'POWER_QUALITY') ? '✓' : ''}
                 </button>
               </div>
             </button>

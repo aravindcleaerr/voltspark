@@ -32,6 +32,8 @@ const tables = [
   // IoT Metering tables
   'IoTGateway', 'IoTMeter', 'IoTApiKey',
   'MeterReading', 'MeterAlert', 'IoTMonthlySummary',
+  // Power Quality tables
+  'PQEvent', 'PQSnapshot',
 ];
 
 async function main() {

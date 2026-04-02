@@ -35,5 +35,7 @@ export const config = {
     '/kitchen',
     '/iot/:path*',
     '/iot',
+    '/pq/:path*',
+    '/pq',
   ],
 };

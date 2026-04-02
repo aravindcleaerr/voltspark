@@ -44,6 +44,7 @@ import {
   Wrench,
   Cpu,
   Radio,
+  Activity,
 } from 'lucide-react';
 
 interface NavItem {
@@ -115,6 +116,15 @@ const kitchenNavSection: NavSection = {
     { name: 'Zones', href: '/kitchen/zones', icon: LayoutGrid },
     { name: 'Load Management', href: '/kitchen/load-management', icon: SlidersHorizontal },
     { name: 'Demand Events', href: '/kitchen/demand-events', icon: AlertTriangle },
+  ],
+};
+
+const pqNavSection: NavSection = {
+  label: 'Power Quality',
+  items: [
+    { name: 'PQ Dashboard', href: '/pq/dashboard', icon: Activity },
+    { name: 'PQ Events', href: '/pq/events', icon: AlertTriangle },
+    { name: 'PQ Trends', href: '/pq/trends', icon: Gauge },
   ],
 };
 
@@ -196,6 +206,7 @@ export default function Sidebar({
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [hasKitchen, setHasKitchen] = useState(false);
   const [hasIoT, setHasIoT] = useState(false);
+  const [hasPQ, setHasPQ] = useState(false);
 
   const activeClientName = (session?.user as any)?.activeClientName;
   const activeClientId = (session?.user as any)?.activeClientId;
@@ -221,9 +232,10 @@ export default function Sidebar({
               const addons: string[] = JSON.parse(data?.enabledAddons || '[]');
               setHasKitchen(addons.includes('KITCHEN'));
               setHasIoT(addons.includes('IOT_METERING'));
-            } catch { setHasKitchen(false); setHasIoT(false); }
+              setHasPQ(addons.includes('POWER_QUALITY'));
+            } catch { setHasKitchen(false); setHasIoT(false); setHasPQ(false); }
           })
-          .catch(() => { setHasKitchen(false); setHasIoT(false); });
+          .catch(() => { setHasKitchen(false); setHasIoT(false); setHasPQ(false); });
       };
       checkAddons();
       const timer = setTimeout(checkAddons, 1000);
@@ -231,6 +243,7 @@ export default function Sidebar({
     } else {
       setHasKitchen(false);
       setHasIoT(false);
+      setHasPQ(false);
     }
   }, [activeClientId]);
 
@@ -338,6 +351,10 @@ export default function Sidebar({
               {/* Show IoT Metering after Energy section */}
               {idx === 1 && hasIoT && (
                 <NavSectionGroup section={iotNavSection} pathname={pathname} onClose={onClose} />
+              )}
+              {/* Show Power Quality after Energy section */}
+              {idx === 1 && hasPQ && (
+                <NavSectionGroup section={pqNavSection} pathname={pathname} onClose={onClose} />
               )}
             </React.Fragment>
           ))}

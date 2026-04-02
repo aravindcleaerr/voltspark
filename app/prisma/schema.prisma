@@ -79,6 +79,9 @@ model Client {
   iotGateways        IoTGateway[]
   iotMeters          IoTMeter[]
   meterAlerts        MeterAlert[]
+  // Power Quality
+  pqEvents           PQEvent[]
+  pqSnapshots        PQSnapshot[]
 }
 
 model Membership {
@@ -1103,6 +1106,8 @@ model IoTMeter {
   readings         MeterReading[]
   alerts           MeterAlert[]
   monthlySummaries IoTMonthlySummary[]
+  pqEvents         PQEvent[]
+  pqSnapshots      PQSnapshot[]
 
   @@index([clientId])
   @@index([gatewayId])
@@ -1204,6 +1209,71 @@ model IoTMonthlySummary {
   updatedAt       DateTime @updatedAt
 
   @@unique([meterId, year, month])
+}
+
+// ============================================================
+// POWER QUALITY MODULE
+// ============================================================
+
+model PQEvent {
+  id               String    @id @default(cuid())
+  clientId         String
+  client           Client    @relation(fields: [clientId], references: [id])
+  meterId          String
+  meter            IoTMeter  @relation(fields: [meterId], references: [id])
+  type             String    // VOLTAGE_SAG, VOLTAGE_SWELL, THD_V_HIGH, THD_I_HIGH, PF_LOW, VOLTAGE_UNBALANCE, FREQUENCY_DEVIATION
+  severity         String    @default("WARNING") // INFO, WARNING, CRITICAL
+  phase            String?   // R, Y, B, ALL
+  actualValue      Float
+  thresholdValue   Float
+  nominalValue     Float?    // reference value (e.g., 415V nominal)
+  durationMs       Int?      // event duration in milliseconds (for sags/swells)
+  message          String
+  readingId        String?   // reference to MeterReading that triggered this
+  resolvedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@index([clientId, createdAt])
+  @@index([meterId, createdAt])
+  @@index([type, createdAt])
+}
+
+model PQSnapshot {
+  id                 String   @id @default(cuid())
+  clientId           String
+  client             Client   @relation(fields: [clientId], references: [id])
+  meterId            String
+  meter              IoTMeter @relation(fields: [meterId], references: [id])
+  date               DateTime // snapshot date (daily)
+  // Voltage stats
+  voltageAvgMin      Float?
+  voltageAvgMax      Float?
+  voltageAvgMean     Float?
+  voltageSagCount    Int      @default(0)
+  voltageSwellCount  Int      @default(0)
+  voltageUnbalanceMax Float?
+  // THD stats
+  thdVoltageMax      Float?
+  thdVoltageMean     Float?
+  thdCurrentMax      Float?
+  thdCurrentMean     Float?
+  thdExceedanceCount Int      @default(0) // readings where THD > threshold
+  // Power factor
+  pfMin              Float?
+  pfMean             Float?
+  pfBelowTarget      Int      @default(0) // readings where PF < target
+  // Frequency
+  freqMin            Float?
+  freqMax            Float?
+  freqMean           Float?
+  // Compliance score (0-100, weighted across EN 50160 criteria)
+  complianceScore    Float?
+  totalReadings      Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([meterId, date])
+  @@index([clientId, date])
 }
 
 model DiscomTemplate {

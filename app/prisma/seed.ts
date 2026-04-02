@@ -22,6 +22,9 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Power Quality
+  await prisma.pQSnapshot.deleteMany();
+  await prisma.pQEvent.deleteMany();
   // IoT Metering
   await prisma.ioTMonthlySummary.deleteMany();
   await prisma.meterAlert.deleteMany();
@@ -1070,7 +1073,7 @@ async function main() {
       industry: 'CNC Precision Machining & Aerospace Components',
       employeeCount: 45,
       accessMode: 'COLLABORATIVE',
-      enabledAddons: JSON.stringify(['KITCHEN', 'IOT_METERING']),
+      enabledAddons: JSON.stringify(['KITCHEN', 'IOT_METERING', 'POWER_QUALITY']),
       gridTariffRate: 8.2,
       solarTariffRate: 0,
       dgTariffRate: 18,
@@ -2135,6 +2138,65 @@ async function main() {
     },
   });
   console.log('IoT monthly summaries seeded: 2 months');
+
+  // ============================================================
+  // POWER QUALITY — PQ Events + Snapshots (from IoT meter data)
+  // ============================================================
+
+  const pqNow = new Date();
+  const pqEvents = [
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'VOLTAGE_SAG', severity: 'WARNING', actualValue: 372, thresholdValue: 373.5, nominalValue: 415, message: 'Voltage sag: 372.0V (-10.4% below 415V nominal)', createdAt: new Date(pqNow.getTime() - 36 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'THD_V_HIGH', severity: 'WARNING', actualValue: 9.2, thresholdValue: 8.0, message: 'Voltage THD 9.2% exceeds 8.0% limit', createdAt: new Date(pqNow.getTime() - 24 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotCnc.id, type: 'THD_V_HIGH', severity: 'CRITICAL', actualValue: 13.5, thresholdValue: 8.0, message: 'Voltage THD 13.5% exceeds 8.0% limit', createdAt: new Date(pqNow.getTime() - 18 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'PF_LOW', severity: 'WARNING', phase: 'ALL', actualValue: 0.87, thresholdValue: 0.90, message: 'Power factor 0.870 below target 0.90', createdAt: new Date(pqNow.getTime() - 12 * 3600 * 1000) },
+    { clientId: demoClient.id, meterId: iotIncomer.id, type: 'VOLTAGE_SWELL', severity: 'WARNING', actualValue: 458, thresholdValue: 456.5, nominalValue: 415, message: 'Voltage swell: 458.0V (+10.4% above 415V nominal)', createdAt: new Date(pqNow.getTime() - 6 * 3600 * 1000) },
+  ];
+  for (const ev of pqEvents) {
+    await prisma.pQEvent.create({ data: ev });
+  }
+
+  // PQ Snapshots — 7 days for incomer and CNC meters
+  for (let d = 6; d >= 0; d--) {
+    const snapDate = new Date(pqNow);
+    snapDate.setDate(snapDate.getDate() - d);
+    snapDate.setHours(0, 0, 0, 0);
+    const dayVariance = Math.random() * 10;
+
+    await prisma.pQSnapshot.create({
+      data: {
+        clientId: demoClient.id, meterId: iotIncomer.id, date: snapDate,
+        voltageAvgMin: 398 + dayVariance, voltageAvgMax: 425 - dayVariance / 2, voltageAvgMean: 412 + dayVariance / 3,
+        voltageSagCount: Math.floor(Math.random() * 3), voltageSwellCount: Math.floor(Math.random() * 2),
+        voltageUnbalanceMax: 0.8 + Math.random() * 1.2,
+        thdVoltageMax: 5.5 + Math.random() * 4, thdVoltageMean: 3.2 + Math.random() * 2,
+        thdCurrentMax: 8 + Math.random() * 6, thdCurrentMean: 5.5 + Math.random() * 3,
+        thdExceedanceCount: Math.floor(Math.random() * 5),
+        pfMin: 0.86 + Math.random() * 0.06, pfMean: 0.92 + Math.random() * 0.04,
+        pfBelowTarget: Math.floor(Math.random() * 8),
+        freqMin: 49.92 + Math.random() * 0.06, freqMax: 50.02 + Math.random() * 0.06, freqMean: 49.97 + Math.random() * 0.04,
+        complianceScore: 70 + Math.floor(Math.random() * 25),
+        totalReadings: 90 + Math.floor(Math.random() * 10),
+      },
+    });
+
+    await prisma.pQSnapshot.create({
+      data: {
+        clientId: demoClient.id, meterId: iotCnc.id, date: snapDate,
+        voltageAvgMin: 395 + dayVariance, voltageAvgMax: 422 - dayVariance / 2, voltageAvgMean: 409 + dayVariance / 3,
+        voltageSagCount: Math.floor(Math.random() * 2), voltageSwellCount: Math.floor(Math.random() * 1),
+        voltageUnbalanceMax: 1.0 + Math.random() * 1.5,
+        thdVoltageMax: 6 + Math.random() * 5, thdVoltageMean: 4.0 + Math.random() * 3,
+        thdCurrentMax: 10 + Math.random() * 6, thdCurrentMean: 7 + Math.random() * 4,
+        thdExceedanceCount: Math.floor(Math.random() * 8),
+        pfMin: 0.82 + Math.random() * 0.06, pfMean: 0.88 + Math.random() * 0.05,
+        pfBelowTarget: Math.floor(Math.random() * 15),
+        freqMin: 49.90 + Math.random() * 0.08, freqMax: 50.04 + Math.random() * 0.06, freqMean: 49.96 + Math.random() * 0.05,
+        complianceScore: 55 + Math.floor(Math.random() * 30),
+        totalReadings: 90 + Math.floor(Math.random() * 10),
+      },
+    });
+  }
+  console.log('PQ events seeded: 5 events, 14 daily snapshots (7 days x 2 meters)');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
