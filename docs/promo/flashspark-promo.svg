@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e3a5f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#facc15"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)" rx="0"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="#60a5fa" stroke-width="1">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+
+  <!-- Decorative arc/flash burst -->
+  <circle cx="950" cy="180" r="120" fill="none" stroke="#facc15" stroke-width="2" opacity="0.15"/>
+  <circle cx="950" cy="180" r="80" fill="none" stroke="#facc15" stroke-width="1.5" opacity="0.1"/>
+  <circle cx="950" cy="180" r="160" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.08"/>
+
+  <!-- Lightning bolt icon -->
+  <g transform="translate(920, 120)">
+    <polygon points="30,0 10,50 25,50 15,90 55,35 38,35 50,0" fill="url(#bolt)" opacity="0.9"/>
+  </g>
+
+  <!-- Top accent line -->
+  <rect x="80" y="60" width="100" height="4" rx="2" fill="url(#accent)"/>
+
+  <!-- App name -->
+  <text x="80" y="130" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="56" font-weight="800" fill="#ffffff" letter-spacing="-1">
+    FlashSpark
+  </text>
+
+  <!-- Tagline -->
+  <text x="80" y="175" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="24" fill="#93c5fd" font-weight="400">
+    Arc Flash Analysis Made Simple
+  </text>
+
+  <!-- Main headline -->
+  <text x="80" y="250" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="36" fill="#ffffff" font-weight="600">
+    IEEE 1584-2018 Compliant
+  </text>
+  <text x="80" y="295" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="36" fill="#ffffff" font-weight="600">
+    Arc Flash Calculator
+  </text>
+
+  <!-- Feature pills -->
+  <g transform="translate(80, 330)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="200" height="40" rx="20" fill="#1e40af" opacity="0.6"/>
+    <text x="100" y="26" font-family="system-ui, sans-serif" font-size="15" fill="#93c5fd" text-anchor="middle" font-weight="500">
+      IS 16687 / NFPA 70E
+    </text>
+
+    <!-- Pill 2 -->
+    <rect x="215" y="0" width="230" height="40" rx="20" fill="#1e40af" opacity="0.6"/>
+    <text x="330" y="26" font-family="system-ui, sans-serif" font-size="15" fill="#93c5fd" text-anchor="middle" font-weight="500">
+      55+ Indian Devices Built-in
+    </text>
+
+    <!-- Pill 3 -->
+    <rect x="460" y="0" width="200" height="40" rx="20" fill="#1e40af" opacity="0.6"/>
+    <text x="560" y="26" font-family="system-ui, sans-serif" font-size="15" fill="#93c5fd" text-anchor="middle" font-weight="500">
+      Auto SLD Generation
+    </text>
+  </g>
+
+  <!-- Feature list -->
+  <g transform="translate(80, 410)" font-family="system-ui, sans-serif" font-size="17" fill="#cbd5e1">
+    <g>
+      <circle cx="8" cy="-5" r="4" fill="#34d399"/>
+      <text x="22" y="0">Short circuit + incident energy calculations</text>
+    </g>
+    <g transform="translate(0, 32)">
+      <circle cx="8" cy="-5" r="4" fill="#34d399"/>
+      <text x="22" y="0">PDF reports &amp; arc flash labels</text>
+    </g>
+    <g transform="translate(0, 64)">
+      <circle cx="8" cy="-5" r="4" fill="#34d399"/>
+      <text x="22" y="0">MCCB, ACB, Relay, Fuse — all protective devices</text>
+    </g>
+  </g>
+
+  <!-- CTA banner -->
+  <rect x="80" y="540" width="260" height="50" rx="25" fill="url(#accent)"/>
+  <text x="210" y="572" font-family="system-ui, sans-serif" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="700">
+    FREE During Beta
+  </text>
+
+  <!-- URL -->
+  <text x="370" y="572" font-family="system-ui, sans-serif" font-size="18" fill="#94a3b8" font-weight="400">
+    flash-spark.vercel.app
+  </text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="622" width="1200" height="8" fill="url(#accent)"/>
+
+  <!-- Made in India badge -->
+  <g transform="translate(1020, 540)">
+    <rect x="0" y="0" width="140" height="50" rx="25" fill="#1e40af" opacity="0.4" stroke="#3b82f6" stroke-width="1"/>
+    <text x="70" y="22" font-family="system-ui, sans-serif" font-size="20" fill="#ffffff" text-anchor="middle">Made in</text>
+    <text x="70" y="42" font-family="system-ui, sans-serif" font-size="16" fill="#fb923c" text-anchor="middle" font-weight="700">INDIA</text>
+  </g>
+</svg>

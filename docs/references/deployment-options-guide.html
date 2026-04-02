@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Deployment Options — Complete Reference Guide</title>
+    <style>
+        :root {
+            --brand: #2563eb;
+            --brand-light: #dbeafe;
+            --green: #16a34a;
+            --green-light: #dcfce7;
+            --yellow: #ca8a04;
+            --yellow-light: #fef9c3;
+            --red: #dc2626;
+            --red-light: #fee2e2;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background: var(--gray-50);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+        }
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header .subtitle { font-size: 1.1rem; opacity: 0.85; }
+        .header .meta { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .toc h2 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--brand); }
+        .toc ol { padding-left: 1.5rem; }
+        .toc li { margin-bottom: 0.5rem; }
+        .toc a { color: var(--brand); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .toc ol ol { margin-top: 0.3rem; }
+        .toc ol ol li { font-size: 0.9rem; margin-bottom: 0.3rem; }
+
+        /* Sections */
+        .section {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            font-size: 1.5rem;
+            color: var(--brand);
+            border-bottom: 2px solid var(--brand-light);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .section h3 {
+            font-size: 1.15rem;
+            color: var(--gray-700);
+            margin: 1.5rem 0 0.75rem;
+        }
+        .section h4 {
+            font-size: 1rem;
+            color: var(--gray-700);
+            margin: 1rem 0 0.5rem;
+        }
+        .section p { margin-bottom: 0.75rem; color: var(--gray-700); }
+
+        /* Info boxes */
+        .info-box {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .info-box.blue { background: var(--brand-light); border-left: 4px solid var(--brand); }
+        .info-box.green { background: var(--green-light); border-left: 4px solid var(--green); }
+        .info-box.yellow { background: var(--yellow-light); border-left: 4px solid var(--yellow); }
+        .info-box.red { background: var(--red-light); border-left: 4px solid var(--red); }
+        .info-box strong { display: block; margin-bottom: 0.25rem; }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        thead { background: var(--gray-900); color: white; }
+        th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: top;
+        }
+        tbody tr:hover { background: var(--gray-50); }
+        tbody tr:nth-child(even) { background: var(--gray-50); }
+        tbody tr:nth-child(even):hover { background: var(--gray-100); }
+
+        /* Score badges */
+        .score {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-align: center;
+            min-width: 2.5rem;
+        }
+        .score.high { background: var(--green-light); color: var(--green); }
+        .score.mid { background: var(--yellow-light); color: var(--yellow); }
+        .score.low { background: var(--red-light); color: var(--red); }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .tag.yes { background: var(--green-light); color: var(--green); }
+        .tag.no { background: var(--red-light); color: var(--red); }
+        .tag.partial { background: var(--yellow-light); color: var(--yellow); }
+        .tag.info { background: var(--brand-light); color: var(--brand); }
+
+        /* Definition lists */
+        .def-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 0;
+            margin: 1rem 0;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .def-grid dt {
+            padding: 0.75rem 1rem;
+            background: var(--gray-100);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .def-grid dd {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        /* Comparison cards */
+        .combo-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .combo-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 1.25rem;
+            position: relative;
+        }
+        .combo-card.recommended {
+            border-color: var(--green);
+            background: linear-gradient(to bottom, var(--green-light), white);
+        }
+        .combo-card .rank {
+            position: absolute;
+            top: -10px;
+            right: 12px;
+            background: var(--gray-900);
+            color: white;
+            padding: 0.2rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .combo-card.recommended .rank { background: var(--green); }
+        .combo-card h4 { margin-bottom: 0.5rem; font-size: 1.05rem; }
+        .combo-card .combo-meta { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.5rem; }
+        .combo-card ul { padding-left: 1.2rem; font-size: 0.85rem; color: var(--gray-700); }
+        .combo-card li { margin-bottom: 0.25rem; }
+
+        /* Checklist */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 1.75rem;
+            position: relative;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Code blocks */
+        code {
+            background: var(--gray-100);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+        }
+        pre {
+            background: var(--gray-900);
+            color: #e5e7eb;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        /* Decision tree */
+        .decision-tree {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: var(--gray-50);
+        }
+        .decision-tree .q {
+            font-weight: 700;
+            color: var(--brand);
+            margin-bottom: 0.5rem;
+        }
+        .decision-tree .branch {
+            padding-left: 1.5rem;
+            border-left: 3px solid var(--gray-300);
+            margin: 0.5rem 0;
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+        .decision-tree .branch .label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .decision-tree .branch .result {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        .decision-tree .branch.go {
+            border-left-color: var(--green);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+            font-size: 0.8rem;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            .header { break-after: avoid; }
+            .section { break-inside: avoid; border: 1px solid #ccc; }
+            .table-wrapper { overflow: visible; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header { padding: 2rem 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            .def-grid { grid-template-columns: 1fr; }
+            .def-grid dt { border-right: none; }
+            table { font-size: 0.75rem; }
+            th, td { padding: 0.4rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container">
+        <h1>Web Deployment Options &mdash; Complete Reference Guide</h1>
+        <div class="subtitle">Hosting Platforms, Databases, and Deployment Strategies for Modern Web Apps</div>
+        <div class="meta">Prepared by Akshaya Createch &bull; Last Updated: February 2026 &bull; Version 1.0</div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ol>
+            <li><a href="#concepts">Key Concepts &amp; Terminology</a>
+                <ol>
+                    <li><a href="#hosting-terms">Hosting Terminology</a></li>
+                    <li><a href="#database-terms">Database Terminology</a></li>
+                    <li><a href="#deployment-models">Deployment Models Explained</a></li>
+                </ol>
+            </li>
+            <li><a href="#hosting">Hosting Platforms Comparison</a>
+                <ol>
+                    <li><a href="#hosting-columns">Column Definitions</a></li>
+                    <li><a href="#hosting-matrix">Comparison Matrix</a></li>
+                    <li><a href="#hosting-details">Detailed Platform Profiles</a></li>
+                </ol>
+            </li>
+            <li><a href="#databases">Database Options Comparison</a>
+                <ol>
+                    <li><a href="#db-columns">Column Definitions</a></li>
+                    <li><a href="#db-matrix">Comparison Matrix</a></li>
+                    <li><a href="#db-details">Detailed Database Profiles</a></li>
+                </ol>
+            </li>
+            <li><a href="#combos">Recommended Combinations</a></li>
+            <li><a href="#decision-tree">Decision Tree &mdash; How to Choose</a></li>
+            <li><a href="#framework-compat">Framework Compatibility Matrix</a></li>
+            <li><a href="#migration">Migration Effort Guide</a></li>
+            <li><a href="#security">Security &amp; Compliance Considerations</a></li>
+            <li><a href="#cost-projection">Cost Projection &mdash; Free to Paid</a></li>
+            <li><a href="#deployment-checklist">Deployment Checklist</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+        </ol>
+    </div>
+
+    <!-- SECTION 1: KEY CONCEPTS -->
+    <div class="section" id="concepts">
+        <h2>1. Key Concepts &amp; Terminology</h2>
+
+        <h3 id="hosting-terms">1.1 Hosting Terminology</h3>
+        <dl class="def-grid">
+            <dt>Bandwidth</dt>
+            <dd>Total data transferred from server to users per month. Every page load (HTML, CSS, JS, images) consumes bandwidth. A typical page = 1-3 MB. So 100 GB &asymp; 30,000&ndash;100,000 page loads/month. When exhausted, your site stops serving or gets throttled.</dd>
+
+            <dt>Compute / Invocations</dt>
+            <dd>Server-side processing capacity. Each time a user loads a page with server-side logic (API call, database query, SSR), that's one "invocation." 150K/month &asymp; 5,000 requests/day. This is the brain of your app &mdash; when exhausted, your app's dynamic features stop working.</dd>
+
+            <dt>Build Minutes</dt>
+            <dd>Time spent compiling/building your app during deployment. Each <code>git push</code> triggers a build (typically 1-5 minutes for Next.js). 6,000 min/month = ~1,200 deployments. Rarely a limiting factor unless you push very frequently.</dd>
+
+            <dt>Cold Start</dt>
+            <dd>When no one visits for a while, serverless platforms "sleep" your code. The next visitor must wait while the platform "wakes up" your app. <strong>0s</strong> = always ready. <strong>1-3s</strong> = noticeable but acceptable. <strong>25-30s</strong> = terrible UX, visitors will leave. This is often the #1 UX differentiator between platforms.</dd>
+
+            <dt>Edge Network</dt>
+            <dd>A global network of servers (CDN) that serves your content from the nearest location to the user. Cloudflare has 300+ locations, Vercel has 70+. Edge deployment means your app runs close to users worldwide, reducing latency.</dd>
+
+            <dt>Serverless</dt>
+            <dd>Your code runs in short-lived containers that spin up on demand and shut down after use. You pay only for actual usage, not idle time. Trade-off: cold starts. Most modern platforms (Vercel, Cloudflare, AWS Lambda) use this model.</dd>
+
+            <dt>SSR (Server-Side Rendering)</dt>
+            <dd>HTML is generated on the server for each request. Requires compute resources. Next.js Server Components use this approach. Contrast with SSG (Static Site Generation) where HTML is pre-built at deploy time.</dd>
+
+            <dt>ISR (Incremental Static Regeneration)</dt>
+            <dd>A Next.js feature that rebuilds static pages in the background at configurable intervals. Combines the speed of static pages with the freshness of server rendering. Not all platforms support this equally.</dd>
+        </dl>
+
+        <h3 id="database-terms">1.2 Database Terminology</h3>
+        <dl class="def-grid">
+            <dt>SQLite</dt>
+            <dd>A lightweight, file-based database that stores everything in a single <code>.db</code> file. No separate server needed. Perfect for development and small apps. Limitation: doesn't work on serverless platforms (no persistent filesystem). Requires a cloud-hosted version (Turso, D1) for deployment.</dd>
+
+            <dt>PostgreSQL</dt>
+            <dd>The industry-standard open-source relational database. Powerful, feature-rich, with strong data integrity. Runs as a separate server. Supported by all major cloud platforms. The safest long-term choice for production apps.</dd>
+
+            <dt>ORM (Prisma)</dt>
+            <dd>Object-Relational Mapping &mdash; a tool that lets you write database queries in TypeScript instead of raw SQL. Prisma generates type-safe queries, handles migrations, and supports multiple databases. Changing databases requires updating the Prisma <code>provider</code> and potentially adjusting the schema.</dd>
+
+            <dt>Connection Pooling</dt>
+            <dd>In serverless environments, each function invocation creates a new database connection. Too many connections can overwhelm the database. Connection pooling (e.g., Prisma Accelerate, PgBouncer, Neon Pooler) manages a shared pool of connections to prevent this.</dd>
+
+            <dt>Database Adapter</dt>
+            <dd>A package that bridges Prisma with a specific database driver. Examples: <code>@prisma/adapter-libsql</code> (for Turso), <code>@prisma/adapter-neon</code> (for Neon serverless), <code>@prisma/adapter-d1</code> (for Cloudflare D1). The adapter handles protocol differences between Prisma and the database.</dd>
+
+            <dt>Cold Start (Database)</dt>
+            <dd>Same as hosting cold starts, but for the database. Some free-tier databases "sleep" after inactivity. Turso: never sleeps. Neon: sleeps after 5 min (1-3s wake). Supabase: sleeps after 7 days (requires manual wake-up click).</dd>
+
+            <dt>Migrations</dt>
+            <dd>Schema changes (adding tables, columns, etc.) tracked as versioned SQL files. <code>prisma migrate dev</code> generates migration files. Some cloud databases (Turso, D1) don't support Prisma Migrate directly &mdash; you use <code>prisma migrate diff</code> instead.</dd>
+        </dl>
+
+        <h3 id="deployment-models">1.3 Deployment Models Explained</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>How It Works</th>
+                        <th>Cold Start</th>
+                        <th>Cost Model</th>
+                        <th>Best For</th>
+                        <th>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Serverless Functions</strong></td>
+                        <td>Code runs in short-lived containers that spin up per request and shut down after ~5-15 min idle</td>
+                        <td>1-8 seconds</td>
+                        <td>Pay per invocation</td>
+                        <td>APIs, SSR pages, low-to-medium traffic</td>
+                        <td>Vercel, AWS Lambda, Netlify Functions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Edge Functions</strong></td>
+                        <td>Code runs on globally distributed edge network (300+ locations), very close to users</td>
+                        <td>Near zero</td>
+                        <td>Pay per request</td>
+                        <td>Global apps, auth, redirects, personalization</td>
+                        <td>Cloudflare Workers, Vercel Edge, Deno Deploy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Container / VPS</strong></td>
+                        <td>Your app runs in an always-on container or virtual machine. Traditional server model.</td>
+                        <td>None (always on)</td>
+                        <td>Pay per hour/month</td>
+                        <td>Full control, persistent connections, background jobs</td>
+                        <td>Railway, Render, Fly.io, DigitalOcean, AWS EC2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Static + CDN</strong></td>
+                        <td>Pre-built HTML/CSS/JS served from CDN. No server logic.</td>
+                        <td>None</td>
+                        <td>Pay per bandwidth (often free)</td>
+                        <td>Blogs, landing pages, documentation sites</td>
+                        <td>GitHub Pages, Cloudflare Pages, Netlify (static)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 2: HOSTING PLATFORMS -->
+    <div class="section" id="hosting">
+        <h2>2. Hosting Platforms Comparison</h2>
+
+        <h3 id="hosting-columns">2.1 Column Definitions</h3>
+        <dl class="def-grid">
+            <dt>Platform</dt>
+            <dd>The hosting service name and its deployment model.</dd>
+
+            <dt>Bandwidth</dt>
+            <dd>Monthly data transfer limit. How much content can be served to visitors. 100 GB is generous for most apps. "Unlimited" (Cloudflare) means no cap, but fair-use policies apply.</dd>
+
+            <dt>Compute</dt>
+            <dd>Server-side processing allowance. Measured in invocations (function calls), requests, or compute hours depending on the platform. This powers your API routes, database queries, and SSR pages.</dd>
+
+            <dt>Build Minutes</dt>
+            <dd>Minutes available per month for compiling your app during deployments. A Next.js build typically takes 1-5 minutes. 6,000 min = plenty of room for frequent deploys.</dd>
+
+            <dt>Cold Start</dt>
+            <dd>Time for the first request after the app has been idle. Lower is better. 0s = always warm. &gt;10s = unacceptable for most users.</dd>
+
+            <dt>Framework Support</dt>
+            <dd>How well the platform handles your web framework (Next.js, React, Vue, etc.). "First-class" means native, optimized support. "Via adapter" means it works through a third-party bridge.</dd>
+
+            <dt>Credit Card</dt>
+            <dd>Whether a credit card is required to sign up for the free tier. "No" is preferred &mdash; zero risk of unexpected charges.</dd>
+
+            <dt>Commercial Use</dt>
+            <dd>Whether the free tier allows business/client projects. Vercel Hobby is personal-only. Cloudflare allows commercial use on free tier.</dd>
+
+            <dt>Permanent Free</dt>
+            <dd>Whether the free tier lasts forever or is a time-limited trial. "Yes" = free indefinitely within limits. "No" = trial that expires.</dd>
+
+            <dt>Score</dt>
+            <dd>Weighted overall rating (out of 10) considering: generous limits, cold start performance, framework support, ease of use, no credit card requirement, and long-term viability.</dd>
+        </dl>
+
+        <h3 id="hosting-matrix">2.2 Hosting Comparison Matrix</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Bandwidth</th>
+                        <th>Compute</th>
+                        <th>Build Min</th>
+                        <th>Cold Start</th>
+                        <th>Next.js Support</th>
+                        <th>Credit Card</th>
+                        <th>Commercial</th>
+                        <th>Permanent Free</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vercel</strong></td>
+                        <td>100 GB/mo</td>
+                        <td>150K invocations</td>
+                        <td>6,000</td>
+                        <td>~0s (Fluid)</td>
+                        <td>First-class</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag no">No</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score high">9.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare Pages</strong></td>
+                        <td>Unlimited</td>
+                        <td>100K req/day</td>
+                        <td>500 builds</td>
+                        <td>~0s (Edge)</td>
+                        <td>Via OpenNext</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score high">8.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netlify</strong> (legacy)</td>
+                        <td>100 GB/mo</td>
+                        <td>125K invocations</td>
+                        <td>300</td>
+                        <td>1-3s</td>
+                        <td>Good</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">7.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netlify</strong> (new, post Sep 2025)</td>
+                        <td>~10 GB/mo</td>
+                        <td>Credit-based</td>
+                        <td>300</td>
+                        <td>1-3s</td>
+                        <td>Good</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">6.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Render</strong></td>
+                        <td>100 GB/mo</td>
+                        <td>750 hrs/mo</td>
+                        <td>N/A</td>
+                        <td><strong>25-30s</strong></td>
+                        <td>Full (Node.js)</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score low">5.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AWS Amplify</strong></td>
+                        <td>1 GB/mo</td>
+                        <td>Lambda-based</td>
+                        <td>1,000</td>
+                        <td><strong>6-8s</strong></td>
+                        <td>Full (Gen 2)</td>
+                        <td><span class="tag no">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag partial">12 months</span></td>
+                        <td><span class="score low">4.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Koyeb</strong></td>
+                        <td>Included</td>
+                        <td>0.1 vCPU</td>
+                        <td>N/A</td>
+                        <td>Varies</td>
+                        <td>Docker/Buildpack</td>
+                        <td><span class="tag no">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score low">4.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Railway</strong></td>
+                        <td>Trial only</td>
+                        <td>$5 credit / 30 days</td>
+                        <td>Trial</td>
+                        <td>None</td>
+                        <td>Full (Node.js)</td>
+                        <td><span class="tag no">Yes</span></td>
+                        <td><span class="tag no">N/A</span></td>
+                        <td><span class="tag no">No</span></td>
+                        <td><span class="score low">2.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fly.io</strong></td>
+                        <td>Trial only</td>
+                        <td>2 hrs / 7 days</td>
+                        <td>Trial</td>
+                        <td>Varies</td>
+                        <td>Docker</td>
+                        <td><span class="tag no">Yes</span></td>
+                        <td><span class="tag no">N/A</span></td>
+                        <td><span class="tag no">No</span></td>
+                        <td><span class="score low">2.0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="hosting-details">2.3 Detailed Platform Profiles</h3>
+
+        <h4>Vercel &mdash; Best for Next.js</h4>
+        <p>Built by the same team behind Next.js. Auto-deploys from GitHub on every push. Fluid compute eliminates cold starts for 99.37% of requests. Hobby plan is free forever but restricted to personal/non-commercial use. For client projects, Pro plan is $20/mo.</p>
+        <div class="info-box green">
+            <strong>Best for:</strong> Next.js apps, personal projects, demos, prototypes. The default choice unless you have a specific reason not to use it.
+        </div>
+
+        <h4>Cloudflare Pages/Workers &mdash; Best for Global Performance</h4>
+        <p>Runs on 300+ edge locations worldwide. Unlimited bandwidth on free tier. Uses OpenNext adapter for Next.js (not native but works well). Also offers D1 (SQLite database), KV (key-value store), and R2 (object storage) &mdash; all with free tiers. Commercial use allowed on free tier.</p>
+        <div class="info-box blue">
+            <strong>Best for:</strong> Globally distributed apps, bandwidth-heavy sites, commercial projects that need free hosting. The most generous free tier overall.
+        </div>
+
+        <h4>Netlify &mdash; Good Alternative to Vercel</h4>
+        <p>Similar to Vercel but not built by the Next.js team. Legacy accounts (pre-Sep 2025) have generous limits. New accounts use a credit-based system that is significantly less generous. Good for simpler sites.</p>
+        <div class="info-box yellow">
+            <strong>Watch out:</strong> Post-Sep 2025 accounts get a much smaller free tier. Check your account creation date.
+        </div>
+
+        <h4>Render &mdash; Simple but Slow</h4>
+        <p>Runs your app as a standard Node.js service. Easy to deploy. But free services sleep after 15 minutes and take 25-30 seconds to wake up. PostgreSQL database expires after 30 days.</p>
+        <div class="info-box red">
+            <strong>Dealbreaker:</strong> 25-30 second cold starts make it unusable for any app where users expect fast response times.
+        </div>
+
+        <h4>AWS Amplify &mdash; Powerful but Complex</h4>
+        <p>Full AWS ecosystem access. Excellent for enterprise-grade apps. But requires credit card, has complex billing, and only 1 GB bandwidth on free tier. Cold starts of 6-8 seconds on Lambda.</p>
+        <div class="info-box yellow">
+            <strong>Best for:</strong> Teams already invested in AWS. Overkill for small-to-medium projects.
+        </div>
+
+        <h4>Railway &amp; Fly.io &mdash; No Free Tier</h4>
+        <p>Both are excellent paid platforms but offer only short trials (30 days / 7 days). Not viable for free deployment. Consider Railway ($5/mo) or Fly.io (pay-as-you-go) when you outgrow free tiers.</p>
+    </div>
+
+    <!-- SECTION 3: DATABASES -->
+    <div class="section" id="databases">
+        <h2>3. Database Options Comparison</h2>
+
+        <h3 id="db-columns">3.1 Column Definitions</h3>
+        <dl class="def-grid">
+            <dt>Database</dt>
+            <dd>The cloud database service name.</dd>
+
+            <dt>Type</dt>
+            <dd>The database engine. <strong>SQLite/libSQL</strong> = lightweight, file-based (what our apps often start with). <strong>PostgreSQL</strong> = industry-standard relational DB. <strong>MySQL</strong> = another popular relational DB. <strong>MongoDB</strong> = document/NoSQL database (different data model).</dd>
+
+            <dt>Free Storage</dt>
+            <dd>How much data you can store for free. A typical small-to-medium app with thousands of records uses 5-50 MB. Even 500 MB is generous for most use cases. Only matters for apps with large datasets (images, logs, analytics).</dd>
+
+            <dt>Prisma Support</dt>
+            <dd>How well the database integrates with Prisma ORM. <strong>Excellent</strong> = officially supported, stable, documented. <strong>Good (adapter)</strong> = works via adapter package. <strong>Preview</strong> = experimental, may have bugs or missing features like transactions.</dd>
+
+            <dt>Cold Start</dt>
+            <dd>Whether the database goes to sleep when idle. <strong>None</strong> = always responsive. <strong>1-3s</strong> = brief pause after idle period. <strong>7-day pause</strong> = requires manual action to wake up (Supabase). Affects user experience on first visit after idle time.</dd>
+
+            <dt>Credit Card</dt>
+            <dd>Whether a credit card is needed for the free tier. "No" = zero financial risk.</dd>
+
+            <dt>Migration Effort</dt>
+            <dd>How much code change is needed to switch from local SQLite. <strong>Minimal</strong> = change adapter + connection string only (Turso). <strong>Medium</strong> = change Prisma provider, adjust schema types, re-run migrations (PostgreSQL). <strong>High</strong> = redesign data model (MongoDB).</dd>
+
+            <dt>Permanent Free</dt>
+            <dd>Whether the free tier lasts forever. Some databases expire (Render: 30 days) or have been discontinued (PlanetScale). "Yes" = free indefinitely within limits.</dd>
+
+            <dt>Score</dt>
+            <dd>Weighted overall rating considering: free tier generosity, Prisma support, cold start behavior, migration simplicity, and long-term reliability.</dd>
+        </dl>
+
+        <h3 id="db-matrix">3.2 Database Comparison Matrix</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Database</th>
+                        <th>Type</th>
+                        <th>Free Storage</th>
+                        <th>Read/Write Limits</th>
+                        <th>Prisma Support</th>
+                        <th>Cold Start</th>
+                        <th>Credit Card</th>
+                        <th>Migration</th>
+                        <th>Permanent Free</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Turso</strong></td>
+                        <td>SQLite (libSQL)</td>
+                        <td>5 GB</td>
+                        <td>500M reads, 10M writes/mo</td>
+                        <td>Good (adapter)</td>
+                        <td>None</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Minimal</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score high">9.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neon</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>0.5 GB/project</td>
+                        <td>100 CU-hours/mo</td>
+                        <td>Excellent</td>
+                        <td>1-3s (after 5 min)</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score high">8.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>CockroachDB</strong></td>
+                        <td>CockroachDB</td>
+                        <td>10 GiB</td>
+                        <td>50M Request Units/mo</td>
+                        <td>Excellent</td>
+                        <td>Sub-second</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag yes">Yes ($15 credit)</span></td>
+                        <td><span class="score mid">7.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prisma Postgres</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>1 GiB</td>
+                        <td>100K operations/mo</td>
+                        <td>Perfect (native)</td>
+                        <td>Scale-to-zero</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">7.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Supabase</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>500 MB</td>
+                        <td>2 GB egress</td>
+                        <td>Good</td>
+                        <td><strong>7-day pause</strong></td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">6.5</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare D1</strong></td>
+                        <td>SQLite</td>
+                        <td>5 GB</td>
+                        <td>5M reads, 100K writes/day</td>
+                        <td>Preview</td>
+                        <td>None (edge)</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag yes">Low</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">6.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Xata</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>15 GB</td>
+                        <td>Generous</td>
+                        <td>Good</td>
+                        <td>Unknown</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score mid">6.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MongoDB Atlas</strong></td>
+                        <td>MongoDB (NoSQL)</td>
+                        <td>512 MB</td>
+                        <td>100 ops/second</td>
+                        <td>Requires redesign</td>
+                        <td>None</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag no">High</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="score low">3.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Render PG</strong></td>
+                        <td>PostgreSQL</td>
+                        <td>1 GB</td>
+                        <td>N/A</td>
+                        <td>Excellent</td>
+                        <td>N/A</td>
+                        <td><span class="tag yes">No</span></td>
+                        <td><span class="tag partial">Medium</span></td>
+                        <td><span class="tag no">No (30-day)</span></td>
+                        <td><span class="score low">2.0</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>PlanetScale</strong></td>
+                        <td>MySQL</td>
+                        <td>&mdash;</td>
+                        <td>&mdash;</td>
+                        <td>&mdash;</td>
+                        <td>&mdash;</td>
+                        <td>&mdash;</td>
+                        <td>&mdash;</td>
+                        <td><span class="tag no">Discontinued</span></td>
+                        <td><span class="score low">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="db-details">3.3 Detailed Database Profiles</h3>
+
+        <h4>Turso &mdash; Best for SQLite Apps</h4>
+        <p>Cloud-hosted libSQL (SQLite fork). Your app keeps the <code>sqlite</code> Prisma provider &mdash; just swap the adapter from <code>better-sqlite3</code> to <code>libsql</code>. No schema changes, no type adjustments, no migration headaches. 5 GB storage and 500M reads/month is extremely generous. Zero cold starts since March 2025.</p>
+        <div class="info-box green">
+            <strong>Best for:</strong> Apps already using SQLite + Prisma. The easiest migration path from local development to cloud deployment.
+        </div>
+
+        <h4>Neon &mdash; Best PostgreSQL Option</h4>
+        <p>Serverless PostgreSQL with auto-scaling. Officially endorsed by Vercel (Vercel Postgres redirects to Neon). Excellent Prisma support with dedicated serverless driver. 0.5 GB per project, 100 CU-hours/month. Database branches for development workflows.</p>
+        <div class="info-box blue">
+            <strong>Best for:</strong> Apps that need PostgreSQL features (complex queries, JSONB, full-text search) or plan to scale significantly. The industry-standard choice.
+        </div>
+
+        <h4>Supabase &mdash; All-in-One Platform</h4>
+        <p>PostgreSQL database + Auth + Storage + Edge Functions in one platform. Great value if you use multiple features. But free-tier projects auto-pause after 7 days of inactivity, requiring manual unpause &mdash; unacceptable for any production app.</p>
+        <div class="info-box yellow">
+            <strong>Watch out:</strong> The 7-day auto-pause makes Supabase free tier unsuitable for apps that aren't visited daily. Fine for active development, risky for demos or low-traffic apps.
+        </div>
+
+        <h4>Cloudflare D1 &mdash; Edge-Native SQLite</h4>
+        <p>SQLite running on Cloudflare's edge network. Fast globally. But only works with Cloudflare Workers (can't use with Vercel or other hosts). Prisma adapter is in Preview &mdash; no transaction support, and Prisma Migrate doesn't work directly.</p>
+        <div class="info-box yellow">
+            <strong>Best for:</strong> Apps fully committed to the Cloudflare ecosystem. Not suitable as a standalone database for other hosting platforms.
+        </div>
+    </div>
+
+    <!-- SECTION 4: RECOMMENDED COMBINATIONS -->
+    <div class="section" id="combos">
+        <h2>4. Recommended Combinations</h2>
+        <p>These are tested, proven stacks ranked by overall suitability for small-to-medium web apps:</p>
+
+        <div class="combo-cards">
+            <div class="combo-card recommended">
+                <span class="rank">RECOMMENDED</span>
+                <h4>Vercel + Turso</h4>
+                <div class="combo-meta">Score: 19/20 &bull; Migration: Minimal &bull; Cost: $0</div>
+                <ul>
+                    <li>Zero cold starts (both hosting &amp; database)</li>
+                    <li>No credit card needed anywhere</li>
+                    <li>Keep SQLite/Prisma schema unchanged</li>
+                    <li>Auto-deploy from GitHub</li>
+                    <li>100 GB bandwidth + 5 GB database</li>
+                    <li>~30 minutes setup time</li>
+                </ul>
+            </div>
+
+            <div class="combo-card">
+                <span class="rank">#2</span>
+                <h4>Vercel + Neon</h4>
+                <div class="combo-meta">Score: 18/20 &bull; Migration: Medium &bull; Cost: $0</div>
+                <ul>
+                    <li>Most production-ready PostgreSQL stack</li>
+                    <li>Officially endorsed by Vercel</li>
+                    <li>Requires SQLite &rarr; PostgreSQL migration</li>
+                    <li>Excellent Prisma support with connection pooling</li>
+                    <li>Database branching for dev workflows</li>
+                    <li>~2-3 hours setup time</li>
+                </ul>
+            </div>
+
+            <div class="combo-card">
+                <span class="rank">#3</span>
+                <h4>Cloudflare + Turso</h4>
+                <div class="combo-meta">Score: 18/20 &bull; Migration: Medium &bull; Cost: $0</div>
+                <ul>
+                    <li>Best global performance (300+ edge locations)</li>
+                    <li>Unlimited bandwidth</li>
+                    <li>Commercial use allowed on free tier</li>
+                    <li>Requires OpenNext adapter for Next.js</li>
+                    <li>More complex setup than Vercel</li>
+                    <li>~3-4 hours setup time</li>
+                </ul>
+            </div>
+
+            <div class="combo-card">
+                <span class="rank">#4</span>
+                <h4>Vercel + CockroachDB</h4>
+                <div class="combo-meta">Score: 17/20 &bull; Migration: Medium &bull; Cost: $0</div>
+                <ul>
+                    <li>Most generous free storage (10 GiB)</li>
+                    <li>Global data distribution</li>
+                    <li>Dedicated Prisma provider</li>
+                    <li>Credit-based model ($15/mo free)</li>
+                    <li>Slightly more complex than Neon</li>
+                    <li>~2-3 hours setup time</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: DECISION TREE -->
+    <div class="section" id="decision-tree">
+        <h2>5. Decision Tree &mdash; How to Choose</h2>
+
+        <div class="decision-tree">
+            <div class="q">Q1: Is your app built with Next.js?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Use Vercel for hosting (best Next.js support)</div>
+            </div>
+            <div class="branch">
+                <div class="label">No (React SPA, Vue, Svelte, etc.) &rarr; Consider Cloudflare Pages or Netlify</div>
+            </div>
+
+            <br>
+
+            <div class="q">Q2: Does your app currently use SQLite?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Use Turso (minimal migration, keep sqlite provider)</div>
+            </div>
+            <div class="branch">
+                <div class="label">No, or willing to switch &rarr; Go to Q3</div>
+            </div>
+
+            <br>
+
+            <div class="q">Q3: Do you need advanced database features (JSONB, full-text search, complex joins)?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Use Neon (PostgreSQL)</div>
+            </div>
+            <div class="branch">
+                <div class="label">No &rarr; Turso is simpler and has zero cold starts</div>
+            </div>
+
+            <br>
+
+            <div class="q">Q4: Is this a commercial / client project?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Vercel Pro ($20/mo) or use Cloudflare (free commercial use)</div>
+            </div>
+            <div class="branch">
+                <div class="label">No (personal, demo, internal) &rarr; Vercel Hobby (free) is fine</div>
+            </div>
+
+            <br>
+
+            <div class="q">Q5: Do you need global edge performance?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Cloudflare Workers + Turso (both edge-native)</div>
+            </div>
+            <div class="branch">
+                <div class="label">No &rarr; Vercel is sufficient (US/EU regions)</div>
+            </div>
+
+            <br>
+
+            <div class="q">Q6: Do you want zero credit card risk?</div>
+            <div class="branch go">
+                <div class="label">Yes &rarr; Vercel + Turso or Vercel + Neon (no card required)</div>
+            </div>
+            <div class="branch">
+                <div class="label">Don't mind &rarr; CockroachDB or AWS options also available</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: FRAMEWORK COMPATIBILITY -->
+    <div class="section" id="framework-compat">
+        <h2>6. Framework Compatibility Matrix</h2>
+        <p>How well each hosting platform supports popular web frameworks:</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Next.js</th>
+                        <th>React (SPA/Vite)</th>
+                        <th>Vue / Nuxt</th>
+                        <th>Svelte / SvelteKit</th>
+                        <th>Astro</th>
+                        <th>Remix</th>
+                        <th>Express / Node.js</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vercel</strong></td>
+                        <td><span class="tag yes">Native</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag partial">Limited</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare</strong></td>
+                        <td><span class="tag partial">OpenNext</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag no">No</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netlify</strong></td>
+                        <td><span class="tag yes">Good</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag partial">Functions</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Render</strong></td>
+                        <td><span class="tag yes">Full</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Full</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Railway</strong></td>
+                        <td><span class="tag yes">Full</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Full</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 7: MIGRATION EFFORT -->
+    <div class="section" id="migration">
+        <h2>7. Migration Effort Guide</h2>
+        <p>What's involved in switching from local SQLite to each cloud database:</p>
+
+        <h3>Minimal Migration &mdash; Turso (libSQL)</h3>
+        <p>Estimated time: <strong>30 minutes</strong></p>
+        <pre><code># 1. Install libsql client
+npm install @libsql/client
+
+# 2. Update prisma.ts - change adapter
+# FROM: import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+# TO:   import { PrismaLibSQL } from '@prisma/adapter-libsql'
+#       import { createClient } from '@libsql/client'
+
+# 3. Update connection
+# const client = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN })
+# const adapter = new PrismaLibSQL(client)
+
+# 4. schema.prisma stays the same (provider = "sqlite")
+
+# 5. Push schema to Turso
+npx prisma db push
+
+# 6. Done!</code></pre>
+
+        <h3>Medium Migration &mdash; Neon / Supabase / PostgreSQL</h3>
+        <p>Estimated time: <strong>2-3 hours</strong></p>
+        <pre><code># 1. Update schema.prisma
+# Change: provider = "sqlite"  &rarr;  provider = "postgresql"
+
+# 2. Adjust schema types (common changes):
+# - Boolean fields: SQLite uses 0/1, PostgreSQL uses true/false (Prisma handles this)
+# - DateTime: May need @db.Timestamp annotations
+# - String length: Add @db.Text for long text fields
+# - Auto-increment: SQLite AUTOINCREMENT vs PostgreSQL SERIAL
+
+# 3. Install PostgreSQL adapter
+npm install @prisma/adapter-neon @neondatabase/serverless
+
+# 4. Generate fresh migration
+npx prisma migrate dev --name init
+
+# 5. Update prisma.ts with new adapter
+
+# 6. Re-run seed script
+
+# 7. Test all queries (some SQLite-specific queries may need adjustment)</code></pre>
+
+        <h3>High Migration &mdash; MongoDB</h3>
+        <p>Estimated time: <strong>1-2 days</strong>. Not recommended unless you have specific NoSQL requirements.</p>
+        <pre><code># Requires complete data model redesign:
+# - Relational joins become embedded documents or references
+# - Schema changes from @relation to manual references
+# - Many Prisma features unavailable (cascade deletes, etc.)
+# - Different query patterns throughout the app
+# NOT RECOMMENDED for apps built with relational data models</code></pre>
+    </div>
+
+    <!-- SECTION 8: SECURITY -->
+    <div class="section" id="security">
+        <h2>8. Security &amp; Compliance Considerations</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Vercel</th>
+                        <th>Cloudflare</th>
+                        <th>Turso</th>
+                        <th>Neon</th>
+                        <th>Supabase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SSL/TLS</strong></td>
+                        <td><span class="tag yes">Auto</span></td>
+                        <td><span class="tag yes">Auto</span></td>
+                        <td><span class="tag yes">Auto</span></td>
+                        <td><span class="tag yes">Auto</span></td>
+                        <td><span class="tag yes">Auto</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Encryption at Rest</strong></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SOC 2 Compliant</strong></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag partial">In Progress</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>GDPR</strong></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Residency Choice</strong></td>
+                        <td><span class="tag partial">Paid</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DDoS Protection</strong></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Best-in-class</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                        <td><span class="tag yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environment Variables</strong></td>
+                        <td><span class="tag yes">Encrypted</span></td>
+                        <td><span class="tag yes">Encrypted</span></td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-box blue">
+            <strong>Key Security Practices for Deployment:</strong>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>Never commit <code>.env</code> files to git (use <code>.gitignore</code>)</li>
+                <li>Use platform environment variables for secrets (API keys, database URLs, auth tokens)</li>
+                <li>Enable 2FA on all platform accounts (GitHub, Vercel, Turso, etc.)</li>
+                <li>Rotate database auth tokens periodically</li>
+                <li>Use connection pooling to prevent connection exhaustion attacks</li>
+                <li>Set up monitoring and alerts for unusual traffic patterns</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SECTION 9: COST PROJECTION -->
+    <div class="section" id="cost-projection">
+        <h2>9. Cost Projection &mdash; Free to Paid</h2>
+        <p>When you outgrow free tiers, here's what the next step costs:</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Free Tier Ceiling</th>
+                        <th>First Paid Tier</th>
+                        <th>Monthly Cost</th>
+                        <th>What You Get</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vercel</strong></td>
+                        <td>100 GB BW, 150K invocations</td>
+                        <td>Pro</td>
+                        <td>$20/mo</td>
+                        <td>1 TB BW, 1M invocations, commercial use, team collaboration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare</strong></td>
+                        <td>100K req/day</td>
+                        <td>Workers Paid</td>
+                        <td>$5/mo</td>
+                        <td>10M req/mo, 50ms CPU time, more KV/D1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Turso</strong></td>
+                        <td>5 GB, 500M reads</td>
+                        <td>Scaler</td>
+                        <td>$29/mo</td>
+                        <td>12 GB, 25B reads, 100M writes, priority support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neon</strong></td>
+                        <td>0.5 GB, 100 CU-hrs</td>
+                        <td>Scale</td>
+                        <td>$19/mo</td>
+                        <td>50 GiB, 750 CU-hrs, IP Allow, auto-suspend config</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Supabase</strong></td>
+                        <td>500 MB, 2 projects</td>
+                        <td>Pro</td>
+                        <td>$25/mo</td>
+                        <td>8 GB, no pause, daily backups, 7-day log retention</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Railway</strong></td>
+                        <td>$5 trial credit</td>
+                        <td>Hobby</td>
+                        <td>$5/mo</td>
+                        <td>$5 credit + pay-as-you-go, 8 GB RAM, 8 vCPU</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-box green">
+            <strong>Cheapest Full Stack (when you outgrow free):</strong>
+            Cloudflare Workers ($5/mo) + Turso Scaler ($29/mo) = <strong>$34/mo</strong> for a globally distributed, production-ready app with generous limits.
+        </div>
+    </div>
+
+    <!-- SECTION 10: DEPLOYMENT CHECKLIST -->
+    <div class="section" id="deployment-checklist">
+        <h2>10. Deployment Checklist</h2>
+        <p>Use this checklist for every new project deployment:</p>
+
+        <h3>Pre-Deployment</h3>
+        <ul class="checklist">
+            <li>Code pushed to GitHub (private repo recommended)</li>
+            <li><code>.gitignore</code> excludes: <code>node_modules</code>, <code>.env</code>, <code>*.db</code>, generated files</li>
+            <li>No secrets/API keys committed to the repo</li>
+            <li>App builds successfully locally (<code>npm run build</code>)</li>
+            <li>All tests pass</li>
+            <li>Database schema is finalized</li>
+        </ul>
+
+        <h3>Platform Setup</h3>
+        <ul class="checklist">
+            <li>Create hosting platform account (Vercel/Cloudflare/etc.)</li>
+            <li>Create database account (Turso/Neon/etc.)</li>
+            <li>Create database and note the connection URL + auth token</li>
+            <li>Connect GitHub repo to hosting platform</li>
+            <li>Set root directory (if app is in a subdirectory, e.g., <code>app/</code>)</li>
+            <li>Configure build command and output directory</li>
+        </ul>
+
+        <h3>Environment Variables</h3>
+        <ul class="checklist">
+            <li>Set <code>DATABASE_URL</code> (or <code>TURSO_DATABASE_URL</code>)</li>
+            <li>Set <code>TURSO_AUTH_TOKEN</code> (if using Turso)</li>
+            <li>Set <code>NEXTAUTH_SECRET</code> (generate: <code>openssl rand -base64 32</code>)</li>
+            <li>Set <code>NEXTAUTH_URL</code> to production domain</li>
+            <li>Set any other app-specific environment variables</li>
+        </ul>
+
+        <h3>Database Setup</h3>
+        <ul class="checklist">
+            <li>Push schema to cloud database (<code>npx prisma db push</code>)</li>
+            <li>Run seed script if needed</li>
+            <li>Verify data in cloud database</li>
+        </ul>
+
+        <h3>Post-Deployment</h3>
+        <ul class="checklist">
+            <li>Verify app loads at production URL</li>
+            <li>Test login/authentication</li>
+            <li>Test all CRUD operations</li>
+            <li>Check for console errors in browser</li>
+            <li>Test on mobile devices</li>
+            <li>Set up custom domain (optional)</li>
+            <li>Enable HTTPS (usually automatic)</li>
+            <li>Set up monitoring/alerts (optional)</li>
+        </ul>
+    </div>
+
+    <!-- SECTION 11: GLOSSARY -->
+    <div class="section" id="glossary">
+        <h2>11. Glossary</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Term</th>
+                        <th>Definition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>API Route</strong></td><td>A server-side endpoint in your Next.js app that handles HTTP requests (GET, POST, PUT, DELETE). Lives in <code>app/api/</code> directory.</td></tr>
+                    <tr><td><strong>CDN</strong></td><td>Content Delivery Network. A global network of servers that caches and serves your static assets (images, CSS, JS) from the nearest location to the user.</td></tr>
+                    <tr><td><strong>CI/CD</strong></td><td>Continuous Integration / Continuous Deployment. Automated pipeline that builds, tests, and deploys your code when you push to GitHub.</td></tr>
+                    <tr><td><strong>CU (Compute Unit)</strong></td><td>Neon's unit of compute. 1 CU = 1 vCPU + 4 GB RAM. Free tier gets 100 CU-hours/month (enough for light usage).</td></tr>
+                    <tr><td><strong>Edge</strong></td><td>Servers distributed globally (edge of the network, close to users). Edge functions run on these servers for low latency.</td></tr>
+                    <tr><td><strong>Egress</strong></td><td>Data leaving the server/database. Bandwidth charges are typically based on egress (outbound data).</td></tr>
+                    <tr><td><strong>Invocation</strong></td><td>One execution of a serverless function. Each API request, SSR page render, or server action = 1 invocation.</td></tr>
+                    <tr><td><strong>ISR</strong></td><td>Incremental Static Regeneration. A Next.js feature that regenerates static pages in the background at set intervals.</td></tr>
+                    <tr><td><strong>libSQL</strong></td><td>An open-source fork of SQLite created by Turso. Adds features like HTTP access, replication, and cloud hosting while maintaining SQLite compatibility.</td></tr>
+                    <tr><td><strong>ORM</strong></td><td>Object-Relational Mapping. A tool (like Prisma) that lets you interact with databases using programming language objects instead of raw SQL.</td></tr>
+                    <tr><td><strong>Provider (Prisma)</strong></td><td>The database type in your Prisma schema: <code>sqlite</code>, <code>postgresql</code>, <code>mysql</code>, <code>mongodb</code>, <code>cockroachdb</code>.</td></tr>
+                    <tr><td><strong>Request Unit (RU)</strong></td><td>CockroachDB's billing unit. Each database operation consumes a certain number of RUs based on complexity.</td></tr>
+                    <tr><td><strong>Scale to Zero</strong></td><td>A feature where your database/compute automatically shuts down when not in use, costing nothing. Trade-off: cold starts when traffic returns.</td></tr>
+                    <tr><td><strong>Serverless</strong></td><td>Code runs in ephemeral containers that start on demand and shut down after use. No persistent server to manage. Pay only for usage.</td></tr>
+                    <tr><td><strong>SSG</strong></td><td>Static Site Generation. HTML pages are pre-built at deploy time. Fastest serving method but content is static until next deploy.</td></tr>
+                    <tr><td><strong>SSR</strong></td><td>Server-Side Rendering. HTML is generated on the server for each request. Allows dynamic, personalized content but requires compute resources.</td></tr>
+                    <tr><td><strong>TTFB</strong></td><td>Time To First Byte. How long it takes for the server to send the first byte of response. Directly affected by cold starts.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Web Deployment Options &mdash; Complete Reference Guide</p>
+    <p>Prepared by Akshaya Createch &bull; February 2026 &bull; For internal reference</p>
+    <p style="margin-top: 0.5rem;">Data sourced from official platform documentation. Verify current pricing before making decisions.</p>
+</div>
+
+</body>
+</html>

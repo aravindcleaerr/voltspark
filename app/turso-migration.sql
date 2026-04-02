@@ -29,6 +29,7 @@ CREATE TABLE "Client" (
     "powerFactorTarget" REAL,
     "baselineYear" INTEGER,
     "baselineMonth" INTEGER,
+    "enabledAddons" TEXT NOT NULL DEFAULT '[]',
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
@@ -703,6 +704,358 @@ CREATE TABLE "RecurringSchedule" (
     CONSTRAINT "RecurringSchedule_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+-- CreateTable
+CREATE TABLE "Kitchen" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "address" TEXT,
+    "discomCode" TEXT NOT NULL,
+    "connectionType" TEXT NOT NULL DEFAULT 'LT_COMMERCIAL',
+    "contractedDemandKVA" REAL NOT NULL,
+    "sanctionedLoadKW" REAL,
+    "demandChargePerKVA" REAL,
+    "mdPenaltyMultiplier" REAL NOT NULL DEFAULT 2.0,
+    "pfTarget" REAL NOT NULL DEFAULT 0.90,
+    "pfPenaltyRatePercent" REAL,
+    "pfIncentiveRatePercent" REAL,
+    "tariffRatePerKwh" REAL,
+    "todSlabsJson" TEXT,
+    "billingCycleDay" INTEGER NOT NULL DEFAULT 1,
+    "warningThresholdPct" REAL NOT NULL DEFAULT 80,
+    "criticalThresholdPct" REAL NOT NULL DEFAULT 92,
+    "autoShedEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "shedTier3AtPct" REAL NOT NULL DEFAULT 80,
+    "shedTier2AtPct" REAL NOT NULL DEFAULT 92,
+    "restoreBelowPct" REAL NOT NULL DEFAULT 75,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Kitchen_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "KitchenZone" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "kitchenId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "zoneType" TEXT NOT NULL DEFAULT 'OTHER',
+    "meterId" TEXT,
+    "titanDoChannel" INTEGER,
+    "priorityTier" INTEGER NOT NULL DEFAULT 2,
+    "maxLoadKW" REAL,
+    "haccpEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "haccpAiChannel" INTEGER,
+    "targetTempC" REAL,
+    "minTempC" REAL,
+    "maxTempC" REAL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "KitchenZone_kitchenId_fkey" FOREIGN KEY ("kitchenId") REFERENCES "Kitchen" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "TitanReading" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "kitchenId" TEXT NOT NULL,
+    "zoneId" TEXT,
+    "meterId" TEXT NOT NULL,
+    "timestamp" DATETIME NOT NULL,
+    "activePowerKW" REAL NOT NULL,
+    "apparentPowerKVA" REAL,
+    "reactivePowerKVAR" REAL,
+    "powerFactor" REAL,
+    "voltageR" REAL,
+    "voltageY" REAL,
+    "voltageB" REAL,
+    "currentR" REAL,
+    "currentY" REAL,
+    "currentB" REAL,
+    "frequencyHz" REAL,
+    "energyKwh" REAL,
+    "demandMaxKVA" REAL,
+    "demandCurrentKVA" REAL,
+    "thdVoltage" REAL,
+    "thdCurrent" REAL,
+    "ai1Value" REAL,
+    "ai2Value" REAL,
+    "do1State" BOOLEAN,
+    "do2State" BOOLEAN,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "TitanReading_kitchenId_fkey" FOREIGN KEY ("kitchenId") REFERENCES "Kitchen" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "TitanReading_zoneId_fkey" FOREIGN KEY ("zoneId") REFERENCES "KitchenZone" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "DemandEvent" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "kitchenId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "severity" TEXT NOT NULL DEFAULT 'WARNING',
+    "demandKVA" REAL,
+    "thresholdKVA" REAL,
+    "contractedDemandKVA" REAL,
+    "pf" REAL,
+    "message" TEXT NOT NULL,
+    "zonesAffectedJson" TEXT,
+    "resolvedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "DemandEvent_kitchenId_fkey" FOREIGN KEY ("kitchenId") REFERENCES "Kitchen" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "MonthlyKitchenSummary" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "kitchenId" TEXT NOT NULL,
+    "year" INTEGER NOT NULL,
+    "month" INTEGER NOT NULL,
+    "totalKwh" REAL NOT NULL,
+    "peakDemandKVA" REAL NOT NULL,
+    "avgPf" REAL,
+    "demandWarnings" INTEGER NOT NULL DEFAULT 0,
+    "demandBreaches" INTEGER NOT NULL DEFAULT 0,
+    "estimatedBillAmount" REAL,
+    "mdPenaltyAmount" REAL,
+    "mdPenaltiesAvoided" REAL,
+    "pfPenaltyAmount" REAL,
+    "pfIncentiveAmount" REAL,
+    "todPeakKwh" REAL,
+    "todOffPeakKwh" REAL,
+    "todSavingsAmount" REAL,
+    "totalSavings" REAL,
+    "haccpComplianceRate" REAL,
+    "loadShedEvents" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "MonthlyKitchenSummary_kitchenId_fkey" FOREIGN KEY ("kitchenId") REFERENCES "Kitchen" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "KitchenApiKey" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "kitchenId" TEXT NOT NULL,
+    "keyHash" TEXT NOT NULL,
+    "keyPrefix" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "lastUsedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "KitchenApiKey_kitchenId_fkey" FOREIGN KEY ("kitchenId") REFERENCES "Kitchen" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "IoTGateway" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "serialNumber" TEXT,
+    "gatewayType" TEXT NOT NULL DEFAULT 'PAS600',
+    "make" TEXT,
+    "firmwareVersion" TEXT,
+    "ipAddress" TEXT,
+    "location" TEXT,
+    "mqttBrokerUrl" TEXT,
+    "mqttTopicPrefix" TEXT,
+    "mqttClientId" TEXT,
+    "pushIntervalSeconds" INTEGER NOT NULL DEFAULT 60,
+    "protocol" TEXT NOT NULL DEFAULT 'MQTT_WEBHOOK',
+    "isOnline" BOOLEAN NOT NULL DEFAULT false,
+    "lastSeenAt" DATETIME,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "IoTGateway_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "IoTMeter" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "gatewayId" TEXT NOT NULL,
+    "energySourceId" TEXT,
+    "name" TEXT NOT NULL,
+    "meterSerial" TEXT,
+    "modbusAddress" INTEGER,
+    "make" TEXT,
+    "model" TEXT,
+    "meterType" TEXT NOT NULL DEFAULT 'SUBMETER',
+    "ctRatio" REAL,
+    "ptRatio" REAL,
+    "ratedVoltage" REAL,
+    "demandWarningPct" REAL DEFAULT 80,
+    "demandCriticalPct" REAL DEFAULT 92,
+    "pfLowThreshold" REAL DEFAULT 0.85,
+    "panelName" TEXT,
+    "circuitName" TEXT,
+    "location" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "IoTMeter_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "IoTMeter_gatewayId_fkey" FOREIGN KEY ("gatewayId") REFERENCES "IoTGateway" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "IoTMeter_energySourceId_fkey" FOREIGN KEY ("energySourceId") REFERENCES "EnergySource" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "MeterReading" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "meterId" TEXT NOT NULL,
+    "timestamp" DATETIME NOT NULL,
+    "activePowerKW" REAL NOT NULL,
+    "apparentPowerKVA" REAL,
+    "reactivePowerKVAR" REAL,
+    "powerFactor" REAL,
+    "voltageR" REAL,
+    "voltageY" REAL,
+    "voltageB" REAL,
+    "voltageAvg" REAL,
+    "currentR" REAL,
+    "currentY" REAL,
+    "currentB" REAL,
+    "currentAvg" REAL,
+    "energyKwh" REAL,
+    "energyKwhExport" REAL,
+    "energyKvarhImport" REAL,
+    "energyKvarhExport" REAL,
+    "demandKW" REAL,
+    "demandKVA" REAL,
+    "maxDemandKW" REAL,
+    "maxDemandKVA" REAL,
+    "frequencyHz" REAL,
+    "thdVoltage" REAL,
+    "thdCurrent" REAL,
+    "voltageUnbalance" REAL,
+    "currentUnbalance" REAL,
+    "extraDataJson" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "MeterReading_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "IoTApiKey" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "gatewayId" TEXT NOT NULL,
+    "keyHash" TEXT NOT NULL,
+    "keyPrefix" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "lastUsedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "IoTApiKey_gatewayId_fkey" FOREIGN KEY ("gatewayId") REFERENCES "IoTGateway" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "MeterAlert" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "meterId" TEXT,
+    "type" TEXT NOT NULL,
+    "severity" TEXT NOT NULL DEFAULT 'WARNING',
+    "parameterName" TEXT,
+    "actualValue" REAL,
+    "thresholdValue" REAL,
+    "message" TEXT NOT NULL,
+    "acknowledgedAt" DATETIME,
+    "resolvedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "MeterAlert_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "MeterAlert_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "IoTMonthlySummary" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "meterId" TEXT NOT NULL,
+    "year" INTEGER NOT NULL,
+    "month" INTEGER NOT NULL,
+    "totalKwh" REAL NOT NULL,
+    "peakDemandKW" REAL,
+    "peakDemandKVA" REAL,
+    "avgPowerFactor" REAL,
+    "minVoltage" REAL,
+    "maxVoltage" REAL,
+    "avgFrequency" REAL,
+    "alertCount" INTEGER NOT NULL DEFAULT 0,
+    "readingCount" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "IoTMonthlySummary_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "PQEvent" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "meterId" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "severity" TEXT NOT NULL DEFAULT 'WARNING',
+    "phase" TEXT,
+    "actualValue" REAL NOT NULL,
+    "thresholdValue" REAL NOT NULL,
+    "nominalValue" REAL,
+    "durationMs" INTEGER,
+    "message" TEXT NOT NULL,
+    "readingId" TEXT,
+    "resolvedAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "PQEvent_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "PQEvent_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "PQSnapshot" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "meterId" TEXT NOT NULL,
+    "date" DATETIME NOT NULL,
+    "voltageAvgMin" REAL,
+    "voltageAvgMax" REAL,
+    "voltageAvgMean" REAL,
+    "voltageSagCount" INTEGER NOT NULL DEFAULT 0,
+    "voltageSwellCount" INTEGER NOT NULL DEFAULT 0,
+    "voltageUnbalanceMax" REAL,
+    "thdVoltageMax" REAL,
+    "thdVoltageMean" REAL,
+    "thdCurrentMax" REAL,
+    "thdCurrentMean" REAL,
+    "thdExceedanceCount" INTEGER NOT NULL DEFAULT 0,
+    "pfMin" REAL,
+    "pfMean" REAL,
+    "pfBelowTarget" INTEGER NOT NULL DEFAULT 0,
+    "freqMin" REAL,
+    "freqMax" REAL,
+    "freqMean" REAL,
+    "complianceScore" REAL,
+    "totalReadings" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "PQSnapshot_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "PQSnapshot_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "DiscomTemplate" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "code" TEXT NOT NULL,
+    "discomName" TEXT NOT NULL,
+    "state" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "tariffRatePerKwh" REAL NOT NULL,
+    "demandChargePerKVA" REAL,
+    "pfTarget" REAL NOT NULL DEFAULT 0.90,
+    "pfPenaltyRatePercent" REAL,
+    "pfIncentiveRatePercent" REAL,
+    "mdPenaltyMultiplier" REAL NOT NULL DEFAULT 2.0,
+    "todSlabsJson" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Organization_slug_key" ON "Organization"("slug");
 
@@ -750,4 +1103,61 @@ CREATE UNIQUE INDEX "SchemeApplication_clientId_schemeId_key" ON "SchemeApplicat
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ShareableView_token_key" ON "ShareableView"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Kitchen_clientId_key" ON "Kitchen"("clientId");
+
+-- CreateIndex
+CREATE INDEX "TitanReading_kitchenId_timestamp_idx" ON "TitanReading"("kitchenId", "timestamp");
+
+-- CreateIndex
+CREATE INDEX "TitanReading_meterId_timestamp_idx" ON "TitanReading"("meterId", "timestamp");
+
+-- CreateIndex
+CREATE INDEX "DemandEvent_kitchenId_createdAt_idx" ON "DemandEvent"("kitchenId", "createdAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "MonthlyKitchenSummary_kitchenId_year_month_key" ON "MonthlyKitchenSummary"("kitchenId", "year", "month");
+
+-- CreateIndex
+CREATE INDEX "IoTGateway_clientId_idx" ON "IoTGateway"("clientId");
+
+-- CreateIndex
+CREATE INDEX "IoTMeter_clientId_idx" ON "IoTMeter"("clientId");
+
+-- CreateIndex
+CREATE INDEX "IoTMeter_gatewayId_idx" ON "IoTMeter"("gatewayId");
+
+-- CreateIndex
+CREATE INDEX "MeterReading_meterId_timestamp_idx" ON "MeterReading"("meterId", "timestamp");
+
+-- CreateIndex
+CREATE INDEX "MeterReading_timestamp_idx" ON "MeterReading"("timestamp");
+
+-- CreateIndex
+CREATE INDEX "MeterAlert_clientId_createdAt_idx" ON "MeterAlert"("clientId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "MeterAlert_meterId_createdAt_idx" ON "MeterAlert"("meterId", "createdAt");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "IoTMonthlySummary_meterId_year_month_key" ON "IoTMonthlySummary"("meterId", "year", "month");
+
+-- CreateIndex
+CREATE INDEX "PQEvent_clientId_createdAt_idx" ON "PQEvent"("clientId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "PQEvent_meterId_createdAt_idx" ON "PQEvent"("meterId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "PQEvent_type_createdAt_idx" ON "PQEvent"("type", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "PQSnapshot_clientId_date_idx" ON "PQSnapshot"("clientId", "date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PQSnapshot_meterId_date_key" ON "PQSnapshot"("meterId", "date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DiscomTemplate_code_key" ON "DiscomTemplate"("code");
 
