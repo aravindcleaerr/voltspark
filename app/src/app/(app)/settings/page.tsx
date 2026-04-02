@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Settings, Users, Building2, Shield, Bell, Mail, UserPlus } from 'lucide-react';
+import { Settings, Users, Building2, Shield, Bell, Mail, UserPlus, Lock } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { useSettings } from '@/lib/hooks/useSettings';
@@ -21,6 +21,9 @@ export default function SettingsPage() {
     email_digest: false,
   });
   const [savingPrefs, setSavingPrefs] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ current: '', newPw: '', confirm: '' });
+  const [changingPw, setChangingPw] = useState(false);
+  const [pwResult, setPwResult] = useState<{ ok?: boolean; error?: string } | null>(null);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteForm, setInviteForm] = useState({ name: '', email: '', role: 'EMPLOYEE', department: '', employeeId: '' });
   const [inviting, setInviting] = useState(false);
@@ -80,6 +83,31 @@ export default function SettingsPage() {
             <div className="flex justify-between"><dt className="text-gray-500">Email</dt><dd>{(session?.user as any)?.email || '—'}</dd></div>
             <div className="flex justify-between"><dt className="text-gray-500">Role</dt><dd><StatusBadge label={(session?.user as any)?.role || '—'} color="blue" /></dd></div>
           </dl>
+          <div className="mt-4 pt-4 border-t">
+            <h4 className="text-sm font-medium flex items-center gap-1.5 mb-3"><Lock className="h-3.5 w-3.5" /> Change Password</h4>
+            <div className="space-y-2">
+              <input type="password" placeholder="Current password" value={passwordForm.current} onChange={e => setPasswordForm(p => ({ ...p, current: e.target.value }))} className="input text-sm w-full" />
+              <input type="password" placeholder="New password (min 8 chars)" value={passwordForm.newPw} onChange={e => setPasswordForm(p => ({ ...p, newPw: e.target.value }))} className="input text-sm w-full" />
+              <input type="password" placeholder="Confirm new password" value={passwordForm.confirm} onChange={e => setPasswordForm(p => ({ ...p, confirm: e.target.value }))} className="input text-sm w-full" />
+            </div>
+            {pwResult && <p className={`text-xs mt-2 ${pwResult.ok ? 'text-green-600' : 'text-red-600'}`}>{pwResult.ok ? 'Password changed successfully!' : pwResult.error}</p>}
+            <button
+              onClick={async () => {
+                setPwResult(null);
+                if (passwordForm.newPw !== passwordForm.confirm) { setPwResult({ error: 'Passwords do not match' }); return; }
+                if (passwordForm.newPw.length < 8) { setPwResult({ error: 'Password must be at least 8 characters' }); return; }
+                setChangingPw(true);
+                const res = await fetch('/api/auth/change-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: passwordForm.current, newPassword: passwordForm.newPw }) });
+                if (res.ok) { setPwResult({ ok: true }); setPasswordForm({ current: '', newPw: '', confirm: '' }); }
+                else { const err = await res.json(); setPwResult({ error: err.error || 'Failed to change password' }); }
+                setChangingPw(false);
+              }}
+              disabled={changingPw || !passwordForm.current || !passwordForm.newPw || !passwordForm.confirm}
+              className="btn-primary text-xs mt-3"
+            >
+              {changingPw ? 'Changing...' : 'Change Password'}
+            </button>
+          </div>
         </div>
       </div>
 
