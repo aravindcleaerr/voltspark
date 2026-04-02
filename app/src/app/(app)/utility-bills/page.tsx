@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Receipt, AlertTriangle, TrendingDown, Zap, Gauge, Plus } from 'lucide-react';
+import { Receipt, AlertTriangle, TrendingDown, Zap, Gauge, Plus, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -64,6 +64,10 @@ export default function UtilityBillsPage() {
     meterReadingStart: '', meterReadingEnd: '', isEstimated: false, notes: '',
   });
   const [saving, setSaving] = useState(false);
+  const [insights, setInsights] = useState<any[] | null>(null);
+  const [analysisSummary, setAnalysisSummary] = useState<any>(null);
+  const [showInsights, setShowInsights] = useState(false);
+  const [loadingInsights, setLoadingInsights] = useState(false);
 
   const fetchData = () => {
     fetch('/api/utility-bills')
@@ -73,6 +77,15 @@ export default function UtilityBillsPage() {
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  const fetchInsights = () => {
+    setLoadingInsights(true);
+    fetch('/api/utility-bills/analyze').then(r => r.json()).then(data => {
+      setInsights(data.insights || []);
+      setAnalysisSummary(data.summary);
+      setShowInsights(true);
+    }).finally(() => setLoadingInsights(false));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,6 +162,40 @@ export default function UtilityBillsPage() {
           </div>
         </div>
       )}
+
+      {/* Bill Analysis */}
+      <div className="card">
+        <button onClick={() => showInsights ? setShowInsights(false) : fetchInsights()} className="w-full flex items-center justify-between text-left">
+          <h3 className="font-semibold flex items-center gap-2"><Lightbulb className="h-4 w-4 text-amber-500" /> Bill Analysis & Insights</h3>
+          {loadingInsights ? <span className="text-xs text-gray-400">Analyzing...</span> : showInsights ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+        </button>
+        {showInsights && insights && (
+          <div className="mt-4 space-y-3">
+            {analysisSummary && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg text-sm">
+                <div><span className="text-gray-500">Avg Monthly</span><div className="font-semibold">{formatCurrency(analysisSummary.avgMonthly)}</div></div>
+                <div><span className="text-gray-500">Est. PF Penalties</span><div className="font-semibold text-red-600">{formatCurrency(analysisSummary.totalPfPenaltyEstimate)}</div></div>
+                <div><span className="text-gray-500">Est. Demand Penalties</span><div className="font-semibold text-orange-600">{formatCurrency(analysisSummary.totalDemandOvershootCost)}</div></div>
+                <div><span className="text-gray-500">Total Savings Opportunity</span><div className="font-semibold text-green-600">{formatCurrency(analysisSummary.totalSavingsOpportunity)}</div></div>
+              </div>
+            )}
+            {insights.length === 0 ? (
+              <p className="text-sm text-gray-500 py-2">No issues detected. Your bills look good!</p>
+            ) : (
+              insights.map((insight: any, i: number) => (
+                <div key={i} className={`flex items-start gap-3 p-3 rounded-lg border ${insight.severity === 'CRITICAL' ? 'bg-red-50 border-red-200' : insight.severity === 'WARNING' ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
+                  {insight.type === 'SAVINGS_OPPORTUNITY' ? <Lightbulb className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" /> : <AlertTriangle className={`h-4 w-4 mt-0.5 flex-shrink-0 ${insight.severity === 'CRITICAL' ? 'text-red-500' : 'text-amber-500'}`} />}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium">{insight.title}</div>
+                    <div className="text-xs text-gray-600 mt-0.5">{insight.detail}</div>
+                  </div>
+                  {insight.amount > 0 && <div className="text-sm font-semibold text-right flex-shrink-0">{formatCurrency(insight.amount)}</div>}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Add Bill Form */}
       {showForm && (

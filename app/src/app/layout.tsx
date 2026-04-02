@@ -6,11 +6,18 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#2563EB",
 };
 
 export const metadata: Metadata = {
   title: "VoltSpark - Energy Management",
   description: "Energy Management Compliance Suite by VoltSpark",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "VoltSpark",
+  },
 };
 
 export default function RootLayout({
