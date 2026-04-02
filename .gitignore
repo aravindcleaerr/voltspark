@@ -35,7 +35,23 @@ yarn-error.log*
 .vscode/
 *.swp
 
-# Misc
+# Credentials & secrets
+credentials/
 *.pem
+
+# SQLite WAL files
+auth
+auth-wal
+*.db-wal
+*.db-shm
+
+# Backups
+*.bak
+*.backup
+
+# Vercel
+.vercel/
+
+# Misc
 *.tsbuildinfo
 next-env.d.ts

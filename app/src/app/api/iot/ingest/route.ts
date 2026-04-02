@@ -2,10 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireIoTApiKey } from '@/lib/iot-auth';
 import { ingestBatchSchema } from '@/lib/iot-validations';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   const auth = await requireIoTApiKey(request);
   if ('error' in auth) return auth.error;
+
+  // Rate limit: 60 requests per minute per gateway
+  const rl = rateLimit(`iot:${auth.gatewayId}`, 60);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Max 60 requests per minute.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
 
   let body;
   try {
