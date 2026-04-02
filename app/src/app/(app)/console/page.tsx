@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
-import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat } from 'lucide-react';
+import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat, Radio } from 'lucide-react';
 
 interface ClientSummary {
   id: string;
@@ -73,17 +73,16 @@ export default function ConsolePage() {
     }
   };
 
-  const toggleKitchen = async (e: React.MouseEvent, client: ClientSummary) => {
+  const toggleAddon = async (e: React.MouseEvent, client: ClientSummary, addon: string) => {
     e.stopPropagation();
     const addons: string[] = JSON.parse(client.enabledAddons || '[]');
-    const enabled = !addons.includes('KITCHEN');
+    const enabled = !addons.includes(addon);
     const res = await fetch(`/api/clients/${client.id}/addons`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ addon: 'KITCHEN', enabled }),
+      body: JSON.stringify({ addon, enabled }),
     });
     if (res.ok) {
-      // Refresh data
       fetch('/api/console').then(r => r.json()).then(setData).catch(() => {});
     }
   };
@@ -183,10 +182,10 @@ export default function ConsolePage() {
               </div>
 
               {/* Add-ons */}
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t flex-wrap">
                 <span className="text-xs text-gray-400">Add-ons:</span>
                 <button
-                  onClick={(e) => toggleKitchen(e, client)}
+                  onClick={(e) => toggleAddon(e, client, 'KITCHEN')}
                   className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
                     hasAddon(client, 'KITCHEN')
                       ? 'bg-brand-50 border-brand-300 text-brand-700'
@@ -195,6 +194,17 @@ export default function ConsolePage() {
                 >
                   <ChefHat className="h-3 w-3" />
                   Kitchen {hasAddon(client, 'KITCHEN') ? '✓' : ''}
+                </button>
+                <button
+                  onClick={(e) => toggleAddon(e, client, 'IOT_METERING')}
+                  className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
+                    hasAddon(client, 'IOT_METERING')
+                      ? 'bg-brand-50 border-brand-300 text-brand-700'
+                      : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-400'
+                  }`}
+                >
+                  <Radio className="h-3 w-3" />
+                  IoT Metering {hasAddon(client, 'IOT_METERING') ? '✓' : ''}
                 </button>
               </div>
             </button>
