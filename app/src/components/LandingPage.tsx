@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   Zap, Shield, TrendingUp, BarChart3, Users, IndianRupee, CheckCircle2,
   ArrowRight, Building2, FileText, GraduationCap, CalendarClock, Play,
+  Radio, Activity, ChefHat, Cpu,
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
@@ -13,9 +14,12 @@ const FEATURES = [
   { icon: IndianRupee, title: 'Save Energy Costs', desc: 'Track consumption, identify waste, and prove savings with hard numbers. Know exactly where every rupee goes.' },
   { icon: Shield, title: 'Stay Compliant', desc: 'Multi-framework compliance tracking — ZED, ISO 50001, Electrical Safety. Always audit-ready.' },
   { icon: TrendingUp, title: 'Prove ROI', desc: 'Pre-built ROI calculators, savings tracking, and consultant fee justification. Numbers that speak.' },
-  { icon: BarChart3, title: 'Utility Bill Analysis', desc: 'Auto-detect PF penalties, demand overshoot, and anomalies in monthly utility bills.' },
+  { icon: BarChart3, title: 'Utility Bill Analysis', desc: 'Auto-detect PF penalties, demand overshoot, and cost anomalies. BESCOM-style penalty estimation built in.' },
+  { icon: Radio, title: 'IoT Metering', desc: 'Connect Schneider, ABB, Siemens meters via MQTT. Real-time dashboards, automatic consumption tracking.' },
+  { icon: Activity, title: 'Power Quality', desc: 'EN 50160 compliance monitoring. Voltage sags/swells, THD analysis, harmonic trends, PQ scoring.' },
   { icon: GraduationCap, title: 'Training & Safety', desc: 'Manage training programs, inspections, incidents, and certifications in one place.' },
   { icon: CalendarClock, title: 'Compliance Calendar', desc: 'Never miss a deadline. Audit dates, cert renewals, and CAPA due dates in one view.' },
+  { icon: Cpu, title: 'Multi-Vendor IoT', desc: 'Works with any energy meter — PAS600, Raspberry Pi gateways, Modbus RTU/TCP. Vendor-agnostic by design.' },
 ];
 
 const STEPS = [
@@ -26,20 +30,26 @@ const STEPS = [
 
 const PLANS = [
   {
-    name: 'Free', price: '0', desc: 'Get started with basic energy management',
-    features: ['1 Client workspace', 'Energy monitoring', 'Basic compliance tracking', 'Monthly reports', 'Up to 3 users'],
+    name: 'Starter', price: '0', desc: 'Get started with manual energy management',
+    features: ['1 Client workspace', 'All core features', 'Energy & compliance tracking', 'Basic reports', 'Up to 3 users', '1 year data retention'],
     cta: 'Start Free', href: '/register', highlight: false,
   },
   {
-    name: 'Pro', price: '4,999', desc: 'For consultants managing multiple clients',
-    features: ['Unlimited clients', 'All compliance frameworks', 'Savings & ROI tracking', 'PDF exports & shareable views', 'Priority email support', 'Up to 25 users per client'],
+    name: 'Professional', price: '2,999', desc: 'For consultants managing multiple clients',
+    features: ['Up to 10 clients', 'All core features', 'IoT add-ons available', 'PDF exports & shareable views', 'Email + WhatsApp support', 'Unlimited users per client', '3 years data retention'],
     cta: 'Start Free Trial', href: '/register', highlight: true,
   },
   {
     name: 'Enterprise', price: 'Custom', desc: 'For large consultancies and ESCOs',
-    features: ['Everything in Pro', 'Custom frameworks', 'API access', 'Dedicated account manager', 'SLA & uptime guarantee', 'Unlimited users'],
+    features: ['Unlimited clients', 'Everything in Professional', 'Custom add-on bundles', 'Full API access', 'Dedicated account manager', 'White-label branding', 'Unlimited data retention'],
     cta: 'Contact Sales', href: 'mailto:hello@voltspark.in', highlight: false,
   },
+];
+
+const ADDONS = [
+  { name: 'IoT Metering', price: '999', desc: 'Real-time meter monitoring via MQTT', icon: Radio },
+  { name: 'Power Quality', price: '799', desc: 'EN 50160 compliance & THD analysis', icon: Activity },
+  { name: 'Kitchen Intelligence', price: '999', desc: 'Demand management & load shedding', icon: ChefHat },
 ];
 
 export default function LandingPage() {
@@ -113,10 +123,10 @@ export default function LandingPage() {
       <section className="bg-gray-50 dark:bg-gray-800/50 border-y border-gray-200 dark:border-gray-700 py-12">
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
           {[
-            { val: '30+', label: 'Compliance modules' },
-            { val: '₹ Lakhs', label: 'Savings tracked' },
-            { val: '100%', label: 'Indian regulations' },
-            { val: '24/7', label: 'Cloud access' },
+            { val: '35+', label: 'Modules' },
+            { val: '3', label: 'IoT Add-ons' },
+            { val: '100%', label: 'Indian compliance' },
+            { val: 'PWA', label: 'Mobile ready' },
           ].map((s) => (
             <div key={s.label}>
               <p className="text-2xl sm:text-3xl font-bold text-brand-600">{s.val}</p>
@@ -249,6 +259,28 @@ export default function LandingPage() {
                 <Link href={p.href} className={`mt-6 block text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
                   p.highlight ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}>{p.cta}</Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Add-ons */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">IoT Add-Ons</h3>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Hardware-connected modules that pay for themselves. Available on Professional plan.</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {ADDONS.map((a) => (
+              <div key={a.name} className="card text-center">
+                <div className="mx-auto h-10 w-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-3">
+                  <a.icon className="h-5 w-5 text-brand-600" />
+                </div>
+                <h4 className="font-semibold text-gray-900 dark:text-white">{a.name}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{a.desc}</p>
+                <p className="mt-3 text-lg font-bold text-brand-600">₹{a.price}<span className="text-xs font-normal text-gray-500">/client/mo</span></p>
               </div>
             ))}
           </div>
