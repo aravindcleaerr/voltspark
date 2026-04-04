@@ -987,6 +987,50 @@ CREATE TABLE "IoTMonthlySummary" (
 );
 
 -- CreateTable
+CREATE TABLE "Compressor" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "meterId" TEXT,
+    "name" TEXT NOT NULL,
+    "make" TEXT,
+    "model" TEXT,
+    "type" TEXT NOT NULL DEFAULT 'SCREW',
+    "ratedPowerKW" REAL,
+    "ratedFlowM3Min" REAL,
+    "ratedPressureBar" REAL,
+    "motorEfficiency" REAL,
+    "isVSD" BOOLEAN NOT NULL DEFAULT false,
+    "location" TEXT,
+    "commissionedDate" DATETIME,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Compressor_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Compressor_meterId_fkey" FOREIGN KEY ("meterId") REFERENCES "IoTMeter" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "CAReading" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "compressorId" TEXT NOT NULL,
+    "date" DATETIME NOT NULL,
+    "energyKwh" REAL NOT NULL,
+    "runHours" REAL,
+    "loadHours" REAL,
+    "airFlowM3" REAL,
+    "avgPressureBar" REAL,
+    "specificEnergy" REAL,
+    "loadPercent" REAL,
+    "hasAnomaly" BOOLEAN NOT NULL DEFAULT false,
+    "anomalyNote" TEXT,
+    "notes" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "CAReading_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "CAReading_compressorId_fkey" FOREIGN KEY ("compressorId") REFERENCES "Compressor" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "PQEvent" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "clientId" TEXT NOT NULL,
@@ -1142,6 +1186,15 @@ CREATE INDEX "MeterAlert_meterId_createdAt_idx" ON "MeterAlert"("meterId", "crea
 
 -- CreateIndex
 CREATE UNIQUE INDEX "IoTMonthlySummary_meterId_year_month_key" ON "IoTMonthlySummary"("meterId", "year", "month");
+
+-- CreateIndex
+CREATE INDEX "Compressor_clientId_idx" ON "Compressor"("clientId");
+
+-- CreateIndex
+CREATE INDEX "CAReading_clientId_date_idx" ON "CAReading"("clientId", "date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CAReading_compressorId_date_key" ON "CAReading"("compressorId", "date");
 
 -- CreateIndex
 CREATE INDEX "PQEvent_clientId_createdAt_idx" ON "PQEvent"("clientId", "createdAt");
