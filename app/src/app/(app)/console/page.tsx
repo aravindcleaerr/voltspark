@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageHeader from '@/components/layout/PageHeader';
-import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat, Radio, Activity } from 'lucide-react';
+import { Building2, TrendingUp, AlertTriangle, IndianRupee, Plus, Zap, ClipboardCheck, Shield, GraduationCap, ChefHat, Radio, Activity, Wind } from 'lucide-react';
 
 interface ClientSummary {
   id: string;
@@ -216,6 +216,17 @@ export default function ConsolePage() {
                 >
                   <Activity className="h-3 w-3" />
                   Power Quality {hasAddon(client, 'POWER_QUALITY') ? '✓' : ''}
+                </button>
+                <button
+                  onClick={(e) => toggleAddon(e, client, 'COMPRESSED_AIR')}
+                  className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
+                    hasAddon(client, 'COMPRESSED_AIR')
+                      ? 'bg-brand-50 border-brand-300 text-brand-700'
+                      : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-400'
+                  }`}
+                >
+                  <Wind className="h-3 w-3" />
+                  Compressed Air {hasAddon(client, 'COMPRESSED_AIR') ? '✓' : ''}
                 </button>
               </div>
             </button>

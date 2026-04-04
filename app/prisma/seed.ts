@@ -22,6 +22,9 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Compressed Air
+  await prisma.cAReading.deleteMany();
+  await prisma.compressor.deleteMany();
   // Power Quality
   await prisma.pQSnapshot.deleteMany();
   await prisma.pQEvent.deleteMany();
@@ -1073,7 +1076,7 @@ async function main() {
       industry: 'CNC Precision Machining & Aerospace Components',
       employeeCount: 45,
       accessMode: 'COLLABORATIVE',
-      enabledAddons: JSON.stringify(['KITCHEN', 'IOT_METERING', 'POWER_QUALITY']),
+      enabledAddons: JSON.stringify(['KITCHEN', 'IOT_METERING', 'POWER_QUALITY', 'COMPRESSED_AIR']),
       gridTariffRate: 8.2,
       solarTariffRate: 0,
       dgTariffRate: 18,
@@ -2197,6 +2200,73 @@ async function main() {
     });
   }
   console.log('PQ events seeded: 5 events, 14 daily snapshots (7 days x 2 meters)');
+
+  // ============================================================
+  // COMPRESSED AIR — Compressors + Readings
+  // ============================================================
+
+  const comp1 = await prisma.compressor.create({
+    data: {
+      clientId: demoClient.id,
+      name: 'Screw Compressor 1 — Elgi EG55',
+      make: 'ELGI', model: 'EG55', type: 'SCREW',
+      ratedPowerKW: 55, ratedFlowM3Min: 8.5, ratedPressureBar: 7.5,
+      motorEfficiency: 0.93, isVSD: false, location: 'Compressor Room',
+    },
+  });
+
+  const comp2 = await prisma.compressor.create({
+    data: {
+      clientId: demoClient.id,
+      name: 'Screw Compressor 2 — Elgi EG37 VSD',
+      make: 'ELGI', model: 'EG37 VSD+', type: 'SCREW',
+      ratedPowerKW: 37, ratedFlowM3Min: 6.2, ratedPressureBar: 7.5,
+      motorEfficiency: 0.95, isVSD: true, location: 'Compressor Room',
+    },
+  });
+
+  // 30 days of readings for both compressors
+  const caNow = new Date();
+  for (let d = 29; d >= 0; d--) {
+    const readDate = new Date(caNow);
+    readDate.setDate(readDate.getDate() - d);
+    readDate.setHours(0, 0, 0, 0);
+
+    // Comp1: fixed speed, higher specific energy, occasional anomalies
+    const c1Kwh = 900 + Math.random() * 100;
+    const c1M3 = 6800 + Math.random() * 800;
+    const c1Run = 22 + Math.random() * 2;
+    const c1Load = c1Run * (0.65 + Math.random() * 0.15);
+    const c1SE = c1Kwh / c1M3;
+    const c1LoadPct = (c1Load / c1Run) * 100;
+    await prisma.cAReading.create({
+      data: {
+        clientId: demoClient.id, compressorId: comp1.id, date: readDate,
+        energyKwh: c1Kwh, runHours: c1Run, loadHours: c1Load,
+        airFlowM3: c1M3, avgPressureBar: 7.2 + Math.random() * 0.5,
+        specificEnergy: c1SE, loadPercent: c1LoadPct,
+        hasAnomaly: c1SE > 0.15, anomalyNote: c1SE > 0.15 ? `High SE: ${c1SE.toFixed(3)} kWh/m³` : null,
+      },
+    });
+
+    // Comp2: VSD, better specific energy, higher load factor
+    const c2Kwh = 550 + Math.random() * 80;
+    const c2M3 = 5200 + Math.random() * 600;
+    const c2Run = 20 + Math.random() * 3;
+    const c2Load = c2Run * (0.80 + Math.random() * 0.15);
+    const c2SE = c2Kwh / c2M3;
+    const c2LoadPct = (c2Load / c2Run) * 100;
+    await prisma.cAReading.create({
+      data: {
+        clientId: demoClient.id, compressorId: comp2.id, date: readDate,
+        energyKwh: c2Kwh, runHours: c2Run, loadHours: c2Load,
+        airFlowM3: c2M3, avgPressureBar: 7.3 + Math.random() * 0.4,
+        specificEnergy: c2SE, loadPercent: c2LoadPct,
+        hasAnomaly: false,
+      },
+    });
+  }
+  console.log('Compressed Air seeded: 2 compressors, 60 daily readings');
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');

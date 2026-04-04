@@ -34,6 +34,8 @@ const tables = [
   'MeterReading', 'MeterAlert', 'IoTMonthlySummary',
   // Power Quality tables
   'PQEvent', 'PQSnapshot',
+  // Compressed Air tables
+  'Compressor', 'CAReading',
 ];
 
 async function main() {

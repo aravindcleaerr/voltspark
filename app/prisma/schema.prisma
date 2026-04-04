@@ -82,6 +82,9 @@ model Client {
   // Power Quality
   pqEvents           PQEvent[]
   pqSnapshots        PQSnapshot[]
+  // Compressed Air
+  compressors        Compressor[]
+  caReadings         CAReading[]
 }
 
 model Membership {
@@ -1108,6 +1111,7 @@ model IoTMeter {
   monthlySummaries IoTMonthlySummary[]
   pqEvents         PQEvent[]
   pqSnapshots      PQSnapshot[]
+  compressors      Compressor[]
 
   @@index([clientId])
   @@index([gatewayId])
@@ -1209,6 +1213,63 @@ model IoTMonthlySummary {
   updatedAt       DateTime @updatedAt
 
   @@unique([meterId, year, month])
+}
+
+// ============================================================
+// COMPRESSED AIR INTELLIGENCE MODULE
+// ============================================================
+
+model Compressor {
+  id                String   @id @default(cuid())
+  clientId          String
+  client            Client   @relation(fields: [clientId], references: [id])
+  meterId           String?
+  meter             IoTMeter? @relation(fields: [meterId], references: [id])
+  name              String     // e.g., "Compressor 1 — Atlas Copco GA75"
+  make              String?    // ATLAS_COPCO, INGERSOLL_RAND, KAESER, ELGI, CHICAGO_PNEUMATIC, OTHER
+  model             String?
+  type              String     @default("SCREW") // SCREW, RECIPROCATING, CENTRIFUGAL, SCROLL
+  ratedPowerKW      Float?     // nameplate power (kW)
+  ratedFlowM3Min    Float?     // rated free air delivery (m³/min or CFM)
+  ratedPressureBar  Float?     // rated discharge pressure (bar)
+  motorEfficiency   Float?     // motor efficiency (0-1)
+  isVSD             Boolean    @default(false) // Variable Speed Drive equipped
+  location          String?
+  commissionedDate  DateTime?
+  isActive          Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  readings          CAReading[]
+
+  @@index([clientId])
+}
+
+model CAReading {
+  id                String     @id @default(cuid())
+  clientId          String
+  client            Client     @relation(fields: [clientId], references: [id])
+  compressorId      String
+  compressor        Compressor @relation(fields: [compressorId], references: [id])
+  date              DateTime
+  // Energy
+  energyKwh         Float      // kWh consumed in this period
+  runHours          Float?     // compressor run hours
+  loadHours         Float?     // hours under load (vs unload/idle)
+  // Air output
+  airFlowM3         Float?     // total compressed air produced (m³)
+  avgPressureBar    Float?     // average discharge pressure
+  // Calculated metrics
+  specificEnergy    Float?     // kWh/m³ (auto-calculated)
+  loadPercent       Float?     // loadHours/runHours * 100
+  // Anomalies
+  hasAnomaly        Boolean    @default(false)
+  anomalyNote       String?
+  notes             String?
+  createdAt         DateTime   @default(now())
+
+  @@unique([compressorId, date])
+  @@index([clientId, date])
 }
 
 // ============================================================

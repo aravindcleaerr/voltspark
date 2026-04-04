@@ -49,6 +49,7 @@ const PLANS = [
 const ADDONS = [
   { name: 'IoT Metering', price: '999', desc: 'Real-time meter monitoring via MQTT', icon: Radio },
   { name: 'Power Quality', price: '799', desc: 'EN 50160 compliance & THD analysis', icon: Activity },
+  { name: 'Compressed Air', price: '999', desc: 'Specific energy, leak detection, load analysis', icon: Cpu },
   { name: 'Kitchen Intelligence', price: '999', desc: 'Demand management & load shedding', icon: ChefHat },
 ];
 
@@ -124,7 +125,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
           {[
             { val: '35+', label: 'Modules' },
-            { val: '3', label: 'IoT Add-ons' },
+            { val: '4', label: 'IoT Add-ons' },
             { val: '100%', label: 'Indian compliance' },
             { val: 'PWA', label: 'Mobile ready' },
           ].map((s) => (

@@ -45,6 +45,7 @@ import {
   Cpu,
   Radio,
   Activity,
+  Wind,
 } from 'lucide-react';
 
 interface NavItem {
@@ -128,6 +129,14 @@ const pqNavSection: NavSection = {
   ],
 };
 
+const caNavSection: NavSection = {
+  label: 'Compressed Air',
+  items: [
+    { name: 'CA Dashboard', href: '/ca/dashboard', icon: Wind },
+    { name: 'Compressors', href: '/ca/compressors', icon: Gauge },
+  ],
+};
+
 const iotNavSection: NavSection = {
   label: 'IoT Metering',
   items: [
@@ -207,6 +216,9 @@ export default function Sidebar({
   const [hasKitchen, setHasKitchen] = useState(false);
   const [hasIoT, setHasIoT] = useState(false);
   const [hasPQ, setHasPQ] = useState(false);
+  const [hasCA, setHasCA] = useState(false);
+  const [brandName, setBrandName] = useState('');
+  const [brandLogo, setBrandLogo] = useState('');
 
   const activeClientName = (session?.user as any)?.activeClientName;
   const activeClientId = (session?.user as any)?.activeClientId;
@@ -233,9 +245,20 @@ export default function Sidebar({
               setHasKitchen(addons.includes('KITCHEN'));
               setHasIoT(addons.includes('IOT_METERING'));
               setHasPQ(addons.includes('POWER_QUALITY'));
-            } catch { setHasKitchen(false); setHasIoT(false); setHasPQ(false); }
+              setHasCA(addons.includes('COMPRESSED_AIR'));
+            } catch { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); }
           })
-          .catch(() => { setHasKitchen(false); setHasIoT(false); setHasPQ(false); });
+          .catch(() => { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); });
+        // Fetch branding
+        fetch('/api/settings')
+          .then(r => r.ok ? r.json() : null)
+          .then((data: Record<string, string> | null) => {
+            if (data) {
+              setBrandName(data.brand_name || '');
+              setBrandLogo(data.brand_logo || '');
+            }
+          })
+          .catch(() => {});
       };
       checkAddons();
       const timer = setTimeout(checkAddons, 1000);
@@ -244,6 +267,7 @@ export default function Sidebar({
       setHasKitchen(false);
       setHasIoT(false);
       setHasPQ(false);
+      setHasCA(false);
     }
   }, [activeClientId]);
 
@@ -277,9 +301,18 @@ export default function Sidebar({
       >
         {/* Brand header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-brand-800">
-          <div>
-            <h1 className="text-lg font-bold">VoltSpark</h1>
-            <p className="text-xs text-brand-300">Energy Management</p>
+          <div className="flex items-center gap-2 min-w-0">
+            {brandLogo ? (
+              <img src={brandLogo} alt="" className="h-8 w-8 rounded object-contain bg-white/10 flex-shrink-0" />
+            ) : (
+              <div className="h-8 w-8 rounded-lg bg-brand-700 flex items-center justify-center flex-shrink-0">
+                <Zap className="h-5 w-5 text-brand-300" />
+              </div>
+            )}
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold truncate">{brandName || 'VoltSpark'}</h1>
+              <p className="text-xs text-brand-300">{brandName ? 'Powered by VoltSpark' : 'Energy Management'}</p>
+            </div>
           </div>
           <button onClick={onClose} className="lg:hidden p-1 hover:bg-brand-800 rounded">
             <X className="h-5 w-5" />
@@ -355,6 +388,10 @@ export default function Sidebar({
               {/* Show Power Quality after Energy section */}
               {idx === 1 && hasPQ && (
                 <NavSectionGroup section={pqNavSection} pathname={pathname} onClose={onClose} />
+              )}
+              {/* Show Compressed Air after Energy section */}
+              {idx === 1 && hasCA && (
+                <NavSectionGroup section={caNavSection} pathname={pathname} onClose={onClose} />
               )}
             </React.Fragment>
           ))}

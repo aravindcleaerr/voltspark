@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Settings, Users, Building2, Shield, Bell, Mail, UserPlus, Lock } from 'lucide-react';
+import { Settings, Users, Building2, Shield, Bell, Mail, UserPlus, Lock, Palette, Upload } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { useSettings } from '@/lib/hooks/useSettings';
@@ -24,6 +24,9 @@ export default function SettingsPage() {
   const [passwordForm, setPasswordForm] = useState({ current: '', newPw: '', confirm: '' });
   const [changingPw, setChangingPw] = useState(false);
   const [pwResult, setPwResult] = useState<{ ok?: boolean; error?: string } | null>(null);
+  const [brandForm, setBrandForm] = useState({ brand_name: '', brand_logo: '', brand_color: '#2563EB' });
+  const [savingBrand, setSavingBrand] = useState(false);
+  const [brandResult, setBrandResult] = useState<{ ok?: boolean; error?: string } | null>(null);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteForm, setInviteForm] = useState({ name: '', email: '', role: 'EMPLOYEE', department: '', employeeId: '' });
   const [inviting, setInviting] = useState(false);
@@ -32,6 +35,33 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch('/api/users').then(r => r.ok ? r.json() : []).then(setUsers).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (settings) {
+      setBrandForm({
+        brand_name: settings.brand_name || '',
+        brand_logo: settings.brand_logo || '',
+        brand_color: settings.brand_color || '#2563EB',
+      });
+    }
+  }, [settings]);
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 200 * 1024) { setBrandResult({ error: 'Logo must be under 200KB' }); return; }
+    const reader = new FileReader();
+    reader.onload = () => setBrandForm(p => ({ ...p, brand_logo: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
+
+  const saveBranding = async () => {
+    setSavingBrand(true);
+    setBrandResult(null);
+    const res = await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settings: brandForm }) });
+    setBrandResult(res.ok ? { ok: true } : { error: 'Failed to save branding' });
+    setSavingBrand(false);
+  };
 
   useEffect(() => {
     if (settings) {
@@ -109,6 +139,40 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Branding */}
+      <div className="card">
+        <h3 className="font-semibold mb-4 flex items-center gap-2"><Palette className="h-4 w-4 text-brand-600" /> Branding</h3>
+        <p className="text-sm text-gray-500 mb-4">Customize the platform appearance for your workspace. Logo appears in the sidebar and PDF reports.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className="label-text">Brand Name</label>
+            <input value={brandForm.brand_name} onChange={e => setBrandForm(p => ({ ...p, brand_name: e.target.value }))} placeholder="Your company name" className="input-field" />
+          </div>
+          <div>
+            <label className="label-text">Primary Color</label>
+            <div className="flex items-center gap-2">
+              <input type="color" value={brandForm.brand_color} onChange={e => setBrandForm(p => ({ ...p, brand_color: e.target.value }))} className="h-10 w-14 rounded border cursor-pointer" />
+              <input value={brandForm.brand_color} onChange={e => setBrandForm(p => ({ ...p, brand_color: e.target.value }))} className="input-field flex-1 font-mono text-sm" placeholder="#2563EB" />
+            </div>
+          </div>
+          <div>
+            <label className="label-text">Logo (max 200KB)</label>
+            <label className="flex items-center gap-2 cursor-pointer input-field text-sm text-gray-500">
+              <Upload className="h-4 w-4" /> {brandForm.brand_logo ? 'Change logo' : 'Upload logo'}
+              <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+            </label>
+          </div>
+        </div>
+        {brandForm.brand_logo && (
+          <div className="mt-3 flex items-center gap-3">
+            <img src={brandForm.brand_logo} alt="Logo preview" className="h-10 rounded bg-gray-50 border p-1" />
+            <button onClick={() => setBrandForm(p => ({ ...p, brand_logo: '' }))} className="text-xs text-red-500 hover:underline">Remove</button>
+          </div>
+        )}
+        {brandResult && <p className={`text-xs mt-2 ${brandResult.ok ? 'text-green-600' : 'text-red-600'}`}>{brandResult.ok ? 'Branding saved!' : brandResult.error}</p>}
+        <button onClick={saveBranding} disabled={savingBrand} className="btn-primary text-sm mt-4">{savingBrand ? 'Saving...' : 'Save Branding'}</button>
       </div>
 
       {/* User Management */}
