@@ -1,7 +1,69 @@
 import Link from 'next/link';
-import { Zap, TrendingDown, CheckCircle, ArrowRight, IndianRupee, Cpu, Shield } from 'lucide-react';
+import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse } from 'lucide-react';
 
-export const metadata = { title: 'Partner with VoltSpark — IoT Investment Case' };
+export const metadata = { title: 'Partner with VoltSpark — Grow Your Practice' };
+
+const verticals = [
+  {
+    icon: Factory,
+    label: 'Manufacturing & CNC',
+    pain: 'High electricity bill, ZED/ISO certification pressure, power factor penalties, compressed air leaks.',
+    rupee: '₹5–20L recoverable annually',
+    color: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+  },
+  {
+    icon: UtensilsCrossed,
+    label: 'Kitchens & Hospitality',
+    pain: 'Simultaneous loads spike demand charges. One dinner service can trigger ₹40K–₹2L in penalties.',
+    rupee: '₹10–30L recoverable annually',
+    color: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800',
+    iconColor: 'text-orange-600 dark:text-orange-400',
+  },
+  {
+    icon: Building2,
+    label: 'Commercial Buildings',
+    pain: 'HVAC, lighting and utility loads run untracked. No visibility into which floor or tenant is the problem.',
+    rupee: '₹8–25L recoverable annually',
+    color: 'bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800',
+    iconColor: 'text-purple-600 dark:text-purple-400',
+  },
+  {
+    icon: HeartPulse,
+    label: 'Hospitals & Healthcare',
+    pain: 'Critical loads, backup power costs, NABH compliance — no single platform tracks energy and safety together.',
+    rupee: '₹5–15L recoverable annually',
+    color: 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800',
+    iconColor: 'text-rose-600 dark:text-rose-400',
+  },
+];
+
+const addons = [
+  {
+    name: 'IoT Metering',
+    tagline: 'Real-time visibility across every energy source',
+    body: 'One smart gateway connects all meters in the facility — incomer, DG, solar, individual machines. Data flows into VoltSpark automatically. No manual logs. No missed readings.',
+    impact: 'Eliminates data blindness. Surfaces hidden losses within days of installation.',
+  },
+  {
+    name: 'Power Quality Monitor',
+    tagline: 'Protect equipment, prevent downtime',
+    body: 'Tracks voltage sags, swells, harmonics (THD) and power factor per phase. Alerts before grid instability causes a breakdown or PLC trip.',
+    impact: 'One prevented breakdown pays for 2–3 years of monitoring.',
+  },
+  {
+    name: 'Compressed Air Intelligence',
+    tagline: 'Find what your compressor is wasting',
+    body: 'Tracks energy per cubic metre of air produced. Rising specific energy = leak or degradation. Flags the problem before the compressor fails.',
+    impact: '20–30% of compressed air is typically wasted. Each 1% leak costs ₹10K–₹50K/year.',
+  },
+  {
+    name: 'Kitchen Intelligence',
+    tagline: 'Stop demand penalties at the source',
+    body: 'Monitors live kVA demand against contracted limit. Automatically sheds low-priority loads before a breach. Tracks ToD patterns and HACCP temperatures.',
+    impact: 'Demand penalty avoidance alone: ₹20K–₹2L/month depending on kitchen size.',
+  },
+];
 
 export default function PartnerPage() {
   return (
@@ -20,261 +82,165 @@ export default function PartnerPage() {
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+      <main className="max-w-4xl mx-auto px-4 py-12 space-y-20">
 
         {/* Hero */}
-        <section className="text-center space-y-4">
+        <section className="text-center space-y-5">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-brand-600 bg-brand-50 dark:bg-brand-950 px-4 py-1.5 rounded-full">
-            IoT Investment Case · For Partners
+            For Energy & Compliance Partners
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            VoltSpark + IoT<br />
-            <span className="text-brand-600">The 60-Second Case</span>
+            Your clients are paying for losses<br />
+            <span className="text-brand-600">they don't know exist.</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Indian MSMEs spend <strong className="text-gray-900 dark:text-white">₹3–20 Lakh/month</strong> on electricity with no real-time visibility.
-            A meter measures. <strong className="text-gray-900 dark:text-white">VoltSpark acts.</strong>
+            Every factory, kitchen, hospital, and office building has an electricity bill. Almost none know
+            where 20–40% of it is wasted. VoltSpark makes you the one who finds it, proves it in ₹, and fixes it.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Link href="/partner/economics" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+              See the numbers <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a href="mailto:aravind@akshayacreatech.com" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+              Talk to us
+            </a>
+          </div>
         </section>
 
-        {/* Cost of doing nothing */}
+        {/* Problem */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <TrendingDown className="h-6 w-6 text-red-500" />
-            What It Costs to Do Nothing
-          </h2>
-          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                  <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Loss Source</th>
-                  <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Monthly</th>
-                  <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Annually</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">Power Factor penalty <span className="text-xs text-gray-400">(PF below 0.90)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹30,000</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹3.6L</td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">Max Demand overshoot <span className="text-xs text-gray-400">(contracted vs actual kVA)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹18,000</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹2.2L</td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">Compressed air leaks <span className="text-xs text-gray-400">(25% of compressor load)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹21,500</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹2.6L</td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">1 unplanned breakdown <span className="text-xs text-gray-400">(lost production + emergency repair)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-gray-400">—</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-600 dark:text-red-400">₹3–12L</td>
-                </tr>
-                <tr className="bg-red-50 dark:bg-red-950/30 font-semibold">
-                  <td className="px-5 py-3.5">Total avoidable loss (typical MSME)</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-700 dark:text-red-300">₹70,000+</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-red-700 dark:text-red-300">₹8–20L</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="text-sm font-semibold text-center text-gray-700 dark:text-gray-300 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl py-3 px-5">
-            Hardware + VoltSpark cost: <span className="text-amber-700 dark:text-amber-300">₹25,000–80,000 one-time.</span> Payback: under 3 months.
-          </p>
-        </section>
-
-        {/* Why VoltSpark */}
-        <section className="space-y-5">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Cpu className="h-6 w-6 text-brand-500" />
-            Why VoltSpark, Not Just a Meter
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">A standalone meter gives you data. VoltSpark gives you <strong className="text-gray-900 dark:text-white">decisions.</strong></p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {[
-              { text: 'Auto-detects PF dips, demand spikes, and anomalies — raises CAPA automatically' },
-              { text: 'Quantifies savings in ₹, not just kWh — so the factory owner sees money, not numbers' },
-              { text: 'Builds ZED / ISO 50001 compliance evidence as you go — audit-ready at any time' },
-              { text: 'Consultant sees all clients from one dashboard — scales to 10 or 100 factories' },
-            ].map((item, i) => (
-              <div key={i} className="flex gap-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-gray-700 dark:text-gray-300">{item.text}</p>
-              </div>
-            ))}
+          <div className="flex items-start gap-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-6">
+            <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="space-y-2">
+              <p className="font-semibold text-gray-900 dark:text-white">The problem every consultant faces</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                You know where the waste is. But your client sees an Excel report once a quarter and forgets it by the next board meeting.
+                VoltSpark gives them a live dashboard that speaks their language — <strong>₹ saved, risks avoided, compliance status</strong>.
+                Your advice becomes visible, measurable, and sticky.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Entry path */}
+        {/* Verticals */}
         <section className="space-y-5">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <ArrowRight className="h-6 w-6 text-brand-500" />
-            The Low-Risk Entry Path
-          </h2>
-          <div className="space-y-3">
-            {[
-              {
-                label: 'Week 1–2',
-                title: 'Free Baseline Audit',
-                body: 'Install 1 smart meter at the incomer (₹8,000–12,000). VoltSpark auto-generates a ₹-value report showing exactly what the factory is losing.',
-                color: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800',
-                tag: 'text-blue-700 dark:text-blue-300',
-              },
-              {
-                label: 'Month 1–3',
-                title: 'Sub-Metering Pilot',
-                body: 'Expand to 3–5 meters across feeders. Customer sees ₹ savings vs ₹ investment in real time — no guesswork.',
-                color: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800',
-                tag: 'text-amber-700 dark:text-amber-300',
-              },
-              {
-                label: 'Month 4+',
-                title: 'Full Rollout',
-                body: 'Complete plant metering, compliance tracking, automated reporting. Customer doesn\'t leave — 12 months of data is a switching cost.',
-                color: 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800',
-                tag: 'text-green-700 dark:text-green-300',
-              },
-            ].map((step, i) => (
-              <div key={i} className={`flex gap-4 rounded-xl border p-5 ${step.color}`}>
-                <div className={`text-xs font-bold uppercase tracking-wider w-20 flex-shrink-0 mt-0.5 ${step.tag}`}>{step.label}</div>
-                <div>
-                  <p className="font-semibold text-gray-900 dark:text-white mb-1">{step.title}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{step.body}</p>
+          <div>
+            <h2 className="text-2xl font-bold">Works across every vertical you serve</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">One platform. Any facility that pays an electricity bill.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {verticals.map((v) => {
+              const Icon = v.icon;
+              return (
+                <div key={v.label} className={`rounded-xl border p-5 space-y-3 ${v.color}`}>
+                  <div className="flex items-center gap-2">
+                    <Icon className={`h-5 w-5 ${v.iconColor}`} />
+                    <span className="font-semibold text-gray-900 dark:text-white text-sm">{v.label}</span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{v.pain}</p>
+                  <p className={`text-sm font-bold ${v.iconColor}`}>{v.rupee}</p>
                 </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-2xl font-bold">Start manual. Add IoT when ready.</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No hardware dependency to get started. IoT add-ons layer on top when the client is ready to invest.</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { step: '1', title: 'Core platform', body: 'Energy tracking, utility bill analysis, compliance (ZED / ISO 50001 / Electrical Safety), CAPA, training, audits. Manual entry. Works from day one.' },
+              { step: '2', title: 'Prove ₹ savings', body: 'Savings Tracker and ROI Calculator show exactly what each improvement is worth. Every improvement you recommend gets a ₹ number attached to it.' },
+              { step: '3', title: 'Upgrade with IoT', body: 'When the client is ready, enable add-on modules. Real-time data flows in automatically. No manual entry. Alerts and benchmarks activate.' },
+            ].map((s) => (
+              <div key={s.step} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
+                <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center">{s.step}</div>
+                <p className="font-semibold text-gray-900 dark:text-white">{s.title}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{s.body}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Partner revenue */}
+        {/* Add-ons */}
         <section className="space-y-5">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <IndianRupee className="h-6 w-6 text-brand-500" />
-            Partner Revenue
-          </h2>
-
-          {/* Per-factory economics */}
           <div>
-            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Per Factory Site (typical mid-size plant)</p>
-            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                    <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Item</th>
-                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Cost</th>
-                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3">1 × IoT Gateway (Edge server)</td>
-                    <td className="px-5 py-3 text-right font-mono">₹30,000–40,000</td>
-                    <td className="px-5 py-3 text-right text-gray-400 text-xs">One per plant</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3">1 × Incomer meter</td>
-                    <td className="px-5 py-3 text-right font-mono">₹4,000–6,000</td>
-                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Whole-plant view</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3">3–8 × Feeder / machine-group meters</td>
-                    <td className="px-5 py-3 text-right font-mono">₹6,000–48,000</td>
-                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Per CNC bay, compressor, utility, etc.</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3">Wiring, CTs, installation labour</td>
-                    <td className="px-5 py-3 text-right font-mono">₹8,000–15,000</td>
-                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Site-specific</td>
-                  </tr>
-                  <tr className="bg-gray-50 dark:bg-gray-900 font-semibold">
-                    <td className="px-5 py-3.5">Hardware total per factory</td>
-                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹48,000–1,09,000</td>
-                    <td className="px-5 py-3.5 text-right text-gray-400 text-xs">Scales with plant size</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1">
-              More meters per factory = higher hardware revenue per site. A 10-machine CNC shop and a 2-machine shop are the same "client" on the platform — but very different hardware orders.
-            </p>
+            <h2 className="text-2xl font-bold">IoT add-on modules</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Each module is enabled per client site. Clients pay for what they use.</p>
           </div>
+          <div className="space-y-3">
+            {addons.map((a) => (
+              <div key={a.name} className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-1">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="font-semibold text-gray-900 dark:text-white">{a.name}</span>
+                  <span className="text-sm text-brand-600 dark:text-brand-400">— {a.tagline}</span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{a.body}</p>
+                <p className="text-sm font-medium text-green-700 dark:text-green-400 pt-1">↳ {a.impact}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Portfolio scale */}
-          <div>
-            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Portfolio Scale — 10 Factory Sites, Year 1</p>
-            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                    <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Revenue Stream</th>
-                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5">Hardware supply & installation <span className="text-xs text-gray-400">(10 sites × ₹70,000 avg)</span></td>
-                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹7,00,000</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5">VoltSpark SaaS share <span className="text-xs text-gray-400">(30% of ₹2,999/mo × 10 sites)</span></td>
-                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹1,08,000/yr</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5">Add-on share <span className="text-xs text-gray-400">(Power Quality, Compressed Air — 6 sites)</span></td>
-                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹43,000/yr</td>
-                  </tr>
-                  <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                    <td className="px-5 py-3.5 text-brand-700 dark:text-brand-300">Year 1 Total</td>
-                    <td className="px-5 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">₹8.51L</td>
-                  </tr>
-                  <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
-                    <td className="px-5 py-3.5 text-green-700 dark:text-green-300">Year 2 — same sites, no new installs</td>
-                    <td className="px-5 py-3.5 text-right font-mono text-green-700 dark:text-green-300 text-base">₹1.51L recurring</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1">
-              Larger plants (more machines, more feeders) push average hardware per site well above ₹70,000 — the portfolio revenue scales with plant complexity, not just client count.
-            </p>
+        {/* Partner revenue teaser */}
+        <section className="rounded-2xl bg-gray-950 dark:bg-gray-900 text-white p-8 space-y-4">
+          <h2 className="text-xl font-bold">What you earn as a partner</h2>
+          <p className="text-gray-400 leading-relaxed text-sm">
+            You earn a recurring commission on every client site you bring onto VoltSpark — base platform plus each add-on they enable.
+            The more problems you solve per site, the higher the per-site revenue. It compounds as your portfolio grows.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 pt-2">
+            {[
+              { sites: '5 sites', monthly: '₹19,500/mo', annual: '₹2.34L/yr' },
+              { sites: '10 sites', monthly: '₹39,000/mo', annual: '₹4.68L/yr' },
+              { sites: '20 sites', monthly: '₹78,000/mo', annual: '₹9.36L/yr' },
+            ].map((r) => (
+              <div key={r.sites} className="bg-gray-800 rounded-xl p-4 space-y-1 text-center">
+                <p className="text-xs text-gray-400 uppercase tracking-wider">{r.sites}</p>
+                <p className="text-xl font-bold text-white">{r.monthly}</p>
+                <p className="text-xs text-green-400">{r.annual}</p>
+              </div>
+            ))}
           </div>
+          <Link href="/partner/economics" className="inline-flex items-center gap-2 text-sm text-brand-400 hover:text-brand-300 font-medium pt-1">
+            See full breakdown — per machine investment + partner revenue model <ArrowRight className="h-4 w-4" />
+          </Link>
         </section>
 
         {/* Why now */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Shield className="h-6 w-6 text-brand-500" />
-            Why Now
-          </h2>
-          <div className="bg-gray-950 dark:bg-gray-900 text-white rounded-xl p-6 space-y-3">
-            <p className="text-gray-300 leading-relaxed">
-              ZED certification, ISO 50001, and BEE PAT are no longer optional for factories supplying Tier 1 auto OEMs.
-              <strong className="text-white"> IoT-backed energy data is becoming a vendor qualification requirement.</strong>
-            </p>
-            <p className="text-gray-300 leading-relaxed">
-              The factory that has it <span className="text-green-400 font-semibold">wins the order.</span> The one that doesn't is asked to get it — on the OEM's timeline, not their own.
-            </p>
+        <section className="space-y-3">
+          <h2 className="text-2xl font-bold">Why clients can't wait</h2>
+          <div className="space-y-2">
+            {[
+              'ZED certification is now a vendor qualification requirement for many Tier 1 auto OEMs. Factories without it risk losing orders.',
+              'ISO 50001 audits require documented energy baselines, targets, and improvement evidence — not Excel sheets.',
+              "BEE PAT cycle penalties are rising. Facilities that can't prove energy reduction face fines.",
+              'BESCOM and other DISCOMs have tightened PF and demand norms — penalties are bigger than they were 3 years ago.',
+            ].map((point, i) => (
+              <div key={i} className="flex gap-3 text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-5 py-3">
+                <span className="text-brand-600 font-bold flex-shrink-0">→</span>
+                {point}
+              </div>
+            ))}
           </div>
         </section>
 
         {/* CTA */}
         <section className="rounded-2xl bg-brand-600 text-white p-8 text-center space-y-4">
-          <p className="text-xl font-bold">VoltSpark brings the platform. Partners bring the hardware and the customers.</p>
-          <p className="text-brand-100 text-sm">We all win when the factory saves money.</p>
+          <p className="text-xl font-bold">Ready to build your practice on VoltSpark?</p>
+          <p className="text-brand-100 text-sm max-w-lg mx-auto">Start with one client. Prove ₹ savings in 30 days. Expand from there.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/register" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors">
-              Start Free Demo
+              Start Free
             </Link>
-            <a href="mailto:aravind@akshayacreatech.com" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
-              Talk to Us
-            </a>
+            <Link href="/partner/economics" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
+              See the Numbers
+            </Link>
           </div>
-          <p className="text-xs text-brand-200 pt-2">
-            Live platform: volt-spark.vercel.app
-          </p>
         </section>
 
       </main>
