@@ -1049,7 +1049,7 @@ model IoTGateway {
   client          Client   @relation(fields: [clientId], references: [id])
   name            String                          // e.g., "Main Panel Gateway"
   serialNumber    String?                         // physical device serial
-  gatewayType     String   @default("PAS600")     // PAS600, RASPBERRY_PI, INDUSTRIAL_PC, OTHER
+  gatewayType     String   @default("ESX_UNIVERSAL") // ESX_UNIVERSAL, PAS600, RASPBERRY_PI, INDUSTRIAL_PC, OTHER
   make            String?                         // SCHNEIDER, LOTUS, OTHER
   firmwareVersion String?
   ipAddress       String?                         // local network IP

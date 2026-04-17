@@ -1912,10 +1912,10 @@ async function main() {
     data: {
       clientId: demoClient.id,
       name: 'Main LT Panel Gateway',
-      serialNumber: 'PAS600-PE-001',
-      gatewayType: 'PAS600',
+      serialNumber: 'ESX-UNI-PE-001',
+      gatewayType: 'ESX_UNIVERSAL',
       make: 'SCHNEIDER',
-      firmwareVersion: '3.2.1',
+      firmwareVersion: '2.1.0',
       ipAddress: '192.168.1.100',
       location: 'Main LT Panel Room, Ground Floor',
       mqttBrokerUrl: 'mqtts://broker.hivemq.com:8883',
@@ -1984,6 +1984,25 @@ async function main() {
       panelName: 'Solar ACDB',
       circuitName: 'Solar Output',
       location: 'Rooftop',
+    },
+  });
+
+  // EM1200 CL-1RS — basic sub-meter on utility / office lighting feeder
+  await prisma.ioTMeter.create({
+    data: {
+      clientId: demoClient.id,
+      gatewayId: iotGateway.id,
+      name: 'Utility & Lighting Feeder',
+      meterSerial: 'EM1200-PE-001',
+      modbusAddress: 4,
+      make: 'SCHNEIDER',
+      model: 'EM1200',
+      meterType: 'SUBMETER',
+      ctRatio: 100,
+      ratedVoltage: 415,
+      panelName: 'Main LT Panel',
+      circuitName: 'Utility & Lighting',
+      location: 'Ground Floor — Utility Room',
     },
   });
 

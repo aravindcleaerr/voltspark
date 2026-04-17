@@ -117,7 +117,8 @@ export const DEVIATION_THRESHOLD_CRITICAL = 20;
 // ============================================================
 
 export const IOT_GATEWAY_TYPES = [
-  { value: 'PAS600', label: 'Schneider PAS600 Panel Server' },
+  { value: 'ESX_UNIVERSAL', label: 'Schneider ESX Panel Server Universal' },
+  { value: 'PAS600', label: 'Schneider PAS600 Panel Server (Basic)' },
   { value: 'RASPBERRY_PI', label: 'Raspberry Pi Gateway' },
   { value: 'INDUSTRIAL_PC', label: 'Industrial PC' },
   { value: 'OTHER', label: 'Other' },
