@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse } from 'lucide-react';
+import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse, Info } from 'lucide-react';
 
 export const metadata = { title: 'Partner with VoltSpark — Grow Your Practice' };
 
@@ -8,7 +8,7 @@ const verticals = [
     icon: Factory,
     label: 'Manufacturing & CNC',
     pain: 'High electricity bill, ZED/ISO certification pressure, power factor penalties, compressed air leaks.',
-    rupee: '₹5–20L recoverable annually',
+    rupee: '₹5–20L in waste typically identified',
     color: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800',
     iconColor: 'text-blue-600 dark:text-blue-400',
   },
@@ -16,7 +16,7 @@ const verticals = [
     icon: UtensilsCrossed,
     label: 'Kitchens & Hospitality',
     pain: 'Simultaneous loads spike demand charges. One dinner service can trigger ₹40K–₹2L in penalties.',
-    rupee: '₹10–30L recoverable annually',
+    rupee: '₹10–30L in waste typically identified',
     color: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800',
     iconColor: 'text-orange-600 dark:text-orange-400',
   },
@@ -24,7 +24,7 @@ const verticals = [
     icon: Building2,
     label: 'Commercial Buildings',
     pain: 'HVAC, lighting and utility loads run untracked. No visibility into which floor or tenant is the problem.',
-    rupee: '₹8–25L recoverable annually',
+    rupee: '₹8–25L in waste typically identified',
     color: 'bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800',
     iconColor: 'text-purple-600 dark:text-purple-400',
   },
@@ -32,7 +32,7 @@ const verticals = [
     icon: HeartPulse,
     label: 'Hospitals & Healthcare',
     pain: 'Critical loads, backup power costs, NABH compliance — no single platform tracks energy and safety together.',
-    rupee: '₹5–15L recoverable annually',
+    rupee: '₹5–15L in waste typically identified',
     color: 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800',
     iconColor: 'text-rose-600 dark:text-rose-400',
   },
@@ -43,25 +43,25 @@ const addons = [
     name: 'IoT Metering',
     tagline: 'Real-time visibility across every energy source',
     body: 'One smart gateway connects all meters in the facility — incomer, DG, solar, individual machines. Data flows into VoltSpark automatically. No manual logs. No missed readings.',
-    impact: 'Eliminates data blindness. Surfaces hidden losses within days of installation.',
+    impact: 'Surfaces hidden losses within days. Your client can see exactly where energy is going — and decide what to fix.',
   },
   {
     name: 'Power Quality Monitor',
-    tagline: 'Protect equipment, prevent downtime',
-    body: 'Tracks voltage sags, swells, harmonics (THD) and power factor per phase. Alerts before grid instability causes a breakdown or PLC trip.',
-    impact: 'One prevented breakdown pays for 2–3 years of monitoring.',
+    tagline: 'Identify equipment and downtime risks early',
+    body: 'Tracks voltage sags, swells, harmonics (THD) and power factor per phase. Raises an alert when grid instability could cause a breakdown or PLC trip.',
+    impact: 'Early warning gives your client time to act — before a breakdown, not after.',
   },
   {
     name: 'Compressed Air Intelligence',
     tagline: 'Find what your compressor is wasting',
-    body: 'Tracks energy per cubic metre of air produced. Rising specific energy = leak or degradation. Flags the problem before the compressor fails.',
-    impact: '20–30% of compressed air is typically wasted. Each 1% leak costs ₹10K–₹50K/year.',
+    body: 'Tracks energy per cubic metre of air produced. Rising specific energy signals a leak or degradation. Flags the problem so it can be investigated and fixed.',
+    impact: '20–30% of compressed air is typically wasted. VoltSpark identifies it — acting on it is where the savings come from.',
   },
   {
     name: 'Kitchen Intelligence',
-    tagline: 'Stop demand penalties at the source',
-    body: 'Monitors live kVA demand against contracted limit. Automatically sheds low-priority loads before a breach. Tracks ToD patterns and HACCP temperatures.',
-    impact: 'Demand penalty avoidance alone: ₹20K–₹2L/month depending on kitchen size.',
+    tagline: 'Visibility and alerts for demand management',
+    body: 'Monitors live kVA demand against contracted limit. Raises alerts before a breach threshold is crossed. Tracks ToD patterns and HACCP temperatures.',
+    impact: 'Gives operators the information to make load-shedding decisions in real time. Penalty avoidance follows from those decisions.',
   },
 ];
 
@@ -95,7 +95,8 @@ export default function PartnerPage() {
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Every factory, kitchen, hospital, and office building has an electricity bill. Almost none know
-            where 20–40% of it is wasted. VoltSpark makes you the one who finds it, proves it in ₹, and fixes it.
+            where 20–40% of it is wasted. VoltSpark makes you the one who finds it and proves it in ₹ —
+            so your clients can act on it.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/partner/economics" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
@@ -107,16 +108,44 @@ export default function PartnerPage() {
           </div>
         </section>
 
+        {/* How savings actually happen — important clarity */}
+        <section>
+          <div className="flex items-start gap-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-6">
+            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <div className="space-y-3">
+              <p className="font-semibold text-gray-900 dark:text-white">How savings actually happen</p>
+              <div className="grid sm:grid-cols-3 gap-3 text-sm">
+                <div className="space-y-1">
+                  <p className="font-medium text-blue-700 dark:text-blue-300">VoltSpark finds it</p>
+                  <p className="text-gray-600 dark:text-gray-400">Surfaces waste, penalties, risks, and deviations — quantified in ₹, not just kWh.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium text-blue-700 dark:text-blue-300">You recommend the fix</p>
+                  <p className="text-gray-600 dark:text-gray-400">Your expertise turns the data into an action plan — equipment changes, process adjustments, maintenance.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium text-blue-700 dark:text-blue-300">Client acts and saves</p>
+                  <p className="text-gray-600 dark:text-gray-400">Savings come from the improvements your client implements — VoltSpark tracks and proves every rupee of it.</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
+                VoltSpark is a visibility and evidence platform. It does not automatically reduce your client&apos;s bill —
+                that happens when insights are acted on. The platform&apos;s job is to make sure nothing stays hidden and nothing goes unproven.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Problem */}
-        <section className="space-y-4">
+        <section>
           <div className="flex items-start gap-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-6">
             <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
             <div className="space-y-2">
               <p className="font-semibold text-gray-900 dark:text-white">The problem every consultant faces</p>
               <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                 You know where the waste is. But your client sees an Excel report once a quarter and forgets it by the next board meeting.
-                VoltSpark gives them a live dashboard that speaks their language — <strong>₹ saved, risks avoided, compliance status</strong>.
-                Your advice becomes visible, measurable, and sticky.
+                VoltSpark gives them a live dashboard that speaks their language — <strong>₹ identified, risks flagged, compliance tracked</strong>.
+                Your recommendations become visible, measurable, and impossible to ignore.
               </p>
             </div>
           </div>
@@ -143,6 +172,7 @@ export default function PartnerPage() {
               );
             })}
           </div>
+          <p className="text-xs text-gray-400 px-1">Figures represent typical ranges of waste identified in audits of similar facilities. Actual savings depend on what actions are taken.</p>
         </section>
 
         {/* How it works */}
@@ -154,8 +184,8 @@ export default function PartnerPage() {
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { step: '1', title: 'Core platform', body: 'Energy tracking, utility bill analysis, compliance (ZED / ISO 50001 / Electrical Safety), CAPA, training, audits. Manual entry. Works from day one.' },
-              { step: '2', title: 'Prove ₹ savings', body: 'Savings Tracker and ROI Calculator show exactly what each improvement is worth. Every improvement you recommend gets a ₹ number attached to it.' },
-              { step: '3', title: 'Upgrade with IoT', body: 'When the client is ready, enable add-on modules. Real-time data flows in automatically. No manual entry. Alerts and benchmarks activate.' },
+              { step: '2', title: 'Identify and document', body: 'Savings Tracker and ROI Calculator attach a ₹ number to every improvement you recommend — so clients can prioritise and you can prove your value.' },
+              { step: '3', title: 'Upgrade with IoT', body: 'When the client is ready, enable add-on modules. Real-time data flows in automatically, reducing manual work and enabling faster identification of issues.' },
             ].map((s) => (
               <div key={s.step} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center">{s.step}</div>
@@ -191,7 +221,7 @@ export default function PartnerPage() {
           <h2 className="text-xl font-bold">What you earn as a partner</h2>
           <p className="text-gray-400 leading-relaxed text-sm">
             You earn a recurring commission on every client site you bring onto VoltSpark — base platform plus each add-on they enable.
-            The more problems you solve per site, the higher the per-site revenue. It compounds as your portfolio grows.
+            The more problems you solve per site, the more add-ons make sense, and the higher the per-site revenue.
           </p>
           <div className="grid sm:grid-cols-3 gap-4 pt-2">
             {[
@@ -213,7 +243,7 @@ export default function PartnerPage() {
 
         {/* Why now */}
         <section className="space-y-3">
-          <h2 className="text-2xl font-bold">Why clients can't wait</h2>
+          <h2 className="text-2xl font-bold">Why clients cannot wait</h2>
           <div className="space-y-2">
             {[
               'ZED certification is now a vendor qualification requirement for many Tier 1 auto OEMs. Factories without it risk losing orders.',
@@ -232,7 +262,7 @@ export default function PartnerPage() {
         {/* CTA */}
         <section className="rounded-2xl bg-brand-600 text-white p-8 text-center space-y-4">
           <p className="text-xl font-bold">Ready to build your practice on VoltSpark?</p>
-          <p className="text-brand-100 text-sm max-w-lg mx-auto">Start with one client. Prove ₹ savings in 30 days. Expand from there.</p>
+          <p className="text-brand-100 text-sm max-w-lg mx-auto">Start with one client. Identify savings opportunities in the first month. Build from there.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/register" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors">
               Start Free

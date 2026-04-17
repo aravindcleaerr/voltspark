@@ -124,7 +124,7 @@ export default function EconomicsPage() {
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-600">Partner Economics</p>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight">The numbers behind the pitch</h1>
           <p className="text-gray-500 dark:text-gray-400 max-w-2xl">
-            Two views: what your client invests and saves (per machine), and what you earn as a partner (per site, recurring).
+            Two views: what your client invests and what savings become possible (per machine), and what you earn as a partner (per site, recurring).
           </p>
         </section>
 
@@ -133,8 +133,17 @@ export default function EconomicsPage() {
           <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
             <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">1</div>
             <div>
-              <h2 className="text-xl font-bold">Customer ROI — what your client invests and saves</h2>
+              <h2 className="text-xl font-bold">Customer Investment & Savings Potential</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">Investment scales with the number of machines or energy sources being monitored.</p>
+            </div>
+          </div>
+
+          {/* Important framing note */}
+          <div className="flex items-start gap-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl px-5 py-4 text-sm">
+            <span className="text-blue-600 dark:text-blue-400 font-bold flex-shrink-0 mt-0.5">i</span>
+            <div className="space-y-1 text-gray-700 dark:text-gray-300">
+              <p><strong className="text-gray-900 dark:text-white">Important:</strong> The figures below show the savings <em>opportunity</em> that VoltSpark helps identify — not savings that happen automatically.</p>
+              <p>VoltSpark surfaces where energy is being wasted and quantifies it in ₹. Realising those savings requires your client to act on the findings — fixing leaks, adjusting settings, changing equipment, or improving processes. Your role as a consultant is to guide those decisions. VoltSpark gives you the evidence to make the case.</p>
             </div>
           </div>
 
@@ -172,7 +181,7 @@ export default function EconomicsPage() {
                     <th className="text-right px-4 py-3">Meters</th>
                     <th className="text-right px-4 py-3 font-bold text-gray-700 dark:text-gray-300">Total invest.</th>
                     <th className="text-right px-4 py-3">Per machine</th>
-                    <th className="text-right px-4 py-3 text-green-600 dark:text-green-400">Annual savings</th>
+                    <th className="text-right px-4 py-3 text-green-600 dark:text-green-400">Savings potential (if acted on)</th>
                     <th className="text-right px-4 py-3">Payback</th>
                   </tr>
                 </thead>
@@ -199,7 +208,7 @@ export default function EconomicsPage() {
 
           {/* Per machine type */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Savings by machine / energy source type</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Savings opportunity by machine / energy source type</h3>
             <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
               <table className="w-full text-sm">
                 <thead>
@@ -222,7 +231,7 @@ export default function EconomicsPage() {
                 </tbody>
               </table>
             </div>
-            <p className="text-xs text-gray-400 px-1">A single factory with 1 incomer + 1 compressor + 1 utility feeder = 3 meters. Total hardware ₹60,500. Conservative annual savings: ₹5–10L. Payback: under 2 months.</p>
+            <p className="text-xs text-gray-400 px-1">Example: a factory with 1 incomer + 1 compressor + 1 utility feeder = 3 meters, total hardware ₹60,500. If the identified issues are acted on, conservative annual savings potential is ₹5–10L — implying a payback period under 2 months.</p>
           </div>
         </section>
 
@@ -320,7 +329,7 @@ export default function EconomicsPage() {
             </div>
             <div className="grid sm:grid-cols-3 gap-4 text-sm">
               {[
-                { step: 'Year 1', title: 'Prove value', body: 'Savings Tracker documents ₹ saved per improvement. Client sees ROI. You have proof for the next client.' },
+                { step: 'Year 1', title: 'Build evidence', body: 'Savings Tracker documents the ₹ impact of each improvement your client acts on. Client sees the ROI of your advice. You have proof for the next conversation.' },
                 { step: 'Year 2', title: 'Deepen per site', body: 'Client enables more add-ons as trust grows. Higher per-site revenue with zero acquisition cost.' },
                 { step: 'Year 3+', title: 'Scale portfolio', body: 'Referrals come from satisfied clients. Each new site adds to your recurring base. Benchmarks improve.' },
               ].map((s) => (
@@ -337,7 +346,7 @@ export default function EconomicsPage() {
         {/* CTA */}
         <section className="rounded-2xl bg-brand-600 text-white p-8 text-center space-y-4">
           <p className="text-xl font-bold">Ready to start?</p>
-          <p className="text-brand-100 text-sm">One client site. 30 days. Proof of ₹ savings.</p>
+          <p className="text-brand-100 text-sm">One client site. 30 days. Savings opportunities identified and documented.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/register" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors">
               Start Free
