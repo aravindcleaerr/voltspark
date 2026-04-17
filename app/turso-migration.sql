@@ -852,7 +852,7 @@ CREATE TABLE "IoTGateway" (
     "clientId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "serialNumber" TEXT,
-    "gatewayType" TEXT NOT NULL DEFAULT 'PAS600',
+    "gatewayType" TEXT NOT NULL DEFAULT 'ESX_UNIVERSAL',
     "make" TEXT,
     "firmwareVersion" TEXT,
     "ipAddress" TEXT,

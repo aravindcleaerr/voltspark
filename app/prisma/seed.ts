@@ -2016,7 +2016,7 @@ async function main() {
     },
   });
 
-  console.log('IoT Gateway created with 3 meters + API key');
+  console.log('IoT Gateway created with 4 meters + API key');
 
   // Generate 48 hours of meter readings (15-min intervals = 192 readings per meter)
   const iotReadings: any[] = [];
