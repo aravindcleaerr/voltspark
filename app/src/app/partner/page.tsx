@@ -150,42 +150,96 @@ export default function PartnerPage() {
         </section>
 
         {/* Partner revenue */}
-        <section className="space-y-4">
+        <section className="space-y-5">
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <IndianRupee className="h-6 w-6 text-brand-500" />
-            Partner Revenue — 20 Clients, Year 1
+            Partner Revenue
           </h2>
-          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                  <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Revenue Stream</th>
-                  <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Amount</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">Hardware supply & installation <span className="text-xs text-gray-400">(one-time)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹8,00,000</td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">VoltSpark SaaS share <span className="text-xs text-gray-400">(30% of ₹2,999/mo × 20 clients)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹2,16,000/yr</td>
-                </tr>
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5">Add-on share <span className="text-xs text-gray-400">(Power Quality, Compressed Air)</span></td>
-                  <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹72,000/yr</td>
-                </tr>
-                <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-brand-700 dark:text-brand-300">Year 1 Total</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">₹10.88L</td>
-                </tr>
-                <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-green-700 dark:text-green-300">Year 2 — same clients, no new work</td>
-                  <td className="px-5 py-3.5 text-right font-mono text-green-700 dark:text-green-300 text-base">₹2.88L recurring</td>
-                </tr>
-              </tbody>
-            </table>
+
+          {/* Per-factory economics */}
+          <div>
+            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Per Factory Site (typical mid-size plant)</p>
+            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Item</th>
+                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Cost</th>
+                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3">1 × IoT Gateway (Edge server)</td>
+                    <td className="px-5 py-3 text-right font-mono">₹30,000–40,000</td>
+                    <td className="px-5 py-3 text-right text-gray-400 text-xs">One per plant</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3">1 × Incomer meter</td>
+                    <td className="px-5 py-3 text-right font-mono">₹4,000–6,000</td>
+                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Whole-plant view</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3">3–8 × Feeder / machine-group meters</td>
+                    <td className="px-5 py-3 text-right font-mono">₹6,000–48,000</td>
+                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Per CNC bay, compressor, utility, etc.</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3">Wiring, CTs, installation labour</td>
+                    <td className="px-5 py-3 text-right font-mono">₹8,000–15,000</td>
+                    <td className="px-5 py-3 text-right text-gray-400 text-xs">Site-specific</td>
+                  </tr>
+                  <tr className="bg-gray-50 dark:bg-gray-900 font-semibold">
+                    <td className="px-5 py-3.5">Hardware total per factory</td>
+                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹48,000–1,09,000</td>
+                    <td className="px-5 py-3.5 text-right text-gray-400 text-xs">Scales with plant size</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1">
+              More meters per factory = higher hardware revenue per site. A 10-machine CNC shop and a 2-machine shop are the same "client" on the platform — but very different hardware orders.
+            </p>
+          </div>
+
+          {/* Portfolio scale */}
+          <div>
+            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Portfolio Scale — 10 Factory Sites, Year 1</p>
+            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                    <th className="text-left px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Revenue Stream</th>
+                    <th className="text-right px-5 py-3 font-semibold text-gray-600 dark:text-gray-400">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3.5">Hardware supply & installation <span className="text-xs text-gray-400">(10 sites × ₹70,000 avg)</span></td>
+                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹7,00,000</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3.5">VoltSpark SaaS share <span className="text-xs text-gray-400">(30% of ₹2,999/mo × 10 sites)</span></td>
+                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹1,08,000/yr</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-5 py-3.5">Add-on share <span className="text-xs text-gray-400">(Power Quality, Compressed Air — 6 sites)</span></td>
+                    <td className="px-5 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹43,000/yr</td>
+                  </tr>
+                  <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
+                    <td className="px-5 py-3.5 text-brand-700 dark:text-brand-300">Year 1 Total</td>
+                    <td className="px-5 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">₹8.51L</td>
+                  </tr>
+                  <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
+                    <td className="px-5 py-3.5 text-green-700 dark:text-green-300">Year 2 — same sites, no new installs</td>
+                    <td className="px-5 py-3.5 text-right font-mono text-green-700 dark:text-green-300 text-base">₹1.51L recurring</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1">
+              Larger plants (more machines, more feeders) push average hardware per site well above ₹70,000 — the portfolio revenue scales with plant complexity, not just client count.
+            </p>
           </div>
         </section>
 
