@@ -18,7 +18,7 @@ const fundUse = [
 const moat = [
   { title: 'Data switching cost', body: '12 months of energy baselines, compliance evidence, sensor logs, and savings records inside VoltSpark is not something a client moves away from easily.' },
   { title: 'Consultant distribution', body: 'Each consultant brings 5–20 clients. Winning 50 consultants is equivalent to winning 500–1,000 client sites — without direct sales to each factory.' },
-  { title: 'Unified sensor + energy infrastructure', body: 'Established partnerships with Lotus Controls (Schneider authorised distributor) and Titan (Tor.ai) mean the hardware-software bundle is integrated. Schneider\'s PAS600 gateway supports both energy meters and environmental sensors (temperature, humidity, CO2, vibration, pressure) on the same infrastructure — no second gateway, no second vendor.' },
+  { title: 'Unified sensor + energy infrastructure', body: 'Established partnerships with Lotus Controls (Schneider authorised distributor) and Titan (Tor.ai) mean the hardware-software bundle is integrated. The same gateway infrastructure supports both energy meters and environmental sensors (temperature, humidity, CO2, vibration, pressure) — no second gateway, no second vendor.' },
   { title: 'Multi-sensor compliance automation', body: 'When a cold room temperature breaches 4°C, VoltSpark auto-creates an audit finding, links it to HACCP requirements, and triggers a CAPA. When an OT humidity drifts outside NABH range, the same pipeline fires. No competitor in India connects sensor readings to compliance workflows automatically.' },
   { title: 'Regulatory switching cost', body: 'NABH-accredited hospitals and FSSAI-registered kitchens depend on VoltSpark\'s timestamped sensor logs as compliance evidence. Migrating to another platform mid-audit cycle is not a decision any compliance manager makes voluntarily.' },
   { title: 'Compliance evidence layer', body: 'VoltSpark generates the audit trail for ZED, ISO 50001, NABH, FSSAI, and LEED/IGBC. Replacing it mid-certification cycle is not an option a client would choose.' },
@@ -45,7 +45,7 @@ const team = [
 ];
 
 const partners = [
-  { name: 'Lotus Controls', detail: 'Authorised Schneider Electric distributor — IoT gateway (PAS600), energy sub-metering hardware, and environmental sensors (temperature, humidity, CO2, vibration, pressure). All devices run on the same gateway infrastructure — one installation serves both energy and compliance monitoring.', logo: '⚡' },
+  { name: 'Lotus Controls', detail: 'Authorised Schneider Electric distributor — IoT gateways, energy sub-metering hardware, and environmental sensors (temperature, humidity, CO2, vibration, pressure). All devices run on the same gateway infrastructure — one installation serves both energy and compliance monitoring.', logo: '⚡' },
   { name: 'Titan by Tor.ai', detail: 'Smart metering for commercial kitchens — demand management, load shedding, and kitchen-grade IoT integration.', logo: '🔌' },
 ];
 
@@ -213,7 +213,7 @@ export default function InvestorPage() {
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Environmental sensor <span className="text-xs font-normal text-gray-400">(additional)</span></td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Temperature, humidity, CO2, vibration, pressure, or flow. Beyond the included sensor allowance. Schneider-compatible, runs on the same PAS600 gateway. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Temperature, humidity, CO2, vibration, pressure, or flow. Beyond the included sensor allowance. Works with any compatible gateway — vendor-agnostic by design. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹149/sensor/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">

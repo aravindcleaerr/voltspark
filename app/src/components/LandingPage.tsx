@@ -19,7 +19,7 @@ const FEATURES = [
   { icon: Activity, title: 'Power Quality Monitor', desc: 'EN 50160 compliance monitoring. Voltage sags/swells, THD analysis, harmonic trends, PQ scoring. Bundled in the PQ meter tier.' },
   { icon: GraduationCap, title: 'Training & Safety', desc: 'Manage training programs, inspections, incidents, and certifications in one place.' },
   { icon: CalendarClock, title: 'Compliance Calendar', desc: 'Never miss a deadline. Audit dates, cert renewals, and CAPA due dates in one view.' },
-  { icon: Cpu, title: 'Multi-Vendor IoT', desc: 'Works with any energy meter — PAS600, Raspberry Pi gateways, Modbus RTU/TCP. Vendor-agnostic by design.' },
+  { icon: Cpu, title: 'Multi-Vendor IoT', desc: 'Works with any energy meter or sensor — Modbus RTU/TCP, MQTT gateways, industrial PCs. Vendor-agnostic by design.' },
 ];
 
 const STEPS = [
