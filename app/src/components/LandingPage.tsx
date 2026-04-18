@@ -238,7 +238,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-3 gap-6">
             {[
               { icon: Building2, title: 'Factories & Industrial Facilities', desc: 'Sign up for free and manage your own energy bills, savings, and compliance — no consultant, no hardware required to start. Your bill tells the story; VoltSpark reads it for you.', href: '/start', cta: 'Start free →' },
-              { icon: Users, title: 'Energy Consultants & ESCOs', desc: 'Add all your client facilities under one consultant account. Each client gets their own dashboard. You get a portfolio view, ₹ savings proof, and recurring commission on IoT upgrades.', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark', cta: 'WhatsApp us to partner →' },
+              { icon: Users, title: 'Energy Consultants & ESCOs', desc: 'Add all your client facilities under one consultant account. Each client gets their own dashboard. You get a portfolio view, ₹ savings reports, and all the data you need to deliver better advisory.', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark', cta: 'WhatsApp us to partner →' },
               { icon: FileText, title: 'ZED / ISO 50001 Auditors', desc: 'Run audits, log findings, assign CAPAs, and generate compliance documentation for ZED, ISO 50001, and Electrical Safety — all in one place. Client-ready reports in one click.', href: '/register', cta: 'Try it free →' },
             ].map((w) => (
               <div key={w.title} className="card text-center flex flex-col">
@@ -306,7 +306,7 @@ export default function LandingPage() {
                   'One dashboard for all your client sites — no more spreadsheet juggling',
                   'Data-backed advisory: show clients the number, not just the recommendation',
                   '₹ savings reports that justify your fees every month',
-                  'Recurring commission income on every IoT meter your client adds',
+                  'Grow your practice — with data that clients can see and trust',
                   'Audit-ready compliance documentation generated in one click',
                   'Retain clients with proof — not just promises',
                 ].map((item) => (
@@ -413,7 +413,7 @@ export default function LandingPage() {
               <Users className="h-8 w-8 text-purple-600 mx-auto" />
               <div>
                 <p className="font-bold text-gray-900 dark:text-white text-lg">I am a consultant / ESCO</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage multiple client sites from one account. Earn commission on IoT upgrades.</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage multiple client sites from one account. Deliver data-backed advisory at scale.</p>
               </div>
               <a href="https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
                 WhatsApp to Partner →
