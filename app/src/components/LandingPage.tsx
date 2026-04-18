@@ -30,27 +30,39 @@ const STEPS = [
 
 const PLANS = [
   {
-    name: 'Starter', price: '0', desc: 'Get started with manual energy management',
-    features: ['1 Client workspace', 'All core features', 'Energy & compliance tracking', 'Basic reports', 'Up to 3 users', '1 year data retention'],
-    cta: 'Start Free', href: '/register', highlight: false,
+    name: 'Core Platform',
+    price: '₹0',
+    priceSub: 'forever free',
+    desc: 'Manual entry, compliance, and savings tracking — no hardware required.',
+    highlight: false,
+    features: ['Unlimited clients & users', 'Manual meter entry + utility bill analysis', 'Energy cost dashboard (₹ view)', 'ZED / ISO 50001 / Electrical Safety compliance', 'Audit, CAPA & findings management', 'Savings tracker + ROI calculator (7 templates)', 'PDF reports & shareable compliance views', '2 years data retention'],
+    cta: 'Start Free', href: '/register',
   },
   {
-    name: 'Professional', price: '2,999', desc: 'For consultants managing multiple clients',
-    features: ['Up to 10 clients', 'All core features', 'IoT add-ons available', 'PDF exports & shareable views', 'Email + WhatsApp support', 'Unlimited users per client', '3 years data retention'],
-    cta: 'Start Free Trial', href: '/register', highlight: true,
+    name: 'IoT Metering',
+    price: 'from ₹299',
+    priceSub: 'per meter / month',
+    desc: 'Real-time data from smart meters — pay only per device connected.',
+    highlight: true,
+    features: ['Basic ₹299/meter — up to 4 parameters', 'Standard ₹599/meter — + voltage & current per phase', 'Advanced ₹999/meter — + max demand, TOU, predictive maintenance', 'Power Quality ₹1,499/meter — + THD, harmonics, EN 50160', 'Auto-ingestion — no manual logging', 'Live dashboard: kW, PF, voltage per meter', 'Anomaly alerts and demand overshoot warnings'],
+    cta: 'See Full Pricing', href: '/start',
   },
   {
-    name: 'Enterprise', price: 'Custom', desc: 'For large consultancies and ESCOs',
-    features: ['Unlimited clients', 'Everything in Professional', 'Custom add-on bundles', 'Full API access', 'Dedicated account manager', 'White-label branding', 'Unlimited data retention'],
-    cta: 'Contact Sales', href: 'mailto:hello@voltspark.in', highlight: false,
+    name: 'Enterprise',
+    price: 'Custom',
+    priceSub: '',
+    desc: 'For large consultancies, ESCOs, and multi-site rollouts.',
+    highlight: false,
+    features: ['Everything in Core + IoT', 'Compressed Air Intelligence ₹1,500/site', 'Kitchen Intelligence ₹4,000/site', 'White-label branding', 'API access for ERP integration', 'Volume discount on meters'],
+    cta: 'Contact Us', href: 'mailto:aravind@akshayacreatech.com',
   },
 ];
 
 const ADDONS = [
-  { name: 'IoT Metering', price: '999', desc: 'Real-time meter monitoring via MQTT', icon: Radio },
-  { name: 'Power Quality', price: '799', desc: 'EN 50160 compliance & THD analysis', icon: Activity },
-  { name: 'Compressed Air', price: '999', desc: 'Specific energy, leak detection, load analysis', icon: Cpu },
-  { name: 'Kitchen Intelligence', price: '999', desc: 'Demand management & load shedding', icon: ChefHat },
+  { name: 'IoT Metering', desc: 'One gateway connects all meters — incomer, DG, solar, sub-feeders. Data flows in automatically. Priced per meter by capability tier.', icon: Radio },
+  { name: 'Power Quality', desc: 'Voltage sags/swells, harmonics (THD), PF per phase, EN 50160 compliance scoring. Bundled into the Power Quality meter tier (₹1,499/meter).', icon: Activity },
+  { name: 'Compressed Air', desc: 'Specific energy (kWh/m³), leak detection via deviation alerts, load factor, compressor benchmarking. ₹1,500/site/month — requires Standard+ meter.', icon: Cpu },
+  { name: 'Kitchen Intelligence', desc: 'Live demand vs contracted kVA, auto load-shedding alerts, ToD analytics, HACCP temperature logging. ₹4,000/site/month — requires Standard+ meter.', icon: ChefHat },
 ];
 
 export default function LandingPage() {
@@ -78,11 +90,10 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <button onClick={handleTryDemo} disabled={demoLoading} className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 px-3 py-2">
-              {demoLoading ? 'Loading...' : 'Try Demo'}
-            </button>
+            <Link href="/partner" className="hidden md:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">For Partners</Link>
+            <Link href="/start" className="hidden md:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">For Facilities</Link>
             <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">Login</Link>
-            <Link href="/register" className="btn-primary text-sm px-4 py-2">Sign Up</Link>
+            <Link href="/register" className="btn-primary text-sm px-4 py-2">Start Free</Link>
           </div>
         </div>
       </nav>
@@ -185,16 +196,17 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { icon: Users, title: 'Energy Consultants', desc: 'Manage multiple clients, track compliance, and prove your value with data-driven reports.' },
-              { icon: Building2, title: 'Industrial Units', desc: 'MSMEs and factories — track energy costs, stay compliant, and access government subsidies.' },
-              { icon: FileText, title: 'ESCOs & Auditors', desc: 'Streamline audits, manage findings, and generate professional compliance documentation.' },
+              { icon: Users, title: 'Energy Consultants & Partners', desc: 'Manage multiple clients, earn recurring commission, and prove your value with data-driven reports.', href: '/partner', cta: 'Partner with us →' },
+              { icon: Building2, title: 'Factories & Facilities', desc: 'MSMEs and industrial units — start free on manual entry, upgrade to real-time IoT when ready.', href: '/start', cta: 'Start free →' },
+              { icon: FileText, title: 'ESCOs & Auditors', desc: 'Streamline audits, manage findings, generate compliance documentation, and track savings.', href: '/partner', cta: 'Learn more →' },
             ].map((w) => (
-              <div key={w.title} className="card text-center">
+              <div key={w.title} className="card text-center flex flex-col">
                 <div className="mx-auto h-12 w-12 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-4">
                   <w.icon className="h-6 w-6 text-brand-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{w.title}</h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{w.desc}</p>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 flex-1">{w.desc}</p>
+                <Link href={w.href} className="mt-4 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">{w.cta}</Link>
               </div>
             ))}
           </div>
@@ -236,18 +248,18 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Simple pricing</h2>
-            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Start free. Upgrade as you grow.</p>
+            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Core platform always free. Pay only for IoT smart meters you connect.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {PLANS.map((p) => (
               <div key={p.name} className={`card flex flex-col ${p.highlight ? 'ring-2 ring-brand-600 relative' : ''}`}>
                 {p.highlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</div>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">IoT Upgrade Path</div>
                 )}
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{p.name}</h3>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">{p.price === 'Custom' ? '' : '₹'}{p.price}</span>
-                  {p.price !== 'Custom' && p.price !== '0' && <span className="text-sm text-gray-500 dark:text-gray-400">/month</span>}
+                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{p.price}</span>
+                  {p.priceSub && <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">{p.priceSub}</span>}
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{p.desc}</p>
                 <ul className="mt-6 space-y-2 flex-1">
@@ -268,23 +280,26 @@ export default function LandingPage() {
 
       {/* Add-ons */}
       <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">IoT Add-Ons</h3>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">Hardware-connected modules that pay for themselves. Available on Professional plan.</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">IoT & Intelligence Modules</h3>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Layer real-time visibility and domain-specific analytics on top of the free core platform.</p>
           </div>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {ADDONS.map((a) => (
-              <div key={a.name} className="card text-center">
-                <div className="mx-auto h-10 w-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-3">
+              <div key={a.name} className="card">
+                <div className="h-10 w-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-3">
                   <a.icon className="h-5 w-5 text-brand-600" />
                 </div>
                 <h4 className="font-semibold text-gray-900 dark:text-white">{a.name}</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{a.desc}</p>
-                <p className="mt-3 text-lg font-bold text-brand-600">₹{a.price}<span className="text-xs font-normal text-gray-500">/client/mo</span></p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{a.desc}</p>
               </div>
             ))}
           </div>
+          <p className="text-center mt-6 text-sm text-gray-400">
+            Hardware supplied and installed by electrical contractors. VoltSpark handles data ingestion, analytics, and alerts.{' '}
+            <Link href="/start" className="text-brand-600 dark:text-brand-400 hover:underline">See full pricing →</Link>
+          </p>
         </div>
       </section>
 
@@ -316,12 +331,16 @@ export default function LandingPage() {
                 <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="/login" className="hover:text-white transition-colors">Login</Link></li>
-                <li><Link href="/register" className="hover:text-white transition-colors">Sign Up</Link></li>
+                <li><Link href="/register" className="hover:text-white transition-colors">Start Free</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white mb-3">Legal</h4>
+              <h4 className="text-sm font-semibold text-white mb-3">Go deeper</h4>
               <ul className="space-y-2 text-sm">
+                <li><Link href="/partner" className="hover:text-white transition-colors">For Partners</Link></li>
+                <li><Link href="/start" className="hover:text-white transition-colors">For Facilities</Link></li>
+                <li><Link href="/partner/economics" className="hover:text-white transition-colors">Partner Economics</Link></li>
+                <li><Link href="/investor" className="hover:text-white transition-colors">Investor Pitch</Link></li>
                 <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               </ul>

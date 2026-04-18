@@ -6,7 +6,7 @@ export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Create
 const marketRows = [
   { label: 'TAM', sublabel: 'Energy management software — Indian industry', value: '₹5,000 Cr/yr', note: '~12 lakh medium industrial facilities spending ₹3L–₹50L/month on electricity' },
   { label: 'SAM', sublabel: 'MSME segment reachable through consultants', value: '₹500 Cr/yr', note: 'Manufacturing, kitchens, hospitals, commercial buildings with compliance pressure' },
-  { label: 'SOM', sublabel: '3-year target', value: '₹25 Cr/yr', note: '5,000 client sites at ₹5,000/month average — achievable with 200 onboarded consultants' },
+  { label: 'SOM', sublabel: '3-year target', value: '₹25 Cr/yr', note: '5,000 IoT-enabled sites at ~₹4,300/month average — achievable with 200 onboarded consultants converting 40–50% of clients to IoT' },
 ];
 
 const fundUse = [
@@ -180,47 +180,57 @@ export default function InvestorPage() {
                 <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                   <th className="text-left px-5 py-3">Revenue stream</th>
                   <th className="text-left px-4 py-3">Model</th>
-                  <th className="text-right px-4 py-3">Per site / month</th>
+                  <th className="text-right px-4 py-3">Price</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Core platform</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">SaaS subscription per client site — compliance, energy tracking, CAPA, reports</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹2,999</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Manual entry, compliance, audits, CAPA, savings tracker, reports — adoption funnel for IoT upsell</td>
+                  <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">FREE</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT Metering add-on</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Real-time multi-meter data ingestion and analytics</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹8,000</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Basic</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Up to 4 parameters: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹299/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Power Quality add-on</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Voltage, harmonics, PF monitoring and alerts</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹5,000</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Standard</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">5–10 parameters: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹599/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air add-on</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Specific energy, leak detection, compressor benchmarking</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹3,000</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Advanced</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">11–15 parameters: + max demand, TOU, load profile. Demand prediction, tariff optimisation, predictive maintenance.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹999/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence add-on</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding, HACCP temperature logging</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹10,000</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Power Quality</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ parameters: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹1,499/meter/mo</td>
+                </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air module</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Specific energy (kWh/m³), leak detection, load factor, compressor benchmarking. Requires Standard+ meter.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹1,500/site/mo</td>
+                </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, auto load shedding, ToD analytics, HACCP temperature. Requires Standard+ meter.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
                 <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Target blended ARPU (platform + avg 2 add-ons)</td>
-                  <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹13,000</td>
+                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT-enabled site: 1 Advanced + 3 Standard meters + 1 domain module</td>
+                  <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹4,300/site/mo</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { label: '500 sites', monthly: '₹65L/mo', annual: '₹7.8Cr/yr', note: '~25 active consultants, avg 20 clients each' },
-              { label: '2,000 sites', monthly: '₹2.6Cr/mo', annual: '₹31Cr/yr', note: '~100 consultants — Year 3 target' },
-              { label: '5,000 sites', monthly: '₹6.5Cr/mo', annual: '₹78Cr/yr', note: 'Platform maturity, channel scale' },
+              { label: '500 IoT sites', monthly: '₹21.5L/mo', annual: '₹2.6Cr/yr', note: '~25 consultants, avg 20 IoT clients each' },
+              { label: '2,000 IoT sites', monthly: '₹86L/mo', annual: '₹10.3Cr/yr', note: '~100 consultants — Year 3 target' },
+              { label: '5,000 IoT sites', monthly: '₹2.15Cr/mo', annual: '₹25.8Cr/yr', note: 'Platform maturity — aligns with SOM of ₹25Cr/yr' },
             ].map((r) => (
               <div key={r.label} className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-1">
                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{r.label}</p>
@@ -230,7 +240,7 @@ export default function InvestorPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 px-1">Revenue projections are illustrative and assume successful consultant acquisition and client activation. They are not guaranteed forecasts.</p>
+          <p className="text-xs text-gray-400 px-1">Revenue projections assume ₹4,300/site/month average for IoT-enabled sites. Free-tier sites generate ₹0 but build the adoption base for IoT upsell. These are illustrative, not guaranteed forecasts.</p>
         </section>
 
         {/* IoT Partners */}
