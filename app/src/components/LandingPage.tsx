@@ -54,7 +54,7 @@ const PLANS = [
     desc: 'For large consultancies, ESCOs, and multi-site rollouts.',
     highlight: false,
     features: ['Everything in Core + IoT', 'All 4 industry intelligence bundles available', 'Custom Intelligence — bespoke analytics', 'White-label branding', 'API access for ERP integration', 'Volume discount on meters'],
-    cta: 'Contact Us', href: 'mailto:aravind@akshayacreatech.com',
+    cta: 'Contact Us', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+VoltSpark+Enterprise',
   },
 ];
 
@@ -324,7 +324,12 @@ export default function LandingPage() {
                 <div className="h-7 w-7 rounded-lg bg-brand-600 flex items-center justify-center"><Zap className="h-4 w-4 text-white" /></div>
                 <span className="text-lg font-bold text-white">VoltSpark</span>
               </div>
-              <p className="text-sm max-w-sm">Energy management compliance suite for Indian industry. Save energy. Stay safe. Win customers.</p>
+              <p className="text-sm max-w-sm mb-3">Energy management compliance suite for Indian industry. Save energy. Stay safe. Win customers.</p>
+              <p className="text-xs text-gray-500">A product of <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Akshaya Createch</a>, Bengaluru</p>
+              <div className="mt-3 space-y-1 text-xs text-gray-500">
+                <p><a href="https://wa.me/918317308558" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">WhatsApp: +91 83173 08558</a></p>
+                <p><a href="mailto:aravind@akshayacreatech.in" className="hover:text-white transition-colors">aravind@akshayacreatech.in</a></p>
+              </div>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Product</h4>
@@ -348,7 +353,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-10 pt-6 border-t border-gray-800 text-sm text-center">
-            &copy; {new Date().getFullYear()} VoltSpark. All rights reserved.
+            &copy; {new Date().getFullYear()} VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Akshaya Createch</a>. All rights reserved.
           </div>
         </div>
       </footer>

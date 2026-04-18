@@ -146,7 +146,7 @@ export default function PartnerPage() {
             <Link href="/partner/economics" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
               See the numbers <ArrowRight className="h-4 w-4" />
             </Link>
-            <a href="mailto:aravind@akshayacreatech.com" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+            <a href="https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+partnering+with+VoltSpark" target="_blank" rel="noopener noreferrer" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
               Talk to us
             </a>
           </div>
@@ -366,8 +366,9 @@ export default function PartnerPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-gray-400">
-          <span>© 2026 VoltSpark</span>
+          <span>© 2026 VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a></span>
           <div className="flex gap-4">
+            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
           </div>

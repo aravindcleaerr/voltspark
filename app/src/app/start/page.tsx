@@ -56,7 +56,7 @@ export default function StartPage() {
             <span className="text-xl font-bold">VoltSpark</span>
           </Link>
           <div className="flex items-center gap-3">
-            <a href="mailto:aravind@akshayacreatech.com" className="hidden sm:block text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <a href="https://wa.me/918317308558" target="_blank" rel="noopener noreferrer" className="hidden sm:block text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
               Talk to us
             </a>
             <Link href="/register" className="text-sm bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
@@ -85,7 +85,7 @@ export default function StartPage() {
             <Link href="/register" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
               Start Free <ArrowRight className="h-4 w-4" />
             </Link>
-            <a href="mailto:aravind@akshayacreatech.com" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+            <a href="https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
               Talk to us first
             </a>
           </div>
@@ -289,7 +289,7 @@ export default function StartPage() {
               </div>
               <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Intelligence — <span className="font-mono text-brand-600 dark:text-brand-400">from ₹5,000/month</span></p>
-                <p className="text-xs text-gray-400 mt-0.5">Bespoke analytics for specific industries or processes. <a href="mailto:aravind@akshayacreatech.com" className="text-brand-600 dark:text-brand-400 hover:underline">Talk to us.</a></p>
+                <p className="text-xs text-gray-400 mt-0.5">Bespoke analytics for specific industries or processes. <a href="https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="text-brand-600 dark:text-brand-400 hover:underline">Talk to us.</a></p>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Coming soon: Textile Manufacturing · Food Processing · Cold Chain & Logistics</p>
             </div>
@@ -324,7 +324,7 @@ export default function StartPage() {
             <Link href="/register" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors flex items-center justify-center gap-2">
               Start Free <ArrowRight className="h-4 w-4" />
             </Link>
-            <a href="mailto:aravind@akshayacreatech.com" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
+            <a href="https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
               Talk to us first
             </a>
           </div>
@@ -335,8 +335,9 @@ export default function StartPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-gray-400">
-          <span>© 2026 VoltSpark by Akshaya Createch</span>
+          <span>© 2026 VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a></span>
           <div className="flex gap-4">
+            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
           </div>

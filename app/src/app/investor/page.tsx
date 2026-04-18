@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap, TrendingUp, Shield, Users, ArrowRight, Building2, Cpu, IndianRupee, AlertTriangle } from 'lucide-react';
+import { Zap, TrendingUp, Shield, Users, ArrowRight, Building2, Cpu, IndianRupee, AlertTriangle, Phone, Mail, MessageCircle } from 'lucide-react';
 
 export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Createch' };
 
@@ -32,6 +32,9 @@ const team = [
     org: 'Co-founder, Akshaya Createch',
     bio: '25+ years in embedded systems, IoT, and industrial automation. 20+ products shipped across 10+ industries including defence (HAL Tejas flight control, GTRE Kaveri engine), medical devices, and industrial automation. Hardware Lead at KuboCare (Antler-backed, $1M seed). B.E. Instrumentation & Electronics, RV College. Technology Development Board Award, Government of India (2013).',
     url: 'https://aravindcleaerr.github.io/',
+    email: 'aravind@akshayacreatech.in',
+    phone: '+91 83173 08558',
+    wa: 'https://wa.me/918317308558',
     tags: ['Embedded Systems', 'IoT', 'Industrial Automation', 'Product'],
   },
   {
@@ -40,6 +43,9 @@ const team = [
     org: 'Founder, Akshaya Createch',
     bio: '40+ years in industrial electrical systems. 32 years as AGM at Kasturi & Sons Ltd (The Hindu Group) managing transformers, DG sets, automation, HVAC, and fire safety across large commercial facilities. Founder of Akshaya Createch — electrical consultancy, solar EPC, and intelligent kitchen load management. B.E. Electrical & Electronics, TCE Madurai.',
     url: 'https://akshayacreatech.in/founder',
+    email: 'akshayacreatech@gmail.com',
+    phone: '+91 79750 55916',
+    wa: 'https://wa.me/917975055916',
     tags: ['Electrical Systems', 'Energy Consultancy', 'Solar EPC', 'Industrial Ops'],
   },
 ];
@@ -59,10 +65,10 @@ export default function InvestorPage() {
           <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-brand-600 flex items-center justify-center"><Zap className="h-5 w-5 text-white" /></div>
             <span className="text-xl font-bold">VoltSpark</span>
-            <span className="text-xs text-gray-400 hidden sm:inline">by Akshaya Createch</span>
+            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hidden sm:inline hover:text-gray-600 dark:hover:text-gray-200 transition-colors">by Akshaya Createch</a>
           </Link>
-          <a href="mailto:aravind@akshayacreatech.com" className="text-sm bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-            Get in Touch
+          <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="text-sm bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5">
+            <MessageCircle className="h-4 w-4" /> Get in Touch
           </a>
         </div>
       </nav>
@@ -85,8 +91,8 @@ export default function InvestorPage() {
             energy consultants who serve India&apos;s 12 lakh+ industrial facilities.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <a href="mailto:aravind@akshayacreatech.com" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-              Talk to us <ArrowRight className="h-4 w-4" />
+            <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+              <MessageCircle className="h-4 w-4" /> WhatsApp us <ArrowRight className="h-4 w-4" />
             </a>
             <Link href="/" className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold px-6 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
               See the platform
@@ -319,9 +325,17 @@ export default function InvestorPage() {
                     <span key={tag} className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded-md">{tag}</span>
                   ))}
                 </div>
-                <a href={t.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 hover:underline">
-                  Full profile <ArrowRight className="h-3 w-3" />
-                </a>
+                <div className="flex flex-wrap gap-3 pt-1 border-t border-gray-100 dark:border-gray-800">
+                  <a href={`mailto:${t.email}`} className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400">
+                    <Mail className="h-3 w-3" />{t.email}
+                  </a>
+                  <a href={t.wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600">
+                    <Phone className="h-3 w-3" />{t.phone}
+                  </a>
+                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 hover:underline ml-auto">
+                    Full profile <ArrowRight className="h-3 w-3" />
+                  </a>
+                </div>
               </div>
             ))}
           </div>
@@ -368,12 +382,12 @@ export default function InvestorPage() {
             We are happy to share detailed financials, product walkthrough, and customer evidence on request.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <a href="mailto:aravind@akshayacreatech.com" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors">
-              aravind@akshayacreatech.com
+            <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors flex items-center justify-center gap-2">
+              <MessageCircle className="h-4 w-4" /> WhatsApp: +91 83173 08558
             </a>
-            <Link href="/" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
-              See the platform
-            </Link>
+            <a href="mailto:aravind@akshayacreatech.in" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
+              aravind@akshayacreatech.in
+            </a>
           </div>
           <p className="text-xs text-brand-200 pt-2">Live platform at volt-spark.vercel.app · Product by Akshaya Createch, Bengaluru</p>
         </section>
@@ -382,8 +396,9 @@ export default function InvestorPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-          <span>© 2026 Akshaya Createch. VoltSpark is a product of Akshaya Createch, Bengaluru.</span>
+          <span>© 2026 <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a>. VoltSpark is a product of Akshaya Createch, Bengaluru.</span>
           <div className="flex gap-4">
+            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
           </div>

@@ -372,7 +372,7 @@ export default function EconomicsPage() {
             <Link href="/register" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors">
               Start Free
             </Link>
-            <a href="mailto:aravind@akshayacreatech.com" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
+            <a href="https://wa.me/918317308558?text=Hi%2C+I+am+interested+in+partnering+with+VoltSpark" target="_blank" rel="noopener noreferrer" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
               Talk to Us
             </a>
           </div>
@@ -382,8 +382,9 @@ export default function EconomicsPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-gray-400">
-          <span>© 2026 VoltSpark</span>
+          <span>© 2026 VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a></span>
           <div className="flex gap-4">
+            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
             <Link href="/partner" className="hover:text-gray-600 dark:hover:text-gray-300">Partner Overview</Link>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
