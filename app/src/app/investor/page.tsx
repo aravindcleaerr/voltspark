@@ -10,7 +10,7 @@ const marketRows = [
 ];
 
 const fundUse = [
-  { pct: '40%', amount: '₹40L', label: 'Product Development', items: ['Mobile app (iOS + Android)', 'Advanced analytics & benchmarking', 'Two new vertical add-on modules'] },
+  { pct: '40%', amount: '₹40L', label: 'Product Development', items: ['Mobile app (iOS + Android)', 'Advanced analytics & benchmarking', 'Two new industry intelligence bundles'] },
   { pct: '35%', amount: '₹35L', label: 'Sales & Partnerships', items: ['Consultant onboarding program', 'Channel partnerships (hardware OEMs, DISCOMs)', 'Industry events & ZED/ISO consultant networks'] },
   { pct: '25%', amount: '₹25L', label: 'Hiring', items: ['1 full-stack product engineer', '1 sales & partnerships manager'] },
 ];
@@ -160,7 +160,7 @@ export default function InvestorPage() {
             {[
               { step: '1', title: 'Consultant signs up', body: 'Energy auditor, ZED/ISO consultant, or ESCO registers on VoltSpark. Adds their industrial clients. Manages all from one portfolio dashboard.' },
               { step: '2', title: 'Client gets visibility', body: 'Factory owner sees a live energy cost dashboard, compliance status, and savings opportunities — all in ₹. Not kWh. Not Excel.' },
-              { step: '3', title: 'IoT add-ons unlock revenue', body: 'As trust grows, consultant enables real-time monitoring modules. Hardware partners supply and install meters. VoltSpark handles the data, alerts, and compliance evidence.' },
+              { step: '3', title: 'Intelligence bundles unlock revenue', body: 'As trust grows, consultant enables industry intelligence bundles. Hardware partners supply and install smart meters. VoltSpark handles the data, analytics, and compliance evidence.' },
             ].map((s) => (
               <div key={s.step} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center">{s.step}</div>

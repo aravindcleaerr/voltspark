@@ -183,7 +183,7 @@ export default function ConsolePage() {
 
               {/* Add-ons */}
               <div className="flex items-center gap-2 mt-3 pt-3 border-t flex-wrap">
-                <span className="text-xs text-gray-400">Add-ons:</span>
+                <span className="text-xs text-gray-400">Intelligence bundles:</span>
                 <button
                   onClick={(e) => toggleAddon(e, client, 'KITCHEN')}
                   className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${
@@ -193,7 +193,7 @@ export default function ConsolePage() {
                   }`}
                 >
                   <ChefHat className="h-3 w-3" />
-                  Kitchen {hasAddon(client, 'KITCHEN') ? '✓' : ''}
+                  Kitchen Intel {hasAddon(client, 'KITCHEN') ? '✓' : ''}
                 </button>
                 <button
                   onClick={(e) => toggleAddon(e, client, 'IOT_METERING')}
@@ -226,7 +226,7 @@ export default function ConsolePage() {
                   }`}
                 >
                   <Wind className="h-3 w-3" />
-                  Compressed Air {hasAddon(client, 'COMPRESSED_AIR') ? '✓' : ''}
+                  Manufacturing {hasAddon(client, 'COMPRESSED_AIR') ? '✓' : ''}
                 </button>
               </div>
             </button>

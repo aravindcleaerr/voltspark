@@ -34,7 +34,7 @@ export default function CADashboardPage() {
   if (!data || data.summary.compressorCount === 0) {
     return (
       <div>
-        <PageHeader title="Compressed Air Intelligence" subtitle="Monitor compressor efficiency and detect leaks" />
+        <PageHeader title="Manufacturing Intelligence" subtitle="Compressed air efficiency, machine energy profiles and leak detection" />
         <div className="card p-12 text-center">
           <Wind className="h-12 w-12 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2">No compressors configured</h3>
@@ -50,7 +50,7 @@ export default function CADashboardPage() {
 
   return (
     <div>
-      <PageHeader title="Compressed Air Intelligence" subtitle="Specific energy, load factor & leak detection" action={<Link href="/ca/compressors" className="btn-secondary text-sm">Manage Compressors</Link>} />
+      <PageHeader title="Manufacturing Intelligence" subtitle="Compressor specific energy, load factor & leak detection" action={<Link href="/ca/compressors" className="btn-secondary text-sm">Manage Compressors</Link>} />
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">

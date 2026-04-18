@@ -111,7 +111,7 @@ const navSections: NavSection[] = [
 ];
 
 const kitchenNavSection: NavSection = {
-  label: 'Kitchen Intelligence',
+  label: 'Commercial Kitchen Intelligence',
   items: [
     { name: 'Kitchen Dashboard', href: '/kitchen', icon: Gauge },
     { name: 'Zones', href: '/kitchen/zones', icon: LayoutGrid },
@@ -130,7 +130,7 @@ const pqNavSection: NavSection = {
 };
 
 const caNavSection: NavSection = {
-  label: 'Compressed Air',
+  label: 'Manufacturing Intelligence',
   items: [
     { name: 'CA Dashboard', href: '/ca/dashboard', icon: Wind },
     { name: 'Compressors', href: '/ca/compressors', icon: Gauge },

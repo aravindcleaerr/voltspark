@@ -15,8 +15,8 @@ const FEATURES = [
   { icon: Shield, title: 'Stay Compliant', desc: 'Multi-framework compliance tracking — ZED, ISO 50001, Electrical Safety. Always audit-ready.' },
   { icon: TrendingUp, title: 'Prove ROI', desc: 'Pre-built ROI calculators, savings tracking, and consultant fee justification. Numbers that speak.' },
   { icon: BarChart3, title: 'Utility Bill Analysis', desc: 'Auto-detect PF penalties, demand overshoot, and cost anomalies. BESCOM-style penalty estimation built in.' },
-  { icon: Radio, title: 'IoT Metering', desc: 'Connect Schneider, ABB, Siemens meters via MQTT. Real-time dashboards, automatic consumption tracking.' },
-  { icon: Activity, title: 'Power Quality', desc: 'EN 50160 compliance monitoring. Voltage sags/swells, THD analysis, harmonic trends, PQ scoring.' },
+  { icon: Radio, title: 'IoT Smart Meters', desc: 'Connect any Modbus meter via MQTT gateway. Real-time dashboards, automatic consumption tracking, per-meter tier pricing.' },
+  { icon: Activity, title: 'Power Quality Monitor', desc: 'EN 50160 compliance monitoring. Voltage sags/swells, THD analysis, harmonic trends, PQ scoring. Bundled in the PQ meter tier.' },
   { icon: GraduationCap, title: 'Training & Safety', desc: 'Manage training programs, inspections, incidents, and certifications in one place.' },
   { icon: CalendarClock, title: 'Compliance Calendar', desc: 'Never miss a deadline. Audit dates, cert renewals, and CAPA due dates in one view.' },
   { icon: Cpu, title: 'Multi-Vendor IoT', desc: 'Works with any energy meter — PAS600, Raspberry Pi gateways, Modbus RTU/TCP. Vendor-agnostic by design.' },
@@ -136,7 +136,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
           {[
             { val: '35+', label: 'Modules' },
-            { val: '4', label: 'IoT Add-ons' },
+            { val: '4', label: 'Industry Bundles' },
             { val: '100%', label: 'Indian compliance' },
             { val: 'PWA', label: 'Mobile ready' },
           ].map((s) => (

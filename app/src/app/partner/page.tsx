@@ -219,13 +219,13 @@ export default function PartnerPage() {
         <section className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold">Start manual. Add IoT when ready.</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No hardware dependency to get started. IoT add-ons layer on top when the client is ready to invest.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No hardware dependency to get started. Smart meters and industry intelligence bundles layer on top when the client is ready to invest.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { step: '1', title: 'Core platform', body: 'Energy tracking, utility bill analysis, compliance (ZED / ISO 50001 / Electrical Safety), CAPA, training, audits. Manual entry. Works from day one.' },
               { step: '2', title: 'Identify and document', body: 'Savings Tracker and ROI Calculator attach a ₹ number to every improvement you recommend — so clients can prioritise and you can prove your value.' },
-              { step: '3', title: 'Upgrade with IoT', body: 'When the client is ready, enable add-on modules. Real-time data flows in automatically, reducing manual work and enabling faster identification of issues.' },
+              { step: '3', title: 'Upgrade with IoT + Intelligence', body: 'When the client is ready, install smart meters and enable the industry intelligence bundle for their vertical. Real-time data flows in automatically — domain-specific analytics surface exactly what that industry\'s machines are wasting.' },
             ].map((s) => (
               <div key={s.step} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center">{s.step}</div>
