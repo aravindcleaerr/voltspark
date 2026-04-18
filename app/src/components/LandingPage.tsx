@@ -22,10 +22,16 @@ const FEATURES = [
   { icon: Cpu, title: 'Multi-Vendor IoT', desc: 'Works with any energy meter or sensor — Modbus RTU/TCP, MQTT gateways, industrial PCs. Vendor-agnostic by design.' },
 ];
 
-const STEPS = [
-  { num: '1', title: 'Sign Up & Add Clients', desc: 'Create your consulting organization and onboard industrial clients in minutes.' },
-  { num: '2', title: 'Collect & Analyze Data', desc: 'Enter energy data, utility bills, and safety records. Get instant compliance scores.' },
-  { num: '3', title: 'Prove Value & Grow', desc: 'Generate reports, track savings, and demonstrate ROI to win more clients.' },
+const FACILITY_STEPS = [
+  { num: '1', title: 'Sign up free', desc: 'Create your facility account. No credit card, no hardware — just your last electricity bill to get started.' },
+  { num: '2', title: 'See what your bill hides', desc: 'Enter monthly bills and meter readings. VoltSpark flags PF penalties, demand overshoot, and cost anomalies automatically in ₹.' },
+  { num: '3', title: 'Fix waste, track savings', desc: 'Act on each finding. Every improvement is logged with a ₹ before-and-after so your bill proves the result.' },
+];
+
+const CONSULTANT_STEPS = [
+  { num: '1', title: 'Create your consultant account', desc: 'Register as an energy consultant or ESCO. Manage multiple client facilities from one portfolio dashboard.' },
+  { num: '2', title: 'Add clients, collect data', desc: 'Onboard each facility, enter their energy data, and run utility bill analysis. Get compliance scores and gap assessments instantly.' },
+  { num: '3', title: 'Prove value, retain clients', desc: 'Generate ₹ savings reports, ROI analyses, and compliance documentation. Use the numbers to renew contracts and win referrals.' },
 ];
 
 const PLANS = [
@@ -108,8 +114,9 @@ export default function LandingPage() {
             <span className="text-brand-600">Win Customers.</span>
           </h1>
           <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
-            The all-in-one platform for industrial energy compliance and savings. Sign up as a facility
-            and manage your own energy data — or work with your energy consultant through the same platform.
+            Industrial facilities sign up directly and track their own energy costs and compliance.
+            Energy consultants manage their entire client portfolio from one dashboard.
+            One platform, both tracks.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
@@ -170,19 +177,54 @@ export default function LandingPage() {
 
       {/* How it works */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800/50 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">How it works</h2>
-            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Get started in 3 simple steps</p>
+            <p className="mt-3 text-gray-500 dark:text-gray-400 text-lg">Two ways to use VoltSpark — pick yours</p>
           </div>
-          <div className="grid sm:grid-cols-3 gap-8">
-            {STEPS.map((s) => (
-              <div key={s.num} className="text-center">
-                <div className="mx-auto h-12 w-12 rounded-full bg-brand-600 text-white flex items-center justify-center text-xl font-bold mb-4">{s.num}</div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{s.title}</h3>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{s.desc}</p>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Facility track */}
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-7 space-y-7">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-600 bg-brand-50 dark:bg-brand-900/30 px-3 py-1 rounded-full">For Facilities</span>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Sign up directly and manage your own energy data</p>
               </div>
-            ))}
+              <div className="space-y-6">
+                {FACILITY_STEPS.map((s) => (
+                  <div key={s.num} className="flex gap-4">
+                    <div className="h-9 w-9 rounded-full bg-brand-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">{s.num}</div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-white">{s.title}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Link href="/start" className="inline-flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">
+                Start free as a facility <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            {/* Consultant track */}
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-7 space-y-7">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-purple-600 bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded-full">For Consultants & ESCOs</span>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Manage your client portfolio from one dashboard</p>
+              </div>
+              <div className="space-y-6">
+                {CONSULTANT_STEPS.map((s) => (
+                  <div key={s.num} className="flex gap-4">
+                    <div className="h-9 w-9 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">{s.num}</div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-white">{s.title}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <a href="https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-purple-600 dark:text-purple-400 font-medium hover:underline">
+                WhatsApp us to become a partner <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -195,9 +237,9 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { icon: Building2, title: 'Factories & Industrial Facilities', desc: 'Sign up directly. Manage your own energy data, utility bill analysis, compliance, and savings tracking — no consultant needed.', href: '/start', cta: 'Start free →' },
-              { icon: Users, title: 'Energy Consultants & ESCOs', desc: 'Manage your entire client portfolio from one dashboard. Prove your value with ₹ savings reports. Earn recurring commission on IoT upgrades.', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark', cta: 'WhatsApp us to partner →' },
-              { icon: FileText, title: 'ZED / ISO 50001 Auditors', desc: 'Streamline audit workflows, manage findings and CAPA, generate compliance documentation for ZED, ISO 50001, and Electrical Safety.', href: '/register', cta: 'Try it free →' },
+              { icon: Building2, title: 'Factories & Industrial Facilities', desc: 'Sign up for free and manage your own energy bills, savings, and compliance — no consultant, no hardware required to start. Your bill tells the story; VoltSpark reads it for you.', href: '/start', cta: 'Start free →' },
+              { icon: Users, title: 'Energy Consultants & ESCOs', desc: 'Add all your client facilities under one consultant account. Each client gets their own dashboard. You get a portfolio view, ₹ savings proof, and recurring commission on IoT upgrades.', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark', cta: 'WhatsApp us to partner →' },
+              { icon: FileText, title: 'ZED / ISO 50001 Auditors', desc: 'Run audits, log findings, assign CAPAs, and generate compliance documentation for ZED, ISO 50001, and Electrical Safety — all in one place. Client-ready reports in one click.', href: '/register', cta: 'Try it free →' },
             ].map((w) => (
               <div key={w.title} className="card text-center flex flex-col">
                 <div className="mx-auto h-12 w-12 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-4">
@@ -216,31 +258,67 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Value Chain */}
+      {/* What you get — two tracks */}
       <section className="bg-gray-900 dark:bg-gray-950 text-white py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">The Value Chain</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-brand-600/20 mb-4"><Zap className="h-8 w-8 text-brand-400" /></div>
-              <h3 className="font-semibold text-lg mb-2">Platform Features</h3>
-              <ul className="text-sm text-gray-400 space-y-1">
-                <li>Energy Cost Dashboard</li><li>Savings Tracker</li><li>ROI Calculator</li><li>Utility Bill Analyzer</li><li>Impact Reports</li>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-3">What you get</h2>
+          <p className="text-center text-gray-400 mb-12 text-sm">Whether you manage your own facility or a portfolio of clients</p>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Facility track */}
+            <div className="bg-gray-800/60 rounded-2xl p-7 space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-brand-600/20"><Building2 className="h-6 w-6 text-brand-400" /></div>
+                <div>
+                  <p className="font-semibold text-white">If you are a facility</p>
+                  <p className="text-xs text-gray-400">Self-managed, sign up directly</p>
+                </div>
+              </div>
+              <ul className="space-y-2.5 text-sm text-gray-300">
+                {[
+                  'Know exactly where every ₹ on your electricity bill goes',
+                  'Catch PF penalties and demand overshoot before they recur',
+                  'Track every improvement with a ₹ before-and-after',
+                  'Run ROI on VFD, solar, APFC, and LED before buying',
+                  'Stay ZED / ISO 50001 compliant without paperwork overhead',
+                  'Share your compliance status with buyers and auditors via a single link',
+                ].map((item) => (
+                  <li key={item} className="flex gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-brand-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
               </ul>
+              <Link href="/start" className="inline-flex items-center gap-1.5 text-sm text-brand-400 font-medium hover:underline">
+                See full feature list <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
-            <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-purple-600/20 mb-4"><Users className="h-8 w-8 text-purple-400" /></div>
-              <h3 className="font-semibold text-lg mb-2">Consultant Value</h3>
-              <ul className="text-sm text-gray-400 space-y-1">
-                <li>Data-backed advisory</li><li>Prove ROI to client</li><li>Pitch improvements</li><li>Find hidden charges</li><li>Retain & upsell</li>
+            {/* Consultant track */}
+            <div className="bg-gray-800/60 rounded-2xl p-7 space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-purple-600/20"><Users className="h-6 w-6 text-purple-400" /></div>
+                <div>
+                  <p className="font-semibold text-white">If you are a consultant or ESCO</p>
+                  <p className="text-xs text-gray-400">Manage your client portfolio</p>
+                </div>
+              </div>
+              <ul className="space-y-2.5 text-sm text-gray-300">
+                {[
+                  'One dashboard for all your client sites — no more spreadsheet juggling',
+                  'Data-backed advisory: show clients the number, not just the recommendation',
+                  '₹ savings reports that justify your fees every month',
+                  'Recurring commission income on every IoT meter your client adds',
+                  'Audit-ready compliance documentation generated in one click',
+                  'Retain clients with proof — not just promises',
+                ].map((item) => (
+                  <li key={item} className="flex gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
               </ul>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex p-4 rounded-full bg-green-600/20 mb-4"><IndianRupee className="h-8 w-8 text-green-400" /></div>
-              <h3 className="font-semibold text-lg mb-2">Client Wins</h3>
-              <ul className="text-sm text-gray-400 space-y-1">
-                <li>₹ saved on energy</li><li>Justify consultant fee</li><li>Smart investments</li><li>Avoid penalties</li><li>Win new customers</li>
-              </ul>
+              <a href="https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-purple-400 font-medium hover:underline">
+                WhatsApp us to partner <ArrowRight className="h-3.5 w-3.5" />
+              </a>
             </div>
           </div>
         </div>
@@ -272,9 +350,15 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={p.href} className={`mt-6 block text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
-                  p.highlight ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-                }`}>{p.cta}</Link>
+                {p.href.startsWith('http') ? (
+                  <a href={p.href} target="_blank" rel="noopener noreferrer" className={`mt-6 block text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
+                    p.highlight ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}>{p.cta}</a>
+                ) : (
+                  <Link href={p.href} className={`mt-6 block text-center py-2.5 rounded-lg font-medium text-sm transition-colors ${
+                    p.highlight ? 'bg-brand-600 text-white hover:bg-brand-700' : 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}>{p.cta}</Link>
+                )}
               </div>
             ))}
           </div>
@@ -308,13 +392,34 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 text-center">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Ready to save energy and grow your business?</h2>
-          <p className="text-lg text-gray-500 dark:text-gray-400 mt-4">Join India&apos;s energy management platform. Free to start, no credit card required.</p>
-          <Link href="/register" className="btn-primary text-base px-8 py-3 mt-8 inline-flex items-center gap-2">
-            Create Free Account <ArrowRight className="h-5 w-5" />
-          </Link>
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Ready to stop the waste?</h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 mt-4">Free to start. No credit card. No hardware required.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div className="border-2 border-brand-600 rounded-2xl p-7 text-center space-y-4">
+              <Building2 className="h-8 w-8 text-brand-600 mx-auto" />
+              <div>
+                <p className="font-bold text-gray-900 dark:text-white text-lg">I manage a facility</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Sign up free and start with your last electricity bill. No consultant needed.</p>
+              </div>
+              <Link href="/register" className="block bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                Start Free →
+              </Link>
+            </div>
+            <div className="border-2 border-purple-500 rounded-2xl p-7 text-center space-y-4">
+              <Users className="h-8 w-8 text-purple-600 mx-auto" />
+              <div>
+                <p className="font-bold text-gray-900 dark:text-white text-lg">I am a consultant / ESCO</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage multiple client sites from one account. Earn commission on IoT upgrades.</p>
+              </div>
+              <a href="https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                WhatsApp to Partner →
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
