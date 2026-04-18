@@ -187,7 +187,8 @@ export default function StartPage() {
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 When you want real-time data — live kW, PF, voltage per machine or feeder — smart meters can be installed by a local electrical contractor.
-                Once connected, meter readings flow into VoltSpark automatically. No more manual logging.
+                You can also add process sensors alongside the meters: vibration sensors on machines, temperature probes on cold rooms, CO2 sensors in HVAC zones.
+                Once connected, all data flows into VoltSpark automatically.
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Hardware supplied and installed by third-party contractors. VoltSpark handles the data.</p>
             </div>
@@ -254,6 +255,7 @@ export default function StartPage() {
                     { tier: 'Standard', params: '+ voltage & current per phase (5–10)', analytics: '+ PF monitoring, phase imbalance, demand tracking', price: '₹599' },
                     { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15)', analytics: '+ Demand prediction, tariff optimisation, predictive maintenance', price: '₹999' },
                     { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+)', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', price: '₹1,499' },
+                    { tier: 'Sensor (any type)', params: 'Vibration, temperature, humidity, CO2, pressure — pick what your industry needs', analytics: 'Rule-based threshold alerts; feeds your intelligence bundle', price: '₹149' },
                   ].map((r) => (
                     <tr key={r.tier} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                       <td className="py-3 pr-4 font-semibold text-gray-900 dark:text-white whitespace-nowrap">{r.tier}</td>
@@ -271,10 +273,10 @@ export default function StartPage() {
               <p className="text-xs text-gray-500 dark:text-gray-400">Each bundle applies domain-specific analytics to your meter data — interpreting readings through the lens of your industry&apos;s machines and operations. Requires Standard+ IoT meters. Multiple bundles can be active on the same site.</p>
               <div className="grid sm:grid-cols-2 gap-3">
                 {[
-                  { name: 'Manufacturing Intelligence', price: '₹2,500/month', note: 'Production energy intensity, compressed air efficiency, machine load profiles, shift analysis. For CNC, metal, auto, plastics.' },
-                  { name: 'Commercial Kitchen Intelligence', price: '₹4,000/month', note: 'Demand management, load shedding alerts, HACCP temperature logging, ToD patterns. For restaurants, hotels, canteens.' },
-                  { name: 'HVAC & Building Intelligence', price: '₹3,000/month', note: 'HVAC COP/EER tracking, floor/zone consumption, chiller performance. For offices, malls, commercial buildings.' },
-                  { name: 'Healthcare Intelligence', price: '₹4,000/month', note: 'Critical load uptime, DG/UPS performance, clean room energy, NABH compliance evidence. For hospitals, labs, pharma.' },
+                  { name: 'Manufacturing Intelligence', price: '₹2,500/month', note: 'Production energy intensity, compressed air efficiency, machine load profiles. Add vibration sensors for bearing/motor health and temperature sensors for coolant monitoring. CNC, metal, auto, plastics.' },
+                  { name: 'Commercial Kitchen Intelligence', price: '₹4,000/month', note: 'Demand management, load shedding alerts, ToD patterns. Add temperature sensors on cold rooms for HACCP/FSSAI compliance logging. Restaurants, hotels, canteens.' },
+                  { name: 'HVAC & Building Intelligence', price: '₹3,000/month', note: 'HVAC COP/EER tracking, zone consumption. Add temperature sensors for accurate COP/EER; CO2 + humidity sensors for IAQ monitoring. Offices, malls, buildings.' },
+                  { name: 'Healthcare Intelligence', price: '₹4,000/month', note: 'Critical load uptime, DG/UPS performance. Add temperature + humidity sensors for NABH-mandated OT/ICU monitoring; cold storage sensors for blood bank compliance. Hospitals, labs, pharma.' },
                 ].map((m) => (
                   <div key={m.name} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 space-y-1">
                     <div className="flex items-start justify-between gap-2">

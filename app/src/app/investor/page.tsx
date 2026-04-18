@@ -193,47 +193,47 @@ export default function InvestorPage() {
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Basic</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">4 electrical params: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking. <span className="text-brand-600 font-medium">Includes 1 environmental sensor.</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">4 electrical params: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹299/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Standard</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">10 electrical params: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts. <span className="text-brand-600 font-medium">Includes 2 environmental sensors.</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">10 electrical params: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹599/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Advanced</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15 electrical params: + max demand, TOU, load profile. Demand prediction, tariff optimisation. <span className="text-brand-600 font-medium">Includes 3 environmental sensors.</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15 electrical params: + max demand, TOU, load profile. Demand prediction, tariff optimisation.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹999/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Power Quality</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ params: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing. <span className="text-brand-600 font-medium">Includes 5 environmental sensors.</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ params: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹1,499/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Environmental sensor <span className="text-xs font-normal text-gray-400">(additional)</span></td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Temperature, humidity, CO2, vibration, pressure, or flow. Beyond the included sensor allowance. Works with any compatible gateway — vendor-agnostic by design. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Process / environmental sensor</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Vibration, temperature, humidity, CO2, pressure, flow — selected based on what the industry intelligence bundle needs. Vendor-agnostic. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹149/sensor/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Manufacturing Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. Vibration + temperature sensors unlock predictive maintenance for CNC, motors, and bearings. CNC, metal, auto, plastics.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. Pairs with vibration sensors (bearing/motor health) and temperature sensors (coolant/oil monitoring) for predictive maintenance. CNC, metal, auto, plastics.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹2,500/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Commercial Kitchen Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding alerts, HACCP cold chain monitoring (temperature sensors on cold rooms + cooking equipment), humidity tracking, ToD analytics. Restaurants, hotels, canteens.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding alerts, ToD analytics. Pairs with temperature sensors (cold room/freezer HACCP logging, FSSAI compliance) and humidity sensors. Restaurants, hotels, canteens.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">HVAC & Building Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">HVAC COP/EER tracking (requires supply/return temperature sensors), zone IAQ monitoring (CO2 + humidity), occupancy correlation, filter health. Offices, malls, hotels.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">HVAC COP/EER tracking, zone-level consumption, occupancy correlation. Pairs with temperature sensors (supply/return air for COP/EER calculation) and CO2 + humidity sensors (IAQ monitoring, ASHRAE compliance). Offices, malls, hotels.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹3,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Healthcare Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Critical load uptime, NABH-compliant OT/ICU temperature + humidity logging, blood bank cold chain, clean room differential pressure, DG/UPS performance. Hospitals, labs, pharma.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Critical load uptime, DG/UPS performance, clean room energy. Pairs with temperature + humidity sensors (NABH-mandated OT/ICU monitoring), cold storage temperature (blood bank/pharmacy), and differential pressure sensors (clean room/isolation room compliance). Hospitals, labs, pharma.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
@@ -242,7 +242,7 @@ export default function InvestorPage() {
                   <td className="px-4 py-3.5 text-right font-mono">From ₹5,000/site/mo</td>
                 </tr>
                 <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT site: 1 Advanced + 3 Standard meters (9 sensors included) + Manufacturing Intelligence bundle</td>
+                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT site: 1 Advanced + 3 Standard meters + Manufacturing Intelligence bundle</td>
                   <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹5,300/site/mo</td>
                 </tr>
               </tbody>
@@ -262,7 +262,7 @@ export default function InvestorPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 px-1">Revenue projections assume ~₹5,300/site/month average for IoT-enabled sites (1 Advanced + 3 Standard meters with 9 sensors included + 1 intelligence bundle). Free-tier sites generate ₹0 but build the adoption base for IoT upsell. Sites with multiple bundles (e.g. hospital: Healthcare + Kitchen + HVAC) and additional sensors generate higher ARPU. These are illustrative, not guaranteed forecasts.</p>
+          <p className="text-xs text-gray-400 px-1">Revenue projections assume ~₹5,300/site/month average for IoT-enabled sites (1 Advanced + 3 Standard meters + 1 intelligence bundle). Free-tier sites generate ₹0 but build the adoption base for IoT upsell. Sites with multiple bundles (e.g. hospital: Healthcare + Kitchen + HVAC) and additional sensors generate higher ARPU. These are illustrative, not guaranteed forecasts.</p>
         </section>
 
         {/* IoT Partners */}
