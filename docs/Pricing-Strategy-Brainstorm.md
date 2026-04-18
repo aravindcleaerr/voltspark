@@ -245,24 +245,69 @@ Same price. Very different value. Very different data volume and processing cost
 - 1 Basic sub-meter: ₹200
 - **Total: ₹600/month** (no analytics module needed to start)
 
-### Open sub-questions on meter tiers
+### Industry Research Findings (April 2026)
 
-- [ ] Do we sell/recommend specific meter classes, or let customers use whatever they have?
-- [ ] If a customer has a mix (2 advanced + 3 basic), is billing obvious enough?
-- [ ] Should the ₹2,999 minimum floor still apply, or does per-meter pricing stand alone?
-- [ ] Predictive maintenance — is this a separate module or included in Advanced meter tier?
-- [ ] How does this interact with the existing add-on modules (Power Quality, Compressed Air, Kitchen)?
+**Indian competitors:** Zenatix (Schneider), Facilio, Acrel India, TrackSo — none publish per-meter pricing. All are custom/quote-based. This is a VoltSpark differentiator opportunity — transparent, published pricing.
+
+**Global benchmarks found:**
+- UK energy platforms: £2.19–£7.26/device/month = ₹230–760/meter/month
+- Global IoT analytics SaaS: $3–18/device/month = ₹250–1,500/meter/month
+- AWS IoT Core infrastructure cost: ~$0.042/meter/year (negligible — margin is in analytics, not ingestion)
+
+**Indian market context:**
+- MSMEs are price-sensitive; ROI typically expected in 12–24 months
+- No standard published benchmark exists — VoltSpark can set the standard
+- Smart meter hardware in India: ₹1,500–₹6,000 per meter (hardware cost, not SaaS)
+
+### Resolved: Meter Capability Tiers with Pricing
+
+**Decision (April 2026):**
+- Pure per-meter pricing — no floor, no minimum
+- Predictive maintenance **included in Advanced tier** (not a separate module)
+- Analytics appropriate to meter class are **bundled into the tier**
+- Domain-specific modules (Compressed Air, Kitchen) remain separate — they need site-level configuration beyond meter data
+
+**Per-meter per-month pricing:**
+
+| Tier | Parameters | Monthly | Analytics included |
+|---|---|---|---|
+| Basic | kWh, kVA, PF, Hz (up to 4) | ₹299 | Consumption trends, basic cost tracking |
+| Standard | + V/A per phase, reactive power (5–10) | ₹599 | + PF monitoring, phase imbalance, demand tracking |
+| Advanced | + Max demand, TOU, load profile (11–15) | ₹999 | + Demand prediction, tariff optimisation, predictive maintenance alerts |
+| Power Quality | + THD, harmonics, sag/swell, EN 50160 (15+) | ₹1,499 | + Full PQ analysis, harmonic filter sizing, equipment damage prediction |
+
+**Pricing is grounded in:**
+- Lower half of global IoT SaaS range ($3–18 → targeting $3.60–$18 = ₹300–1,500)
+- UK energy platform benchmark: £2.19–£7.26 (₹230–760) covers Basic and Standard tiers
+- Indian affordability: Basic and Standard within reach of MSMEs with ₹1–5L/month bills
+
+**Domain-specific modules (per site per month, on top of meter tier):**
+
+| Module | Requires | Monthly |
+|---|---|---|
+| Compressed Air Intelligence | Standard+ meter on compressor | ₹1,500 |
+| Kitchen Intelligence | Standard+ meter on kitchen loads | ₹4,000 |
+
+**Example bills:**
+
+| Scenario | Meters | Monthly |
+|---|---|---|
+| 2 meters: 1 Standard incomer + 1 Basic DG sub-meter | 2 meters | ₹599 + ₹299 = ₹898 |
+| 5 meters: 1 Advanced incomer + 3 Standard feeders + 1 Basic DG | 5 meters | ₹999 + ₹1,797 + ₹299 = ₹3,095 |
+| 13 meters: 1 Advanced incomer + 8 Standard sub-feeders + 4 Basic utility meters | 13 meters | ₹999 + ₹4,792 + ₹1,196 = ₹6,987 |
+| Kitchen + factory: 1 Advanced + 2 Standard + Kitchen module | 3 meters + module | ₹999 + ₹1,198 + ₹4,000 = ₹6,197 |
+
+**What happened to the old "IoT Metering" module?**
+Replaced entirely by the per-meter tiered pricing above. There is no longer a flat "IoT Metering add-on." Power Quality analytics are bundled into the PQ meter tier.
 
 ---
 
 ## What Has Not Been Decided Yet
 
-- [ ] Final IoT per-meter pricing tiers (Basic / Standard / Advanced / PQ)
-- [ ] Whether a ₹2,999/month minimum floor applies for IoT tier
-- [ ] How predictive maintenance alerts are priced
-- [ ] How add-on modules (Power Quality, Compressed Air, Kitchen) interact with meter tiers
-- [ ] Pricing for API access for large customers
+- [ ] Pricing for API access (read-only data export for large customers / ERP integrations)
 - [ ] Pricing for data export beyond standard CSV
+- [ ] Whether to offer a free trial period on IoT tier (e.g. first 30 days free per meter)
+- [ ] Volume discount for 20+ meters on same site
 
 ---
 

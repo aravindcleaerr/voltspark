@@ -286,9 +286,9 @@ export default function StartPage() {
               <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Example monthly bills:</p>
               <div className="space-y-1.5 text-sm">
                 {[
-                  { label: '2-machine shop (1 Standard + 1 Basic meter)', price: '₹898/month' },
-                  { label: 'Mid-size factory (1 Advanced + 3 Standard + 1 Basic)', price: '₹3,095/month' },
-                  { label: '30-machine plant (1 Advanced + 8 Standard + 4 Basic)', price: '₹6,987/month' },
+                  { label: '2 meters — 1 Standard incomer + 1 Basic DG sub-meter', price: '₹898/month' },
+                  { label: '5 meters — 1 Advanced incomer + 3 Standard feeders + 1 Basic DG', price: '₹3,095/month' },
+                  { label: '13 meters — 1 Advanced incomer + 8 Standard sub-feeders + 4 Basic utility meters', price: '₹6,987/month' },
                 ].map((ex) => (
                   <div key={ex.label} className="flex items-center justify-between gap-4">
                     <p className="text-gray-500 dark:text-gray-400">{ex.label}</p>
