@@ -6,21 +6,23 @@ export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Create
 const marketRows = [
   { label: 'TAM', sublabel: 'Energy management software — Indian industry', value: '₹5,000 Cr/yr', note: '~12 lakh medium industrial facilities spending ₹3L–₹50L/month on electricity' },
   { label: 'SAM', sublabel: 'MSME segment reachable through consultants', value: '₹500 Cr/yr', note: 'Manufacturing, kitchens, hospitals, commercial buildings with compliance pressure' },
-  { label: 'SOM', sublabel: '3-year target', value: '₹25 Cr/yr', note: '5,000 IoT-enabled sites at ~₹4,300/month average — achievable with 200 onboarded consultants converting 40–50% of clients to IoT' },
+  { label: 'SOM', sublabel: '3-year target', value: '₹25 Cr/yr', note: '5,000 IoT-enabled sites at ~₹5,300/month average (meters + sensors + intelligence bundle) — achievable with 200 onboarded consultants converting 40–50% of clients to IoT' },
 ];
 
 const fundUse = [
-  { pct: '40%', amount: '₹40L', label: 'Product Development', items: ['Mobile app (iOS + Android)', 'Advanced analytics & benchmarking', 'Two new industry intelligence bundles'] },
+  { pct: '40%', amount: '₹40L', label: 'Product Development', items: ['Mobile app (iOS + Android)', 'Advanced analytics & benchmarking', 'Two new industry intelligence bundles', 'ML anomaly detection engine (rule-based alerts live; ML roadmap Q4 2026)'] },
   { pct: '35%', amount: '₹35L', label: 'Sales & Partnerships', items: ['Consultant onboarding program', 'Channel partnerships (hardware OEMs, DISCOMs)', 'Industry events & ZED/ISO consultant networks'] },
   { pct: '25%', amount: '₹25L', label: 'Hiring', items: ['1 full-stack product engineer', '1 sales & partnerships manager'] },
 ];
 
 const moat = [
-  { title: 'Data switching cost', body: '12 months of energy baselines, compliance evidence, and savings records inside VoltSpark is not something a client moves away from easily.' },
+  { title: 'Data switching cost', body: '12 months of energy baselines, compliance evidence, sensor logs, and savings records inside VoltSpark is not something a client moves away from easily.' },
   { title: 'Consultant distribution', body: 'Each consultant brings 5–20 clients. Winning 50 consultants is equivalent to winning 500–1,000 client sites — without direct sales to each factory.' },
-  { title: 'IoT hardware lock-in', body: 'Established partnerships with Lotus Controls (Schneider authorised distributor) and Titan (Tor.ai) mean the hardware-software bundle is integrated and hard to replicate quickly.' },
-  { title: 'Compliance evidence layer', body: 'VoltSpark generates the audit trail for ZED and ISO 50001. Replacing it mid-certification cycle is not an option a client would choose.' },
-  { title: 'Anonymised benchmarking', body: 'As the client base grows, cross-industry benchmarks become a unique asset — no single-facility tool can offer "your kWh/unit vs. industry average".' },
+  { title: 'Unified sensor + energy infrastructure', body: 'Established partnerships with Lotus Controls (Schneider authorised distributor) and Titan (Tor.ai) mean the hardware-software bundle is integrated. Schneider\'s PAS600 gateway supports both energy meters and environmental sensors (temperature, humidity, CO2, vibration, pressure) on the same infrastructure — no second gateway, no second vendor.' },
+  { title: 'Multi-sensor compliance automation', body: 'When a cold room temperature breaches 4°C, VoltSpark auto-creates an audit finding, links it to HACCP requirements, and triggers a CAPA. When an OT humidity drifts outside NABH range, the same pipeline fires. No competitor in India connects sensor readings to compliance workflows automatically.' },
+  { title: 'Regulatory switching cost', body: 'NABH-accredited hospitals and FSSAI-registered kitchens depend on VoltSpark\'s timestamped sensor logs as compliance evidence. Migrating to another platform mid-audit cycle is not a decision any compliance manager makes voluntarily.' },
+  { title: 'Compliance evidence layer', body: 'VoltSpark generates the audit trail for ZED, ISO 50001, NABH, FSSAI, and LEED/IGBC. Replacing it mid-certification cycle is not an option a client would choose.' },
+  { title: 'Anonymised benchmarking', body: 'As the client base grows, cross-industry benchmarks become a unique asset — no single-facility tool can offer "your kWh/unit vs. industry average" or "your cold room temperature variance vs. HACCP peers".' },
 ];
 
 const team = [
@@ -43,8 +45,8 @@ const team = [
 ];
 
 const partners = [
-  { name: 'Lotus Controls', detail: 'Authorised Schneider Electric distributor — IoT gateway and sub-metering hardware', logo: '⚡' },
-  { name: 'Titan by Tor.ai', detail: 'Smart metering for commercial kitchens — demand management and load shedding', logo: '🔌' },
+  { name: 'Lotus Controls', detail: 'Authorised Schneider Electric distributor — IoT gateway (PAS600), energy sub-metering hardware, and environmental sensors (temperature, humidity, CO2, vibration, pressure). All devices run on the same gateway infrastructure — one installation serves both energy and compliance monitoring.', logo: '⚡' },
+  { name: 'Titan by Tor.ai', detail: 'Smart metering for commercial kitchens — demand management, load shedding, and kitchen-grade IoT integration.', logo: '🔌' },
 ];
 
 export default function InvestorPage() {
@@ -140,7 +142,7 @@ export default function InvestorPage() {
               { title: 'No India-specific platform', body: 'Existing solutions (Zenatix, EnergyBrain) target large enterprises. The 12 lakh MSME industrial facilities — ₹1Cr–₹100Cr turnover — have no affordable, ZED/BESCOM-aware option.' },
               { title: 'Consultants work in Excel', body: 'India has thousands of ZED, ISO 50001, and electrical safety consultants. Every one of them manages clients in spreadsheets and WhatsApp. No practice management platform exists for them.' },
               { title: 'Compliance pressure is accelerating', body: 'ZED certification is now an OEM vendor qualification requirement. ISO 50001 is being mandated by large buyers. BEE PAT penalties are increasing. The "do nothing" option is closing.' },
-              { title: 'IoT alone is not enough', body: 'Hardware vendors sell dashboards with raw kWh data. No platform connects real-time readings to compliance frameworks, savings proof, and ₹ ROI in the same workflow.' },
+              { title: 'IoT alone is not enough', body: 'Hardware vendors sell dashboards with raw kWh data. No platform connects real-time energy and environmental sensor readings (temperature, humidity, CO2, vibration) to compliance frameworks, automated evidence logs, and ₹ ROI in the same workflow.' },
             ].map((p, i) => (
               <div key={i} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <p className="font-semibold text-gray-900 dark:text-white">{p.title}</p>
@@ -160,7 +162,7 @@ export default function InvestorPage() {
             {[
               { step: '1', title: 'Consultant signs up', body: 'Energy auditor, ZED/ISO consultant, or ESCO registers on VoltSpark. Adds their industrial clients. Manages all from one portfolio dashboard.' },
               { step: '2', title: 'Client gets visibility', body: 'Factory owner sees a live energy cost dashboard, compliance status, and savings opportunities — all in ₹. Not kWh. Not Excel.' },
-              { step: '3', title: 'Intelligence bundles unlock revenue', body: 'As trust grows, consultant enables industry intelligence bundles. Hardware partners supply and install smart meters. VoltSpark handles the data, analytics, and compliance evidence.' },
+              { step: '3', title: 'Intelligence bundles unlock revenue', body: 'As trust grows, consultant enables industry intelligence bundles. Hardware partners (Lotus Controls, Titan) supply and install smart meters and environmental sensors — all running on the same gateway. VoltSpark handles data ingestion, rule-based alerts, compliance evidence generation, and ₹ analytics.' },
             ].map((s) => (
               <div key={s.step} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <div className="h-8 w-8 rounded-full bg-brand-600 text-white text-sm font-bold flex items-center justify-center">{s.step}</div>
@@ -191,51 +193,56 @@ export default function InvestorPage() {
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Basic</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Up to 4 parameters: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">4 electrical params: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking. <span className="text-brand-600 font-medium">Includes 1 environmental sensor.</span></td>
                   <td className="px-4 py-3.5 text-right font-mono">₹299/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Standard</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">5–10 parameters: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">10 electrical params: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts. <span className="text-brand-600 font-medium">Includes 2 environmental sensors.</span></td>
                   <td className="px-4 py-3.5 text-right font-mono">₹599/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Advanced</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">11–15 parameters: + max demand, TOU, load profile. Demand prediction, tariff optimisation, predictive maintenance.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15 electrical params: + max demand, TOU, load profile. Demand prediction, tariff optimisation. <span className="text-brand-600 font-medium">Includes 3 environmental sensors.</span></td>
                   <td className="px-4 py-3.5 text-right font-mono">₹999/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Power Quality</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ parameters: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ params: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing. <span className="text-brand-600 font-medium">Includes 5 environmental sensors.</span></td>
                   <td className="px-4 py-3.5 text-right font-mono">₹1,499/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Environmental sensor <span className="text-xs font-normal text-gray-400">(additional)</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Temperature, humidity, CO2, vibration, pressure, or flow. Beyond the included sensor allowance. Schneider-compatible, runs on the same PAS600 gateway. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹149/sensor/mo</td>
+                </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Manufacturing Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. CNC, metal, auto, plastics.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. Vibration + temperature sensors unlock predictive maintenance for CNC, motors, and bearings. CNC, metal, auto, plastics.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹2,500/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Commercial Kitchen Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding alerts, HACCP temperature logging, ToD analytics. Restaurants, hotels, canteens.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding alerts, HACCP cold chain monitoring (temperature sensors on cold rooms + cooking equipment), humidity tracking, ToD analytics. Restaurants, hotels, canteens.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">HVAC & Building Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">HVAC COP/EER tracking, zone-level consumption, chiller performance, occupancy correlation. Offices, malls, hotels.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">HVAC COP/EER tracking (requires supply/return temperature sensors), zone IAQ monitoring (CO2 + humidity), occupancy correlation, filter health. Offices, malls, hotels.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹3,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Healthcare Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Critical load uptime, DG/UPS performance, clean room energy, NABH-compatible evidence. Hospitals, labs, pharma.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Critical load uptime, NABH-compliant OT/ICU temperature + humidity logging, blood bank cold chain, clean room differential pressure, DG/UPS performance. Hospitals, labs, pharma.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Custom Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Bespoke analytics for specific industries or processes — custom dashboards, metrics, and alerts.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Bespoke analytics for specific industries or processes — custom sensor types, dashboards, metrics, and compliance mappings.</td>
                   <td className="px-4 py-3.5 text-right font-mono">From ₹5,000/site/mo</td>
                 </tr>
                 <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT site: 1 Advanced + 3 Standard meters + Manufacturing bundle</td>
+                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT site: 1 Advanced + 3 Standard meters (9 sensors included) + Manufacturing Intelligence bundle</td>
                   <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹5,300/site/mo</td>
                 </tr>
               </tbody>
@@ -255,7 +262,7 @@ export default function InvestorPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 px-1">Revenue projections assume ~₹5,300/site/month average for IoT-enabled sites (1 Advanced + 3 Standard meters + 1 intelligence bundle). Free-tier sites generate ₹0 but build the adoption base for IoT upsell. Sites with multiple bundles (e.g. hospital: Healthcare + Kitchen + HVAC) generate higher ARPU. These are illustrative, not guaranteed forecasts.</p>
+          <p className="text-xs text-gray-400 px-1">Revenue projections assume ~₹5,300/site/month average for IoT-enabled sites (1 Advanced + 3 Standard meters with 9 sensors included + 1 intelligence bundle). Free-tier sites generate ₹0 but build the adoption base for IoT upsell. Sites with multiple bundles (e.g. hospital: Healthcare + Kitchen + HVAC) and additional sensors generate higher ARPU. These are illustrative, not guaranteed forecasts.</p>
         </section>
 
         {/* IoT Partners */}
@@ -274,8 +281,7 @@ export default function InvestorPage() {
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-5 py-3">
             VoltSpark is hardware-agnostic by design — any Modbus RTU device can push data via our IoT ingestion API.
-            The Lotus Controls and Titan partnerships provide a validated, locally-available hardware stack for initial deployments,
-            reducing time-to-value for new client sites.
+            The Lotus Controls and Titan partnerships provide a validated, locally-available hardware stack for initial deployments, including both energy meters and environmental sensors on a single gateway infrastructure, reducing time-to-value for new client sites.
           </p>
         </section>
 
