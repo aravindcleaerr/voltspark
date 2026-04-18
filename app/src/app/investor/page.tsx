@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Zap, TrendingUp, Shield, Users, ArrowRight, Building2, Cpu, IndianRupee, AlertTriangle, Phone, Mail, MessageCircle } from 'lucide-react';
+import PrivateGate from '@/components/PrivateGate';
 
 export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Createch' };
 
@@ -57,6 +58,7 @@ const partners = [
 
 export default function InvestorPage() {
   return (
+    <PrivateGate pageName="Investor Pitch">
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
 
       {/* Nav */}
@@ -405,5 +407,6 @@ export default function InvestorPage() {
         </div>
       </footer>
     </div>
+    </PrivateGate>
   );
 }

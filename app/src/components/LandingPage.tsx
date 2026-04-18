@@ -90,7 +90,6 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/partner" className="hidden md:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">For Partners</Link>
             <Link href="/start" className="hidden md:block text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">For Facilities</Link>
             <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2">Login</Link>
             <Link href="/register" className="btn-primary text-sm px-4 py-2">Start Free</Link>
@@ -109,8 +108,8 @@ export default function LandingPage() {
             <span className="text-brand-600">Win Customers.</span>
           </h1>
           <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
-            The all-in-one platform for energy consultants to manage industrial compliance,
-            track savings, and prove ROI — all in one place.
+            The all-in-one platform for industrial energy compliance and savings. Sign up as a facility
+            and manage your own energy data — or work with your energy consultant through the same platform.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
@@ -196,9 +195,9 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { icon: Users, title: 'Energy Consultants & Partners', desc: 'Manage multiple clients, earn recurring commission, and prove your value with data-driven reports.', href: '/partner', cta: 'Partner with us →' },
-              { icon: Building2, title: 'Factories & Facilities', desc: 'MSMEs and industrial units — start free on manual entry, upgrade to real-time IoT when ready.', href: '/start', cta: 'Start free →' },
-              { icon: FileText, title: 'ESCOs & Auditors', desc: 'Streamline audits, manage findings, generate compliance documentation, and track savings.', href: '/partner', cta: 'Learn more →' },
+              { icon: Building2, title: 'Factories & Industrial Facilities', desc: 'Sign up directly. Manage your own energy data, utility bill analysis, compliance, and savings tracking — no consultant needed.', href: '/start', cta: 'Start free →' },
+              { icon: Users, title: 'Energy Consultants & ESCOs', desc: 'Manage your entire client portfolio from one dashboard. Prove your value with ₹ savings reports. Earn recurring commission on IoT upgrades.', href: 'https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark', cta: 'WhatsApp us to partner →' },
+              { icon: FileText, title: 'ZED / ISO 50001 Auditors', desc: 'Streamline audit workflows, manage findings and CAPA, generate compliance documentation for ZED, ISO 50001, and Electrical Safety.', href: '/register', cta: 'Try it free →' },
             ].map((w) => (
               <div key={w.title} className="card text-center flex flex-col">
                 <div className="mx-auto h-12 w-12 rounded-full bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-4">
@@ -206,7 +205,11 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{w.title}</h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 flex-1">{w.desc}</p>
-                <Link href={w.href} className="mt-4 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">{w.cta}</Link>
+                {w.href.startsWith('http') ? (
+                  <a href={w.href} target="_blank" rel="noopener noreferrer" className="mt-4 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">{w.cta}</a>
+                ) : (
+                  <Link href={w.href} className="mt-4 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">{w.cta}</Link>
+                )}
               </div>
             ))}
           </div>
@@ -343,10 +346,8 @@ export default function LandingPage() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-3">Go deeper</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/partner" className="hover:text-white transition-colors">For Partners</Link></li>
                 <li><Link href="/start" className="hover:text-white transition-colors">For Facilities</Link></li>
-                <li><Link href="/partner/economics" className="hover:text-white transition-colors">Partner Economics</Link></li>
-                <li><Link href="/investor" className="hover:text-white transition-colors">Investor Pitch</Link></li>
+                <li><a href="https://wa.me/918317308558?text=Hi%2C+I+am+an+energy+consultant+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">For Consultants</a></li>
                 <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               </ul>

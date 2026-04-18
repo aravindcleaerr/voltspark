@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse, Info, Wrench } from 'lucide-react';
+import PrivateGate from '@/components/PrivateGate';
 
 export const metadata = { title: 'Partner with VoltSpark — Grow Your Practice' };
 
@@ -111,6 +112,7 @@ const bundles = [
 
 export default function PartnerPage() {
   return (
+    <PrivateGate pageName="Partner Programme">
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
 
       {/* Nav */}
@@ -375,5 +377,6 @@ export default function PartnerPage() {
         </div>
       </footer>
     </div>
+    </PrivateGate>
   );
 }

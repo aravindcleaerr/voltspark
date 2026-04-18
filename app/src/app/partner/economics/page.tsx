@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Zap, ArrowLeft, IndianRupee, TrendingUp } from 'lucide-react';
+import PrivateGate from '@/components/PrivateGate';
 
 export const metadata = { title: 'Partner Economics — VoltSpark' };
 
@@ -104,6 +105,7 @@ const partnerTiers = [
 
 export default function EconomicsPage() {
   return (
+    <PrivateGate pageName="Partner Economics">
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
 
       {/* Nav */}
@@ -392,5 +394,6 @@ export default function EconomicsPage() {
         </div>
       </footer>
     </div>
+    </PrivateGate>
   );
 }
