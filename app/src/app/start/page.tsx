@@ -151,7 +151,7 @@ export default function StartPage() {
         <section className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold">Everything included in one platform</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No modules to unlock. No hidden extras. Everything below is included at ₹2,999/month.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No credit card needed. Everything below is included on the free plan — manual entry, forever free.</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
             {features.map((f) => (
@@ -198,55 +198,106 @@ export default function StartPage() {
         <section className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold">Simple, transparent pricing</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">One flat monthly fee. No per-user charges. No setup fees.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Start free. Pay only for IoT smart meters you connect — no flat subscription, no per-user charges.</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-5">
-            {/* Core */}
-            <div className="border-2 border-brand-600 rounded-2xl p-6 space-y-4 relative">
-              <div className="absolute -top-3 left-6">
-                <span className="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">Core Platform</span>
-              </div>
-              <div className="pt-2">
-                <p className="text-4xl font-black text-gray-900 dark:text-white">₹2,999<span className="text-lg font-normal text-gray-400">/month</span></p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Everything included. Cancel any time.</p>
-              </div>
-              <ul className="space-y-2">
-                {['All core modules', 'Unlimited users', 'Unlimited data entry', 'PDF reports & data export', 'ZED / ISO 50001 / Electrical Safety compliance'].map((item) => (
-                  <li key={item} className="flex gap-2 text-sm text-gray-700 dark:text-gray-300">
-                    <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/register" className="block text-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
-                Start Free →
-              </Link>
+
+          {/* Free tier */}
+          <div className="border-2 border-brand-600 rounded-2xl p-6 space-y-4 relative">
+            <div className="absolute -top-3 left-6">
+              <span className="bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">Core Platform — Always Free</span>
+            </div>
+            <div className="pt-2 flex flex-wrap items-end gap-3">
+              <p className="text-4xl font-black text-gray-900 dark:text-white">₹0<span className="text-lg font-normal text-gray-400">/month</span></p>
+              <p className="text-sm text-green-600 dark:text-green-400 font-medium pb-1">Forever free — no credit card needed</p>
+            </div>
+            <ul className="grid sm:grid-cols-2 gap-2">
+              {[
+                'Manual meter entry + utility bill analysis',
+                'Energy cost dashboard (₹ view)',
+                'ZED / ISO 50001 / Electrical Safety compliance',
+                'Audit & CAPA management',
+                'Savings tracker + ROI calculator (7 templates)',
+                'Government scheme eligibility checker',
+                'PDF reports & data export',
+                '2 years data retention · Unlimited users',
+              ].map((item) => (
+                <li key={item} className="flex gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <Link href="/register" className="block text-center bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+              Start Free →
+            </Link>
+          </div>
+
+          {/* IoT meter tiers */}
+          <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-5">
+            <div>
+              <p className="font-bold text-gray-900 dark:text-white text-lg">IoT Smart Meters — when you want real-time data</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Priced per smart meter per month, based on how many parameters the meter measures. No minimum. Add meters one at a time.</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    <th className="text-left pb-2 pr-4">Tier</th>
+                    <th className="text-left pb-2 pr-4">What it measures</th>
+                    <th className="text-left pb-2 pr-4 hidden sm:table-cell">Analytics included</th>
+                    <th className="text-right pb-2">Per meter/month</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {[
+                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4)', analytics: 'Consumption trends, basic cost tracking', price: '₹299' },
+                    { tier: 'Standard', params: '+ voltage & current per phase (5–10)', analytics: '+ PF monitoring, phase imbalance, demand tracking', price: '₹599' },
+                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15)', analytics: '+ Demand prediction, tariff optimisation, predictive maintenance', price: '₹999' },
+                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+)', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', price: '₹1,499' },
+                  ].map((r) => (
+                    <tr key={r.tier} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                      <td className="py-3 pr-4 font-semibold text-gray-900 dark:text-white whitespace-nowrap">{r.tier}</td>
+                      <td className="py-3 pr-4 text-gray-500 dark:text-gray-400 text-xs">{r.params}</td>
+                      <td className="py-3 pr-4 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">{r.analytics}</td>
+                      <td className="py-3 text-right font-mono font-bold text-gray-900 dark:text-white whitespace-nowrap">{r.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            {/* IoT add-ons */}
-            <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 space-y-4">
-              <div>
-                <p className="font-bold text-gray-900 dark:text-white text-lg">IoT Add-ons</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Optional. Enable only what you need.</p>
-              </div>
-              <div className="space-y-2">
+            <div className="space-y-2 pt-1">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Domain modules (per site, on top of meters):</p>
+              <div className="flex flex-col sm:flex-row gap-3">
                 {[
-                  { name: 'IoT Metering', price: '₹8,000/mo', note: 'Real-time data from all your meters' },
-                  { name: 'Power Quality', price: '₹5,000/mo', note: 'Voltage, harmonics, PF monitoring' },
-                  { name: 'Compressed Air', price: '₹3,000/mo', note: 'Leak detection, efficiency tracking' },
-                  { name: 'Kitchen Intelligence', price: '₹10,000/mo', note: 'Demand management, load shedding' },
-                ].map((a) => (
-                  <div key={a.name} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{a.name}</p>
-                      <p className="text-xs text-gray-400">{a.note}</p>
-                    </div>
-                    <p className="text-sm font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap ml-4">+{a.price}</p>
+                  { name: 'Compressed Air Intelligence', price: '₹1,500/month', note: 'Requires Standard+ meter on the compressor' },
+                  { name: 'Kitchen Intelligence', price: '₹4,000/month', note: 'Requires Standard+ meters on kitchen loads' },
+                ].map((m) => (
+                  <div key={m.name} className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 space-y-0.5">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{m.name}</p>
+                    <p className="text-xs text-gray-400">{m.note}</p>
+                    <p className="text-sm font-mono text-brand-600 dark:text-brand-400 font-semibold">+{m.price}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400">Add-ons require smart meters installed at your facility. Hardware and installation by your local electrical contractor.</p>
             </div>
+
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl px-5 py-4 space-y-2">
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Example monthly bills:</p>
+              <div className="space-y-1.5 text-sm">
+                {[
+                  { label: '2-machine shop (1 Standard + 1 Basic meter)', price: '₹898/month' },
+                  { label: 'Mid-size factory (1 Advanced + 3 Standard + 1 Basic)', price: '₹3,095/month' },
+                  { label: '30-machine plant (1 Advanced + 8 Standard + 4 Basic)', price: '₹6,987/month' },
+                ].map((ex) => (
+                  <div key={ex.label} className="flex items-center justify-between gap-4">
+                    <p className="text-gray-500 dark:text-gray-400">{ex.label}</p>
+                    <p className="font-mono font-semibold text-gray-900 dark:text-white whitespace-nowrap">{ex.price}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="text-xs text-gray-400">Smart meter hardware and installation by your local electrical contractor. VoltSpark handles data ingestion, analytics, and alerts.</p>
           </div>
         </section>
 
@@ -265,7 +316,7 @@ export default function StartPage() {
               Talk to us first
             </a>
           </div>
-          <p className="text-xs text-brand-200">₹2,999/month after your free period · Cancel any time · No setup fees</p>
+          <p className="text-xs text-brand-200">Core platform always free · IoT metering from ₹299/meter/month · No setup fees</p>
         </section>
 
       </main>

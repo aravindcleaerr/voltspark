@@ -94,10 +94,12 @@ function fmt(n: number) {
   return `₹${n.toLocaleString('en-IN')}`;
 }
 
+// Assumption for portfolio scale: typical IoT site = 1 Advanced + 3 Standard + 1 domain module
+// Client bill: ₹999 + 3×₹599 + ₹1,500 = ₹4,296/mo  →  partner earns 30% = ₹1,289/mo
 const partnerTiers = [
-  { sites: 5, baseComm: 900, addonComm: 3000 },
-  { sites: 10, baseComm: 900, addonComm: 3000 },
-  { sites: 20, baseComm: 900, addonComm: 3000 },
+  { sites: 5, avgCommPerSite: 1289 },
+  { sites: 10, avgCommPerSite: 1289 },
+  { sites: 20, avgCommPerSite: 1289 },
 ];
 
 export default function EconomicsPage() {
@@ -247,52 +249,67 @@ export default function EconomicsPage() {
 
           {/* Commission structure */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Commission structure (per client site per month)</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">How commission works</h3>
+            <div className="flex items-start gap-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl px-5 py-4 text-sm">
+              <span className="text-blue-600 dark:text-blue-400 font-bold flex-shrink-0 mt-0.5">i</span>
+              <p className="text-gray-700 dark:text-gray-300">The core platform is <strong className="text-gray-900 dark:text-white">always free</strong> — manual entry, compliance tracking, audits, and savings tracker cost the client nothing. You earn 30% recurring commission on IoT meter data ingestion and domain modules only, as VoltSpark only charges for what creates real infrastructure cost.</p>
+            </div>
             <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    <th className="text-left px-5 py-3">Component</th>
-                    <th className="text-left px-4 py-3">What it covers</th>
-                    <th className="text-right px-4 py-3">Client pays</th>
+                    <th className="text-left px-5 py-3">IoT meter tier</th>
+                    <th className="text-left px-4 py-3">Parameters measured</th>
+                    <th className="text-left px-4 py-3 hidden sm:table-cell">Analytics included</th>
+                    <th className="text-right px-4 py-3">Client pays / meter</th>
+                    <th className="text-right px-4 py-3 text-green-600 dark:text-green-400">You earn (30%)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {[
+                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4)', analytics: 'Consumption trends, basic cost tracking', client: '₹299/mo', comm: '₹90/mo' },
+                    { tier: 'Standard', params: '+ V & A per phase (5–10)', analytics: '+ PF monitoring, phase imbalance, demand tracking', client: '₹599/mo', comm: '₹180/mo' },
+                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15)', analytics: '+ Demand prediction, tariff optimisation, predictive maintenance', client: '₹999/mo', comm: '₹300/mo' },
+                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+)', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', client: '₹1,499/mo', comm: '₹450/mo' },
+                  ].map((r) => (
+                    <tr key={r.tier} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                      <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white whitespace-nowrap">{r.tier}</td>
+                      <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">{r.params}</td>
+                      <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">{r.analytics}</td>
+                      <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{r.client}</td>
+                      <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold whitespace-nowrap">{r.comm}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 mt-2">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    <th className="text-left px-5 py-3">Domain module</th>
+                    <th className="text-left px-4 py-3 hidden sm:table-cell">What it adds</th>
+                    <th className="text-right px-4 py-3">Client pays / site</th>
                     <th className="text-right px-4 py-3 text-green-600 dark:text-green-400">You earn (30%)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Base platform</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">All core modules: energy tracking, compliance, audits, CAPA, savings tracker, reports</td>
-                    <td className="px-4 py-3.5 text-right font-mono">₹2,999/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹900/mo</td>
+                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air Intelligence</td>
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">Specific energy (kWh/m³), leak detection, load factor, compressor benchmarking</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300">₹1,500/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹450/mo</td>
                   </tr>
                   <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT Metering add-on</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Real-time multi-meter data, auto-consumption entries, alerts</td>
-                    <td className="px-4 py-3.5 text-right font-mono">₹8,000/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹2,400/mo</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Power Quality add-on</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Voltage sag/swell alerts, THD tracking, PF trend, EN 50160 compliance score</td>
-                    <td className="px-4 py-3.5 text-right font-mono">₹5,000/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹1,500/mo</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air add-on</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Specific energy tracking, leak detection, load factor, compressor benchmarking</td>
-                    <td className="px-4 py-3.5 text-right font-mono">₹3,000/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹900/mo</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence add-on</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Live demand management, auto load shedding, ToD analytics, HACCP temperature logging</td>
-                    <td className="px-4 py-3.5 text-right font-mono">₹10,000/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹3,000/mo</td>
+                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence</td>
+                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">Live demand management, auto load shedding, ToD analytics, HACCP temperature logging</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300">₹4,000/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹1,200/mo</td>
                   </tr>
                   <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
-                    <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Example: site with base + IoT + Power Quality</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹15,999/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹4,800/mo</td>
+                    <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Example: 1 Advanced + 3 Standard meters + Compressed Air module</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹4,296/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹1,290/mo</td>
                   </tr>
                 </tbody>
               </table>
@@ -301,24 +318,24 @@ export default function EconomicsPage() {
 
           {/* Portfolio scale */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Portfolio scale — assuming avg 2 add-ons per site</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Portfolio scale — typical IoT site: 1 Advanced + 3 Standard + 1 domain module</h3>
             <div className="grid sm:grid-cols-3 gap-4">
               {partnerTiers.map((t) => {
-                const monthly = (t.baseComm + t.addonComm) * t.sites;
+                const monthly = t.avgCommPerSite * t.sites;
                 const annual = monthly * 12;
                 return (
                   <div key={t.sites} className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t.sites} client sites</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t.sites} IoT client sites</p>
                     <div>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">₹{monthly.toLocaleString('en-IN')}/mo</p>
                       <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-0.5">{fmt(annual)}/year</p>
                     </div>
-                    <p className="text-xs text-gray-400">Recurring. No new installations needed. Grows as clients enable more add-ons.</p>
+                    <p className="text-xs text-gray-400">Recurring. Grows as clients add more meters or domain modules.</p>
                   </div>
                 );
               })}
             </div>
-            <p className="text-xs text-gray-400 px-1">This is SaaS commission only — separate from your hardware margin (typically 20–35% on meters and gateway) and your consulting fees.</p>
+            <p className="text-xs text-gray-400 px-1">This is SaaS commission only — separate from your hardware margin (typically 20–35% on meters and gateway) and your consulting fees. Free-tier clients contribute ₹0 but become IoT upsell targets as trust builds.</p>
           </div>
 
           {/* Flywheel */}
