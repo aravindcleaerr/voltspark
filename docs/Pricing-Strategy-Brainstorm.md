@@ -174,54 +174,95 @@ When a consultant brings a client to VoltSpark:
 
 ---
 
-## Open Questions (To Resolve)
+## Resolved Questions
 
-### 1. Free tier user limit
-Currently proposed: 3 users on free.
-Question: Is 3 enough? A 30-machine factory has shift supervisors, safety officer, manager, accounts all wanting access. But unlimited users on free may reduce upgrade pressure.
-**Options:** 3 users free / 10 users free / unlimited free with premium roles (admin vs viewer)
+| # | Question | Decision |
+|---|---|---|
+| 1 | Free tier user limit | **Unlimited users** — upgrade trigger is IoT meters, not users |
+| 2 | Free tier data retention | **2 years** — covers two ZED/ISO audit cycles with buffer |
+| 3 | IoT starter price point | **₹2,999/month base** — but meter capability tiers need further brainstorm (see below) |
+| 4 | What counts as one meter | **One physical smart meter device** — gateway connecting 5 = 5 meters billed |
+| 5 | Data entry discipline | **Agreed** — 5 product features to build (stale banner, onboarding checklist, bill reminder, weekly reminder, PWA promotion) |
+| 6 | Pricing page consistency | **Fix at end** — update all pages in one pass after pricing finalised |
+| 7 | B2C vs B2B2C pricing | **Same price** — avoids consultant bypass conflict |
+| 8 | Professional manual tier | **Binary (A)** — free manual / paid IoT only. Add middle tier later if demand proven |
+| 9 | Multi-site billing | **Per-site billing** — each factory = separate client workspace, billed separately |
+| 10 | Consultant billing | **Monthly auto-debit** — Razorpay/Stripe. Manual invoicing until 10+ paying consultants |
 
-### 2. Free tier data retention
-Currently proposed: 2 years on free.
-Question: Is 2 years enough for ZED/ISO audits (which happen every 6–12 months)?
-**Likely answer:** Yes — 2 audit cycles with buffer. No need to upsell retention.
+---
 
-### 3. Should Starter IoT (1–3 meters) be cheaper?
-₹3,000/month for 3 meters = ₹1,000/meter. Is that the right price point for a small shop?
-Consider: Their electricity bill is ₹1–3L/month. ₹3,000 is 1–3% of bill. Generally acceptable if value is demonstrated.
+## Open Question — Q3 Deep Dive: Meter Capability Tiers
 
-### 4. What counts as one "meter" for billing?
-One physical smart meter device = one meter for billing.
-If one gateway connects 5 meters, that is 5 meters on the billing count.
-Manual meters (standard BESCOM meters) do not count — they are free.
+**The problem:** Not all smart meters are equal. A basic sub-meter measures 1–2 parameters (kWh only). An advanced meter measures 15+ parameters (kWh, kVAh, kVARh, kW, kVA, kVAR, V per phase, A per phase, PF, Hz, max demand, TOU, load profile). The analytics and predictive maintenance capabilities available to VoltSpark differ enormously based on what the meter reports.
 
-### 5. Data entry discipline — product features needed
-The free manual tier only works if customers enter data. Required product features:
-- [ ] Weekly reminder email: "Your data is 7 days old. Enter your readings."
-- [ ] Monthly bill reminder: "Add your BESCOM bill for this month."
-- [ ] Dashboard warning banner when data is stale (>7 days)
-- [ ] Onboarding checklist: enter first 3 bills, set up energy sources, set first target
-- [ ] Mobile-friendly entry (PWA already exists — needs to be promoted)
+Flat per-meter pricing does not reflect this — a basic meter and an advanced meter are not the same billing unit.
 
-### 6. Pricing page consistency
-Current state: `/start` page shows ₹2,999/month flat. Main landing page has different numbers. Both need to be updated once pricing is finalised.
+### Meter capability tiers observed in the field
 
-### 7. B2C vs B2B2C pricing — should they differ?
-Current proposal: Same pricing for both.
-B2C: Customer pays VoltSpark directly.
-B2B2C: Customer pays VoltSpark; consultant gets 30% commission.
-**Question:** Should B2C be slightly cheaper (no commission to pay out) or the same (simpler to communicate)?
+| Tier | Parameters measured | Examples | Analytics VoltSpark can offer |
+|---|---|---|---|
+| **Basic** | kWh only, or kWh + kVA + PF | Simple sub-meter, legacy meters | Consumption trend, basic cost tracking |
+| **Standard** | + V per phase, A per phase, Hz | Most Schneider EM1200-class | + PF monitoring, phase imbalance alert |
+| **Advanced** | + Max demand, TOU, load profile | Schneider EM6400NG+, Conzerv | + Demand overshoot prediction, tariff optimisation, load profiling |
+| **Power Quality** | + THD voltage, THD current, harmonics, sag/swell events | Dedicated PQ analysers | + Harmonic filter sizing, equipment damage prediction, EN 50160 compliance |
+
+### Why this matters for pricing
+
+A customer paying ₹2,999/month for 3 basic meters (kWh only) gets consumption trends.
+A customer paying ₹2,999/month for 3 advanced meters gets demand prediction, PF alerts, load profiling, and tariff optimisation.
+Same price. Very different value. Very different data volume and processing cost.
+
+### Proposed approach: Decouple meter ingestion from analytics
+
+**Layer 1 — Meter data ingestion** (per meter, tiered by capability):
+
+| Meter class | Parameters | Monthly per meter |
+|---|---|---|
+| Basic | Up to 4 parameters (kWh, kVA, PF, Hz) | ₹200 |
+| Standard | 5–10 parameters (+ V/A per phase, frequency) | ₹400 |
+| Advanced | 11–15 parameters (+ max demand, TOU, load profile) | ₹700 |
+| Power Quality | 15+ parameters (+ THD, harmonics, sag/swell) | ₹1,200 |
+
+**Layer 2 — Analytics modules** (per site, on top of ingestion):
+
+| Module | Requires | Monthly |
+|---|---|---|
+| Demand & Tariff Optimisation | Advanced meters | ₹1,500 |
+| Power Quality Analysis | PQ meters | ₹2,000 |
+| Compressed Air Intelligence | Flow meter + energy meter | ₹1,500 |
+| Kitchen Intelligence | Standard+ meters on kitchen loads | ₹4,000 |
+| Predictive Maintenance Alerts | Advanced or PQ meters | ₹2,000 |
+
+**Example pricing for a 30-machine factory:**
+- 1 Advanced incomer meter: ₹700
+- 4 Standard feeder meters: 4 × ₹400 = ₹1,600
+- 1 Basic DG meter: ₹200
+- Demand & Tariff Optimisation module: ₹1,500
+- **Total: ₹4,000/month**
+
+**Example pricing for a 2-machine shop:**
+- 1 Standard incomer meter: ₹400
+- 1 Basic sub-meter: ₹200
+- **Total: ₹600/month** (no analytics module needed to start)
+
+### Open sub-questions on meter tiers
+
+- [ ] Do we sell/recommend specific meter classes, or let customers use whatever they have?
+- [ ] If a customer has a mix (2 advanced + 3 basic), is billing obvious enough?
+- [ ] Should the ₹2,999 minimum floor still apply, or does per-meter pricing stand alone?
+- [ ] Predictive maintenance — is this a separate module or included in Advanced meter tier?
+- [ ] How does this interact with the existing add-on modules (Power Quality, Compressed Air, Kitchen)?
 
 ---
 
 ## What Has Not Been Decided Yet
 
-- [ ] Final price points for IoT tier
-- [ ] Free tier user limit
-- [ ] Whether to have a paid "Professional" manual tier (e.g. more users, more retention, white-label reports) or keep it strictly binary: free manual / paid IoT
-- [ ] How to handle multi-site customers (same company, multiple factories)
-- [ ] Pricing for data export beyond standard CSV (e.g. API access for large customers)
-- [ ] How consultants are billed (monthly invoice or self-serve card)
+- [ ] Final IoT per-meter pricing tiers (Basic / Standard / Advanced / PQ)
+- [ ] Whether a ₹2,999/month minimum floor applies for IoT tier
+- [ ] How predictive maintenance alerts are priced
+- [ ] How add-on modules (Power Quality, Compressed Air, Kitchen) interact with meter tiers
+- [ ] Pricing for API access for large customers
+- [ ] Pricing for data export beyond standard CSV
 
 ---
 
