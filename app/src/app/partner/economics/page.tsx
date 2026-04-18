@@ -267,11 +267,11 @@ export default function EconomicsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {[
-                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4)', analytics: 'Consumption trends, basic cost tracking', client: '₹299/mo', comm: '₹90/mo' },
-                    { tier: 'Standard', params: '+ V & A per phase (5–10)', analytics: '+ PF monitoring, phase imbalance, demand tracking', client: '₹599/mo', comm: '₹180/mo' },
-                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15)', analytics: '+ Demand prediction, tariff optimisation, load profiling', client: '₹999/mo', comm: '₹300/mo' },
-                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+)', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', client: '₹1,499/mo', comm: '₹450/mo' },
-                    { tier: 'Process / env. sensor', params: 'Vibration, temperature, humidity, CO2, pressure — per industry need', analytics: 'Rule-based alerts; pairs with intelligence bundle for compliance automation', client: '₹149/mo', comm: '₹45/mo' },
+                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4) + 1 sensor', analytics: 'Consumption trends, basic cost tracking', client: '₹299/mo', comm: '₹90/mo' },
+                    { tier: 'Standard', params: '+ V & A per phase (5–10) + 2 sensors', analytics: '+ PF monitoring, phase imbalance, demand tracking', client: '₹599/mo', comm: '₹180/mo' },
+                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15) + 3 sensors', analytics: '+ Demand prediction, tariff optimisation, load profiling', client: '₹999/mo', comm: '₹300/mo' },
+                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+) + 5 sensors', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', client: '₹1,499/mo', comm: '₹450/mo' },
+                    { tier: 'Sensor (additional)', params: 'Any type — choose based on industry bundle needs', analytics: 'Rule-based alerts; pairs with intelligence bundle for compliance automation', client: '₹149/mo', comm: '₹45/mo' },
                   ].map((r) => (
                     <tr key={r.tier} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                       <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white whitespace-nowrap">{r.tier}</td>
@@ -311,8 +311,8 @@ export default function EconomicsPage() {
                   ))}
                   <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
                     <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Example: CNC factory — 1 Advanced + 3 Standard meters + Manufacturing bundle</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹5,595/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹1,679/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹5,296/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹1,589/mo</td>
                   </tr>
                 </tbody>
               </table>

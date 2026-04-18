@@ -193,27 +193,27 @@ export default function InvestorPage() {
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Basic</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">4 electrical params: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">4 electrical params: kWh, kVA, PF, Hz. Consumption trends, basic cost tracking. Includes 1 sensor.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹299/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Standard</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">10 electrical params: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">10 electrical params: + V & A per phase. PF monitoring, demand tracking, phase imbalance alerts. Includes 2 sensors.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹599/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Advanced</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15 electrical params: + max demand, TOU, load profile. Demand prediction, tariff optimisation.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15 electrical params: + max demand, TOU, load profile. Demand prediction, tariff optimisation. Includes 3 sensors.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹999/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                   <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">IoT meter — Power Quality</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ params: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing.</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">15+ params: + THD, harmonics, sag/swell, EN 50160. Full PQ analysis, harmonic filter sizing. Includes 5 sensors.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹1,499/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Process / environmental sensor</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Vibration, temperature, humidity, CO2, pressure, flow — selected based on what the industry intelligence bundle needs. Vendor-agnostic. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Sensor <span className="text-xs font-normal text-gray-400">(additional)</span></td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Any type — vibration, temperature, humidity, CO2, pressure, flow. Selected based on what the industry bundle needs. Vendor-agnostic. Rule-based threshold alerts; ML anomaly detection on roadmap.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹149/sensor/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">

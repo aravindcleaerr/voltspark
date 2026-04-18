@@ -313,9 +313,9 @@ export default function PartnerPage() {
           </p>
           <div className="grid sm:grid-cols-3 gap-4 pt-2">
             {[
-              { sites: '5 IoT sites', monthly: '₹6,445/mo', annual: '₹77,340/yr' },
-              { sites: '10 IoT sites', monthly: '₹12,890/mo', annual: '₹1.55L/yr' },
-              { sites: '20 IoT sites', monthly: '₹25,780/mo', annual: '₹3.09L/yr' },
+              { sites: '5 IoT sites', monthly: '₹7,945/mo', annual: '₹95,340/yr' },
+              { sites: '10 IoT sites', monthly: '₹15,890/mo', annual: '₹1.91L/yr' },
+              { sites: '20 IoT sites', monthly: '₹31,780/mo', annual: '₹3.81L/yr' },
             ].map((r) => (
               <div key={r.sites} className="bg-gray-800 rounded-xl p-4 space-y-1 text-center">
                 <p className="text-xs text-gray-400 uppercase tracking-wider">{r.sites}</p>
@@ -324,7 +324,7 @@ export default function PartnerPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 pt-1">Based on avg commission of ₹1,289/IoT site/month (typical site: 1 Advanced + 3 Standard meters + 1 domain module). Additional to your hardware margin and consulting fees.</p>
+          <p className="text-xs text-gray-500 pt-1">Based on avg commission of ₹1,589/IoT site/month (typical site: 1 Advanced + 3 Standard meters + Manufacturing Intelligence bundle = ₹5,296/month client bill, 30% = ₹1,589). Additional to your hardware margin and consulting fees.</p>
           <Link href="/partner/economics" className="inline-flex items-center gap-2 text-sm text-brand-400 hover:text-brand-300 font-medium pt-1">
             See full breakdown — per meter investment + partner revenue model <ArrowRight className="h-4 w-4" />
           </Link>

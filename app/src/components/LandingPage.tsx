@@ -44,7 +44,7 @@ const PLANS = [
     priceSub: 'per meter / month',
     desc: 'Real-time data from smart meters — pay only per device connected.',
     highlight: true,
-    features: ['Basic ₹299/meter — up to 4 parameters', 'Standard ₹599/meter — + voltage & current per phase', 'Advanced ₹999/meter — + max demand, TOU, predictive maintenance', 'Power Quality ₹1,499/meter — + THD, harmonics, EN 50160', 'Auto-ingestion — no manual logging', 'Live dashboard: kW, PF, voltage per meter', 'Add industry intelligence bundles on top (₹2,500–₹5,000/site)'],
+    features: ['Basic ₹299/meter — up to 4 parameters + 1 sensor', 'Standard ₹599/meter — + voltage & current per phase + 2 sensors', 'Advanced ₹999/meter — + max demand, TOU, predictive maintenance + 3 sensors', 'Power Quality ₹1,499/meter — + THD, harmonics, EN 50160 + 5 sensors', 'Auto-ingestion — no manual logging', 'Live dashboard: kW, PF, voltage per meter', 'Add industry intelligence bundles on top (₹2,500–₹5,000/site)'],
     cta: 'See Full Pricing', href: '/start',
   },
   {

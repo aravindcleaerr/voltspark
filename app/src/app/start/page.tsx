@@ -251,11 +251,11 @@ export default function StartPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {[
-                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4)', analytics: 'Consumption trends, basic cost tracking', price: '₹299' },
-                    { tier: 'Standard', params: '+ voltage & current per phase (5–10)', analytics: '+ PF monitoring, phase imbalance, demand tracking', price: '₹599' },
-                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15)', analytics: '+ Demand prediction, tariff optimisation, predictive maintenance', price: '₹999' },
-                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+)', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', price: '₹1,499' },
-                    { tier: 'Sensor (any type)', params: 'Vibration, temperature, humidity, CO2, pressure — pick what your industry needs', analytics: 'Rule-based threshold alerts; feeds your intelligence bundle', price: '₹149' },
+                    { tier: 'Basic', params: 'kWh, kVA, PF, Hz (up to 4) + 1 sensor', analytics: 'Consumption trends, basic cost tracking', price: '₹299' },
+                    { tier: 'Standard', params: '+ voltage & current per phase (5–10) + 2 sensors', analytics: '+ PF monitoring, phase imbalance, demand tracking', price: '₹599' },
+                    { tier: 'Advanced', params: '+ max demand, TOU, load profile (11–15) + 3 sensors', analytics: '+ Demand prediction, tariff optimisation, predictive maintenance', price: '₹999' },
+                    { tier: 'Power Quality', params: '+ THD, harmonics, sag/swell, EN 50160 (15+) + 5 sensors', analytics: '+ Full PQ analysis, harmonic filter sizing, equipment damage prediction', price: '₹1,499' },
+                    { tier: 'Sensor (additional)', params: 'Any type — choose based on your industry bundle', analytics: 'Rule-based threshold alerts; feeds your intelligence bundle', price: '₹149' },
                   ].map((r) => (
                     <tr key={r.tier} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
                       <td className="py-3 pr-4 font-semibold text-gray-900 dark:text-white whitespace-nowrap">{r.tier}</td>
