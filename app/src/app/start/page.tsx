@@ -90,6 +90,7 @@ export default function StartPage() {
             </a>
           </div>
           <p className="text-xs text-gray-400">No hardware needed to start. Works with your existing utility bill.</p>
+          <p className="text-xs text-gray-400">Already set up by your energy consultant? <Link href="/login" className="text-brand-600 dark:text-brand-400 hover:underline">Log in here →</Link></p>
         </section>
 
         {/* What's hiding in the bill */}
@@ -310,6 +311,25 @@ export default function StartPage() {
               </div>
             </div>
             <p className="text-xs text-gray-400">Smart meter hardware and installation by your local electrical contractor. VoltSpark handles data ingestion, analytics, and alerts.</p>
+          </div>
+        </section>
+
+        {/* Consultant track callout */}
+        <section className="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 flex flex-col sm:flex-row items-start gap-5">
+          <div className="h-10 w-10 rounded-xl bg-brand-50 dark:bg-brand-950 flex items-center justify-center flex-shrink-0">
+            <Zap className="h-5 w-5 text-brand-600" />
+          </div>
+          <div className="space-y-2 flex-1">
+            <p className="font-semibold text-gray-900 dark:text-white">Prefer to work with an energy consultant?</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+              Many facilities use VoltSpark through an energy consultant or auditor who manages the platform on their behalf —
+              setting up energy sources, analysing bills, raising audit findings, and tracking savings.
+              If your consultant already uses VoltSpark, ask them to add your facility to their portfolio.
+              You will have your own login and can view your dashboard anytime.
+            </p>
+            <a href="https://wa.me/918317308558?text=Hi%2C+I+want+to+know+about+working+with+a+VoltSpark+consultant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">
+              Find an energy consultant near you <ArrowRight className="h-3.5 w-3.5" />
+            </a>
           </div>
         </section>
 
