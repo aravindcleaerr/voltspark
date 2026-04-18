@@ -21,7 +21,7 @@ If VoltSpark only tracks compliance, it's a cost center. If VoltSpark shows mone
 | Branding | VoltSpark as separate brand | Broader market appeal, not tied to one consulting firm |
 | Frameworks (v1) | ZED + ISO 50001 + Electrical Safety | Core expertise areas of target consultants |
 | Client access | Configurable per client | Flexible for different consultant-client relationships |
-| Monetization | Figure out later | Focus on product-market fit first |
+| Monetization | Freemium — free manual entry, paid IoT metering | See [Pricing-Strategy-Brainstorm.md](Pricing-Strategy-Brainstorm.md) |
 | Launch approach | Invitation-only, 3-5 beta consultants | Build trust, iterate on feedback |
 | Timeline | 3-4 months for solid v1 | Quality over speed |
 
