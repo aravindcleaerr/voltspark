@@ -266,20 +266,30 @@ export default function StartPage() {
               </table>
             </div>
 
-            <div className="space-y-2 pt-1">
-              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Domain modules (per site, on top of meters):</p>
-              <div className="flex flex-col sm:flex-row gap-3">
+            <div className="space-y-3 pt-1">
+              <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Industry Intelligence Bundles (per site, on top of meters):</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Each bundle applies domain-specific analytics to your meter data — interpreting readings through the lens of your industry&apos;s machines and operations. Requires Standard+ IoT meters. Multiple bundles can be active on the same site.</p>
+              <div className="grid sm:grid-cols-2 gap-3">
                 {[
-                  { name: 'Compressed Air Intelligence', price: '₹1,500/month', note: 'Requires Standard+ meter on the compressor' },
-                  { name: 'Kitchen Intelligence', price: '₹4,000/month', note: 'Requires Standard+ meters on kitchen loads' },
+                  { name: 'Manufacturing Intelligence', price: '₹2,500/month', note: 'Production energy intensity, compressed air efficiency, machine load profiles, shift analysis. For CNC, metal, auto, plastics.' },
+                  { name: 'Commercial Kitchen Intelligence', price: '₹4,000/month', note: 'Demand management, load shedding alerts, HACCP temperature logging, ToD patterns. For restaurants, hotels, canteens.' },
+                  { name: 'HVAC & Building Intelligence', price: '₹3,000/month', note: 'HVAC COP/EER tracking, floor/zone consumption, chiller performance. For offices, malls, commercial buildings.' },
+                  { name: 'Healthcare Intelligence', price: '₹4,000/month', note: 'Critical load uptime, DG/UPS performance, clean room energy, NABH compliance evidence. For hospitals, labs, pharma.' },
                 ].map((m) => (
-                  <div key={m.name} className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 space-y-0.5">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{m.name}</p>
-                    <p className="text-xs text-gray-400">{m.note}</p>
-                    <p className="text-sm font-mono text-brand-600 dark:text-brand-400 font-semibold">+{m.price}</p>
+                  <div key={m.name} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg px-4 py-3 space-y-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{m.name}</p>
+                      <p className="text-sm font-mono text-brand-600 dark:text-brand-400 font-semibold whitespace-nowrap">+{m.price}</p>
+                    </div>
+                    <p className="text-xs text-gray-400 leading-relaxed">{m.note}</p>
                   </div>
                 ))}
               </div>
+              <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Intelligence — <span className="font-mono text-brand-600 dark:text-brand-400">from ₹5,000/month</span></p>
+                <p className="text-xs text-gray-400 mt-0.5">Bespoke analytics for specific industries or processes. <a href="mailto:aravind@akshayacreatech.com" className="text-brand-600 dark:text-brand-400 hover:underline">Talk to us.</a></p>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Coming soon: Textile Manufacturing · Food Processing · Cold Chain & Logistics</p>
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-900 rounded-xl px-5 py-4 space-y-2">

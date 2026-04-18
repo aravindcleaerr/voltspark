@@ -210,27 +210,42 @@ export default function InvestorPage() {
                   <td className="px-4 py-3.5 text-right font-mono">₹1,499/meter/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air module</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Specific energy (kWh/m³), leak detection, load factor, compressor benchmarking. Requires Standard+ meter.</td>
-                  <td className="px-4 py-3.5 text-right font-mono">₹1,500/site/mo</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Manufacturing Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. CNC, metal, auto, plastics.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹2,500/site/mo</td>
                 </tr>
                 <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence</td>
-                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, auto load shedding, ToD analytics, HACCP temperature. Requires Standard+ meter.</td>
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Commercial Kitchen Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Demand management, load shedding alerts, HACCP temperature logging, ToD analytics. Restaurants, hotels, canteens.</td>
                   <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
                 </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">HVAC & Building Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">HVAC COP/EER tracking, zone-level consumption, chiller performance, occupancy correlation. Offices, malls, hotels.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹3,000/site/mo</td>
+                </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Healthcare Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Critical load uptime, DG/UPS performance, clean room energy, NABH-compatible evidence. Hospitals, labs, pharma.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">₹4,000/site/mo</td>
+                </tr>
+                <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                  <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Custom Intelligence</td>
+                  <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs">Bespoke analytics for specific industries or processes — custom dashboards, metrics, and alerts.</td>
+                  <td className="px-4 py-3.5 text-right font-mono">From ₹5,000/site/mo</td>
+                </tr>
                 <tr className="bg-brand-50 dark:bg-brand-950/30 font-semibold">
-                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT-enabled site: 1 Advanced + 3 Standard meters + 1 domain module</td>
-                  <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹4,300/site/mo</td>
+                  <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Typical IoT site: 1 Advanced + 3 Standard meters + Manufacturing bundle</td>
+                  <td className="px-4 py-3.5 text-right font-mono text-brand-700 dark:text-brand-300 text-base">~₹5,300/site/mo</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { label: '500 IoT sites', monthly: '₹21.5L/mo', annual: '₹2.6Cr/yr', note: '~25 consultants, avg 20 IoT clients each' },
-              { label: '2,000 IoT sites', monthly: '₹86L/mo', annual: '₹10.3Cr/yr', note: '~100 consultants — Year 3 target' },
-              { label: '5,000 IoT sites', monthly: '₹2.15Cr/mo', annual: '₹25.8Cr/yr', note: 'Platform maturity — aligns with SOM of ₹25Cr/yr' },
+              { label: '500 IoT sites', monthly: '₹26.5L/mo', annual: '₹3.2Cr/yr', note: '~25 consultants, avg 20 IoT clients each' },
+              { label: '2,000 IoT sites', monthly: '₹1.06Cr/mo', annual: '₹12.7Cr/yr', note: '~100 consultants — Year 3 target' },
+              { label: '4,700 IoT sites', monthly: '₹2.49Cr/mo', annual: '₹29.9Cr/yr', note: 'Platform maturity — aligns with SOM of ₹25–30Cr/yr' },
             ].map((r) => (
               <div key={r.label} className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-1">
                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{r.label}</p>
@@ -240,7 +255,7 @@ export default function InvestorPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 px-1">Revenue projections assume ₹4,300/site/month average for IoT-enabled sites. Free-tier sites generate ₹0 but build the adoption base for IoT upsell. These are illustrative, not guaranteed forecasts.</p>
+          <p className="text-xs text-gray-400 px-1">Revenue projections assume ~₹5,300/site/month average for IoT-enabled sites (1 Advanced + 3 Standard meters + 1 intelligence bundle). Free-tier sites generate ₹0 but build the adoption base for IoT upsell. Sites with multiple bundles (e.g. hospital: Healthcare + Kitchen + HVAC) generate higher ARPU. These are illustrative, not guaranteed forecasts.</p>
         </section>
 
         {/* IoT Partners */}

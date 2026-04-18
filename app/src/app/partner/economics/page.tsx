@@ -94,12 +94,12 @@ function fmt(n: number) {
   return `₹${n.toLocaleString('en-IN')}`;
 }
 
-// Assumption for portfolio scale: typical IoT site = 1 Advanced + 3 Standard + 1 domain module
-// Client bill: ₹999 + 3×₹599 + ₹1,500 = ₹4,296/mo  →  partner earns 30% = ₹1,289/mo
+// Assumption for portfolio scale: typical IoT site = 1 Advanced + 3 Standard + Manufacturing bundle
+// Client bill: ₹999 + 3×₹599 + ₹2,500 = ₹5,296/mo  →  partner earns 30% = ₹1,589/mo
 const partnerTiers = [
-  { sites: 5, avgCommPerSite: 1289 },
-  { sites: 10, avgCommPerSite: 1289 },
-  { sites: 20, avgCommPerSite: 1289 },
+  { sites: 5, avgCommPerSite: 1589 },
+  { sites: 10, avgCommPerSite: 1589 },
+  { sites: 20, avgCommPerSite: 1589 },
 ];
 
 export default function EconomicsPage() {
@@ -287,38 +287,41 @@ export default function EconomicsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    <th className="text-left px-5 py-3">Domain module</th>
-                    <th className="text-left px-4 py-3 hidden sm:table-cell">What it adds</th>
+                    <th className="text-left px-5 py-3">Industry Intelligence Bundle</th>
+                    <th className="text-left px-4 py-3 hidden sm:table-cell">For whom</th>
                     <th className="text-right px-4 py-3">Client pays / site</th>
                     <th className="text-right px-4 py-3 text-green-600 dark:text-green-400">You earn (30%)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Compressed Air Intelligence</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">Specific energy (kWh/m³), leak detection, load factor, compressor benchmarking</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300">₹1,500/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹450/mo</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
-                    <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">Kitchen Intelligence</td>
-                    <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">Live demand management, auto load shedding, ToD analytics, HACCP temperature logging</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300">₹4,000/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold">₹1,200/mo</td>
-                  </tr>
+                  {[
+                    { name: 'Manufacturing Intelligence', for: 'CNC, metal, auto, plastics — production intensity, compressed air, machine profiles', client: '₹2,500/mo', comm: '₹750/mo' },
+                    { name: 'Commercial Kitchen Intelligence', for: 'Restaurants, hotels, canteens — demand management, HACCP, load shedding', client: '₹4,000/mo', comm: '₹1,200/mo' },
+                    { name: 'HVAC & Building Intelligence', for: 'Offices, malls, buildings — HVAC COP, zone consumption, chiller performance', client: '₹3,000/mo', comm: '₹900/mo' },
+                    { name: 'Healthcare Intelligence', for: 'Hospitals, labs, pharma — critical load uptime, DG/UPS, NABH evidence', client: '₹4,000/mo', comm: '₹1,200/mo' },
+                    { name: 'Custom Intelligence', for: 'Any industry — bespoke dashboards, custom metrics, tailored alerts', client: 'From ₹5,000/mo', comm: 'From ₹1,500/mo' },
+                  ].map((r) => (
+                    <tr key={r.name} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                      <td className="px-5 py-3.5 font-medium text-gray-900 dark:text-white">{r.name}</td>
+                      <td className="px-4 py-3.5 text-gray-500 dark:text-gray-400 text-xs hidden sm:table-cell">{r.for}</td>
+                      <td className="px-4 py-3.5 text-right font-mono text-gray-700 dark:text-gray-300 whitespace-nowrap">{r.client}</td>
+                      <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 font-semibold whitespace-nowrap">{r.comm}</td>
+                    </tr>
+                  ))}
                   <tr className="bg-green-50 dark:bg-green-950/30 font-semibold">
-                    <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Example: 1 Advanced + 3 Standard meters + Compressed Air module</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹4,296/mo</td>
-                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹1,290/mo</td>
+                    <td className="px-5 py-3.5 text-gray-900 dark:text-white" colSpan={2}>Example: CNC factory — 1 Advanced + 3 Standard meters + Manufacturing bundle</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-gray-900 dark:text-white">₹5,595/mo</td>
+                    <td className="px-4 py-3.5 text-right font-mono text-green-700 dark:text-green-400 text-base">₹1,679/mo</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p className="text-xs text-gray-400 px-1">A site can subscribe to multiple bundles simultaneously — a hospital, for example, may need Healthcare + Commercial Kitchen + HVAC & Building all active at once.</p>
           </div>
 
           {/* Portfolio scale */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Portfolio scale — typical IoT site: 1 Advanced + 3 Standard + 1 domain module</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Portfolio scale — typical IoT site: 1 Advanced + 3 Standard meters + Manufacturing Intelligence bundle</h3>
             <div className="grid sm:grid-cols-3 gap-4">
               {partnerTiers.map((t) => {
                 const monthly = t.avgCommPerSite * t.sites;

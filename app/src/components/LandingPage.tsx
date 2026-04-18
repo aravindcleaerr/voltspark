@@ -44,7 +44,7 @@ const PLANS = [
     priceSub: 'per meter / month',
     desc: 'Real-time data from smart meters — pay only per device connected.',
     highlight: true,
-    features: ['Basic ₹299/meter — up to 4 parameters', 'Standard ₹599/meter — + voltage & current per phase', 'Advanced ₹999/meter — + max demand, TOU, predictive maintenance', 'Power Quality ₹1,499/meter — + THD, harmonics, EN 50160', 'Auto-ingestion — no manual logging', 'Live dashboard: kW, PF, voltage per meter', 'Anomaly alerts and demand overshoot warnings'],
+    features: ['Basic ₹299/meter — up to 4 parameters', 'Standard ₹599/meter — + voltage & current per phase', 'Advanced ₹999/meter — + max demand, TOU, predictive maintenance', 'Power Quality ₹1,499/meter — + THD, harmonics, EN 50160', 'Auto-ingestion — no manual logging', 'Live dashboard: kW, PF, voltage per meter', 'Add industry intelligence bundles on top (₹2,500–₹5,000/site)'],
     cta: 'See Full Pricing', href: '/start',
   },
   {
@@ -53,16 +53,16 @@ const PLANS = [
     priceSub: '',
     desc: 'For large consultancies, ESCOs, and multi-site rollouts.',
     highlight: false,
-    features: ['Everything in Core + IoT', 'Compressed Air Intelligence ₹1,500/site', 'Kitchen Intelligence ₹4,000/site', 'White-label branding', 'API access for ERP integration', 'Volume discount on meters'],
+    features: ['Everything in Core + IoT', 'All 4 industry intelligence bundles available', 'Custom Intelligence — bespoke analytics', 'White-label branding', 'API access for ERP integration', 'Volume discount on meters'],
     cta: 'Contact Us', href: 'mailto:aravind@akshayacreatech.com',
   },
 ];
 
 const ADDONS = [
-  { name: 'IoT Metering', desc: 'One gateway connects all meters — incomer, DG, solar, sub-feeders. Data flows in automatically. Priced per meter by capability tier.', icon: Radio },
-  { name: 'Power Quality', desc: 'Voltage sags/swells, harmonics (THD), PF per phase, EN 50160 compliance scoring. Bundled into the Power Quality meter tier (₹1,499/meter).', icon: Activity },
-  { name: 'Compressed Air', desc: 'Specific energy (kWh/m³), leak detection via deviation alerts, load factor, compressor benchmarking. ₹1,500/site/month — requires Standard+ meter.', icon: Cpu },
-  { name: 'Kitchen Intelligence', desc: 'Live demand vs contracted kVA, auto load-shedding alerts, ToD analytics, HACCP temperature logging. ₹4,000/site/month — requires Standard+ meter.', icon: ChefHat },
+  { name: 'Manufacturing Intelligence', desc: 'Production energy intensity (kWh/unit), compressed air efficiency, machine load profiles, shift analysis. For CNC, metal, auto, plastics.', price: '₹2,500/site/month', icon: Cpu },
+  { name: 'Commercial Kitchen Intelligence', desc: 'Demand management, load shedding alerts, HACCP temperature logging, ToD patterns. For restaurants, hotels, canteens, cloud kitchens.', price: '₹4,000/site/month', icon: ChefHat },
+  { name: 'HVAC & Building Intelligence', desc: 'HVAC COP/EER tracking, floor/zone-level consumption, chiller performance, occupancy analytics. For offices, malls, commercial buildings.', price: '₹3,000/site/month', icon: Radio },
+  { name: 'Healthcare Intelligence', desc: 'Critical load uptime, DG/UPS performance, clean room energy, NABH-compatible compliance evidence. For hospitals, labs, pharma.', price: '₹4,000/site/month', icon: Activity },
 ];
 
 export default function LandingPage() {
@@ -287,12 +287,13 @@ export default function LandingPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {ADDONS.map((a) => (
-              <div key={a.name} className="card">
+              <div key={a.name} className="card flex flex-col">
                 <div className="h-10 w-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center mb-3">
                   <a.icon className="h-5 w-5 text-brand-600" />
                 </div>
                 <h4 className="font-semibold text-gray-900 dark:text-white">{a.name}</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{a.desc}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed flex-1">{a.desc}</p>
+                <p className="mt-3 text-sm font-mono font-bold text-brand-600 dark:text-brand-400">{a.price}</p>
               </div>
             ))}
           </div>

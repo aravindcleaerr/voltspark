@@ -281,33 +281,80 @@ Same price. Very different value. Very different data volume and processing cost
 - UK energy platform benchmark: £2.19–£7.26 (₹230–760) covers Basic and Standard tiers
 - Indian affordability: Basic and Standard within reach of MSMEs with ₹1–5L/month bills
 
-**Domain-specific modules (per site per month, on top of meter tier):**
+**What happened to the old "IoT Metering" and "Compressed Air" modules?**
+Both replaced. "IoT Metering" is now the meter tier pricing itself (Basic → PQ). "Compressed Air Intelligence" is now absorbed into the Manufacturing Intelligence bundle below. There is no longer a flat add-on for either.
 
-| Module | Requires | Monthly |
-|---|---|---|
-| Compressed Air Intelligence | Standard+ meter on compressor | ₹1,500 |
-| Kitchen Intelligence | Standard+ meter on kitchen loads | ₹4,000 |
-
-**Example bills:**
+**Example bills (meters only — intelligence bundles add on top):**
 
 | Scenario | Meters | Monthly |
 |---|---|---|
 | 2 meters: 1 Standard incomer + 1 Basic DG sub-meter | 2 meters | ₹599 + ₹299 = ₹898 |
 | 5 meters: 1 Advanced incomer + 3 Standard feeders + 1 Basic DG | 5 meters | ₹999 + ₹1,797 + ₹299 = ₹3,095 |
 | 13 meters: 1 Advanced incomer + 8 Standard sub-feeders + 4 Basic utility meters | 13 meters | ₹999 + ₹4,792 + ₹1,196 = ₹6,987 |
-| Kitchen + factory: 1 Advanced + 2 Standard + Kitchen module | 3 meters + module | ₹999 + ₹1,198 + ₹4,000 = ₹6,197 |
 
-**What happened to the old "IoT Metering" module?**
-Replaced entirely by the per-meter tiered pricing above. There is no longer a flat "IoT Metering add-on." Power Quality analytics are bundled into the PQ meter tier.
+---
+
+## Industry Intelligence Bundles (April 2026 Decision)
+
+### The distinction between meter tiers and intelligence bundles
+
+**Meter tier** = charges for the *volume and richness of data* a physical device generates and VoltSpark ingests. Priced per meter device.
+
+**Intelligence bundle** = charges for the *domain-specific analytics* applied to that data — interpreting readings through the lens of what a particular industry's machines actually do. Priced per site.
+
+A site can subscribe to **multiple bundles simultaneously** (e.g., a hospital may need Healthcare + Kitchen + HVAC all active at once).
+
+### Intelligence bundle pricing (per site per month)
+
+| Bundle | Industry served | Key capabilities | Monthly |
+|---|---|---|---|
+| **Manufacturing Intelligence** | CNC, metal processing, auto, plastics | Production energy intensity (kWh/unit), compressed air specific energy (kWh/m³), machine load profiles, shift-wise consumption, idle vs. productive hours, VFD efficiency | ₹2,500 |
+| **Commercial Kitchen Intelligence** | Restaurants, hotels, canteens, cloud kitchens | Live demand vs contracted kVA, load shedding alerts, meal-time spike analysis, ToD patterns, HACCP temperature logging | ₹4,000 |
+| **HVAC & Building Intelligence** | Offices, malls, commercial buildings, hotels | HVAC COP/EER tracking, floor/zone-wise consumption, occupancy vs. load correlation, chiller performance, elevator energy profiling | ₹3,000 |
+| **Healthcare Intelligence** | Hospitals, diagnostic labs, pharma | Critical load uptime (OT, ICU), DG/UPS performance, clean room energy intensity, medical equipment profiling, NABH-compatible evidence | ₹4,000 |
+| **Custom Intelligence** | Any industry with specific needs | Bespoke dashboards, custom metrics, custom alerts tailored to the client's specific operations and machines | From ₹5,000 |
+
+**Coming soon (roadmap):**
+- Textile Manufacturing Intelligence — looms, humidifiers, compressors
+- Food Processing Intelligence — boilers, cold storage, processing lines
+- Cold Chain & Logistics Intelligence — refrigerated warehouses, transport hub loads
+
+### Pricing rationale for bundles
+
+| Bundle | Why this price |
+|---|---|
+| Manufacturing ₹2,500 | Broad market, compressed air + production intensity analytics, medium complexity |
+| Kitchen ₹4,000 | Real-time demand alerts prevent large penalties; HACCP = legal requirement; high consequence |
+| HVAC & Building ₹3,000 | COP tracking and chiller curves — moderate-high complexity; large building bills justify |
+| Healthcare ₹4,000 | Mission-critical (patient safety), NABH compliance evidence, highest analytical complexity |
+| Custom 5,000+ | Bespoke analytics require onboarding engagement and custom development |
+
+### How bundles relate to meter tiers
+
+| Meter tier | Bundles it enables |
+|---|---|
+| Basic | None (consumption trends only — no domain analytics possible) |
+| Standard | Manufacturing (partial), Kitchen, HVAC & Building |
+| Advanced | Manufacturing (full), Kitchen, HVAC & Building, Healthcare |
+| Power Quality | All bundles + PQ-specific analysis within each |
+
+### Example combined bills (meters + intelligence bundle)
+
+| Scenario | Meters | Bundle | Total |
+|---|---|---|---|
+| CNC factory: 5 meters + Manufacturing | ₹3,095 (1 Adv + 3 Std + 1 Basic) | ₹2,500 | ₹5,595/month |
+| Restaurant: 3 meters + Kitchen | ₹2,196 (1 Adv + 2 Std) | ₹4,000 | ₹6,196/month |
+| Hospital: 8 meters + Healthcare + Kitchen | ₹5,591 (1 Adv + 5 Std + 2 Basic) | ₹4,000 + ₹4,000 | ₹13,591/month |
+| Office building: 6 meters + HVAC & Building | ₹3,693 (1 Adv + 4 Std + 1 Basic) | ₹3,000 | ₹6,693/month |
 
 ---
 
 ## What Has Not Been Decided Yet
 
 - [ ] Pricing for API access (read-only data export for large customers / ERP integrations)
-- [ ] Pricing for data export beyond standard CSV
 - [ ] Whether to offer a free trial period on IoT tier (e.g. first 30 days free per meter)
 - [ ] Volume discount for 20+ meters on same site
+- [ ] Exact scope and pricing for Custom Intelligence engagements
 
 ---
 
@@ -317,11 +364,13 @@ Replaced entirely by the per-meter tiered pricing above. There is no longer a fl
 |---|---|
 | Core platform | **Free** — manual entry always |
 | Revenue driver | **IoT data ingestion** — paid per smart meter |
-| Pricing unit | **Per smart meter connected** (not per client, not per energy source) |
+| Pricing unit | **Per smart meter** (data layer) + **per site** (intelligence layer) |
+| Intelligence layer | **Industry bundles** — named by vertical, not by equipment |
+| Bundle model | Multiple bundles per site allowed (hospital = Healthcare + Kitchen + HVAC) |
+| Custom analytics | **Open** — available as Custom Intelligence at ₹5,000+/site/month |
 | Infrastructure cost driver | IoT data volume, not manual entries |
 | Upgrade path | Manual free → IoT paid, same platform, no migration |
-| B2B2C commission | 30% of IoT tier + add-on fees, recurring |
+| B2B2C commission | 30% of IoT tier + intelligence bundle fees, recurring |
 | Data retention (free) | 2 years minimum |
-| Audit cycle context | ZED/ISO every 6–12 months → 2 years sufficient |
 | Hardware supply | Third-party contractors for B2C; partner (Lotus Controls / Titan) for B2B2C |
-| Add-on modules | Intelligence layer on top of IoT, priced separately |
+| Coming soon | Textile, Food Processing, Cold Chain & Logistics |

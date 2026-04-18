@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse, Info } from 'lucide-react';
+import { Zap, AlertTriangle, ArrowRight, Factory, UtensilsCrossed, Building2, HeartPulse, Info, Wrench } from 'lucide-react';
 
 export const metadata = { title: 'Partner with VoltSpark — Grow Your Practice' };
 
@@ -14,7 +14,7 @@ const verticals = [
   },
   {
     icon: UtensilsCrossed,
-    label: 'Kitchens & Hospitality',
+    label: 'Commercial Kitchens & Hospitality',
     pain: 'Simultaneous loads spike demand charges. One dinner service can trigger ₹40K–₹2L in penalties.',
     rupee: '₹10–30L in waste typically identified',
     color: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800',
@@ -22,8 +22,8 @@ const verticals = [
   },
   {
     icon: Building2,
-    label: 'Commercial Buildings',
-    pain: 'HVAC, lighting and utility loads run untracked. No visibility into which floor or tenant is the problem.',
+    label: 'Commercial Buildings & Offices',
+    pain: 'HVAC, lighting and utility loads run untracked. No visibility into which floor, zone, or tenant is the problem.',
     rupee: '₹8–25L in waste typically identified',
     color: 'bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800',
     iconColor: 'text-purple-600 dark:text-purple-400',
@@ -38,30 +38,70 @@ const verticals = [
   },
 ];
 
-const addons = [
+const bundles = [
   {
-    name: 'IoT Metering',
-    tagline: 'Real-time visibility across every energy source',
-    body: 'One smart gateway connects all meters in the facility — incomer, DG, solar, individual machines. Data flows into VoltSpark automatically. No manual logs. No missed readings.',
-    impact: 'Surfaces hidden losses within days. Your client can see exactly where energy is going — and decide what to fix.',
+    name: 'Manufacturing Intelligence',
+    price: '₹2,500/site/month',
+    industry: 'CNC, metal processing, auto components, plastics',
+    tagline: 'Production energy intensity and compressed air efficiency',
+    capabilities: [
+      'Production energy intensity — kWh per unit of output',
+      'Compressed air specific energy (kWh/m³) and leak detection',
+      'Machine load profiles and idle vs. productive hours',
+      'Shift-wise consumption breakdown',
+      'VFD efficiency tracking',
+    ],
+    machines: 'Compressors, CNC spindles, conveyors, chillers, cooling towers',
+    color: 'border-blue-200 dark:border-blue-800',
+    accent: 'text-blue-600 dark:text-blue-400',
   },
   {
-    name: 'Power Quality Monitor',
-    tagline: 'Identify equipment and downtime risks early',
-    body: 'Tracks voltage sags, swells, harmonics (THD) and power factor per phase. Raises an alert when grid instability could cause a breakdown or PLC trip.',
-    impact: 'Early warning gives your client time to act — before a breakdown, not after.',
+    name: 'Commercial Kitchen Intelligence',
+    price: '₹4,000/site/month',
+    industry: 'Restaurants, hotels, canteens, cloud kitchens, institutional kitchens',
+    tagline: 'Demand management, load shedding alerts, and HACCP compliance',
+    capabilities: [
+      'Live demand vs contracted kVA — alerts before penalty threshold',
+      'Automatic load shedding recommendations during peak service',
+      'Meal-time demand spike analysis and ToD patterns',
+      'HACCP temperature logging for refrigeration and storage',
+      'Energy cost per cover — the F&B sector metric',
+    ],
+    machines: 'Induction stoves, ovens, walk-in coolers, dishwashers, exhaust fans',
+    color: 'border-orange-200 dark:border-orange-800',
+    accent: 'text-orange-600 dark:text-orange-400',
   },
   {
-    name: 'Compressed Air Intelligence',
-    tagline: 'Find what your compressor is wasting',
-    body: 'Tracks energy per cubic metre of air produced. Rising specific energy signals a leak or degradation. Flags the problem so it can be investigated and fixed.',
-    impact: '20–30% of compressed air is typically wasted. VoltSpark identifies it — acting on it is where the savings come from.',
+    name: 'HVAC & Building Intelligence',
+    price: '₹3,000/site/month',
+    industry: 'Offices, commercial buildings, malls, hotels, warehouses',
+    tagline: 'HVAC efficiency, zone-level consumption, and occupancy analytics',
+    capabilities: [
+      'HVAC COP/EER tracking — identify inefficient chillers and AHUs',
+      'Floor and zone-wise consumption breakdown',
+      'Occupancy-based load correlation',
+      'Chiller performance curves and sequencing efficiency',
+      'Elevator and common area energy profiling',
+    ],
+    machines: 'AHUs, chillers, cooling towers, lifts, lighting feeders, UPS',
+    color: 'border-purple-200 dark:border-purple-800',
+    accent: 'text-purple-600 dark:text-purple-400',
   },
   {
-    name: 'Kitchen Intelligence',
-    tagline: 'Visibility and alerts for demand management',
-    body: 'Monitors live kVA demand against contracted limit. Raises alerts before a breach threshold is crossed. Tracks ToD patterns and HACCP temperatures.',
-    impact: 'Gives operators the information to make load-shedding decisions in real time. Penalty avoidance follows from those decisions.',
+    name: 'Healthcare Intelligence',
+    price: '₹4,000/site/month',
+    industry: 'Hospitals, diagnostic labs, pharma, blood banks',
+    tagline: 'Critical load uptime, backup power, and NABH-ready compliance evidence',
+    capabilities: [
+      'Critical load uptime monitoring — OT, ICU, life support feeders',
+      'DG and UPS performance — runtime, fuel efficiency, switchover time',
+      'Clean room energy intensity and deviation alerts',
+      'Medical equipment energy profiling',
+      'NABH-compatible compliance evidence generation',
+    ],
+    machines: 'OT loads, ICU feeders, sterilizers, CSSD, DG sets, UPS banks',
+    color: 'border-rose-200 dark:border-rose-800',
+    accent: 'text-rose-600 dark:text-rose-400',
   },
 ];
 
@@ -196,23 +236,67 @@ export default function PartnerPage() {
           </div>
         </section>
 
-        {/* Add-ons */}
-        <section className="space-y-5">
+        {/* Industry Intelligence Bundles */}
+        <section className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold">IoT add-on modules</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Each module is enabled per client site. Clients pay for what they use.</p>
+            <h2 className="text-2xl font-bold">Industry Intelligence Bundles</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+              Priced per site per month — on top of the meter data layer. Each bundle applies domain-specific analytics
+              to the IoT readings: what those numbers mean for that industry&apos;s machines, operations, and compliance requirements.
+              A site can subscribe to multiple bundles simultaneously.
+            </p>
           </div>
-          <div className="space-y-3">
-            {addons.map((a) => (
-              <div key={a.name} className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-1">
-                <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="font-semibold text-gray-900 dark:text-white">{a.name}</span>
-                  <span className="text-sm text-brand-600 dark:text-brand-400">— {a.tagline}</span>
+          <div className="space-y-4">
+            {bundles.map((b) => (
+              <div key={b.name} className={`border rounded-xl p-5 space-y-3 ${b.color}`}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <p className="font-bold text-gray-900 dark:text-white">{b.name}</p>
+                    <p className={`text-sm font-medium ${b.accent}`}>{b.tagline}</p>
+                    <p className="text-xs text-gray-400">{b.industry}</p>
+                  </div>
+                  <span className={`text-sm font-mono font-bold ${b.accent} whitespace-nowrap`}>{b.price}</span>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{a.body}</p>
-                <p className="text-sm font-medium text-green-700 dark:text-green-400 pt-1">↳ {a.impact}</p>
+                <ul className="grid sm:grid-cols-2 gap-1.5">
+                  {b.capabilities.map((c) => (
+                    <li key={c} className="flex gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <span className={`${b.accent} flex-shrink-0 font-bold`}>·</span>{c}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gray-400 pt-1"><span className="font-medium">Typical machines monitored:</span> {b.machines}</p>
               </div>
             ))}
+          </div>
+
+          {/* Custom + Coming Soon */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 space-y-2">
+              <div className="flex items-center gap-2">
+                <Wrench className="h-4 w-4 text-gray-400" />
+                <p className="font-semibold text-gray-900 dark:text-white">Custom Intelligence</p>
+                <span className="text-xs font-mono text-gray-500 ml-auto">From ₹5,000/site/month</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                Bespoke dashboards, custom metrics, and tailored alerts for industries or processes not covered above.
+                We work with you and your client to define what matters — specific machines, production flows, or compliance requirements.
+              </p>
+            </div>
+            <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 space-y-3">
+              <p className="font-semibold text-gray-900 dark:text-white text-sm">Coming soon</p>
+              <div className="space-y-2">
+                {[
+                  { name: 'Textile Manufacturing Intelligence', note: 'Looms, humidifiers, compressors, chillers' },
+                  { name: 'Food Processing Intelligence', note: 'Boilers, cold storage, processing lines' },
+                  { name: 'Cold Chain & Logistics Intelligence', note: 'Refrigerated warehouses, transport hub loads' },
+                ].map((cs) => (
+                  <div key={cs.name}>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{cs.name}</p>
+                    <p className="text-xs text-gray-400">{cs.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
