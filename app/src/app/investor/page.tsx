@@ -83,13 +83,13 @@ export default function InvestorPage() {
             Pre-Seed · Raising ₹1 Crore
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            The software layer for<br />
-            <span className="text-brand-600">industrial energy compliance</span><br />
-            in India.
+            Energy intelligence for<br />
+            <span className="text-brand-600">India&apos;s industrial facilities.</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            India&apos;s industrial sector wastes an estimated <strong className="text-gray-900 dark:text-white">₹3 lakh crore annually</strong> in avoidable energy costs.
-            VoltSpark is the platform that identifies it, quantifies it in ₹, and tracks every rupee saved — used directly by industrial facilities, and by energy consultants who manage portfolios of those facilities.
+            India&apos;s industrial sector loses an estimated <strong className="text-gray-900 dark:text-white">₹3 lakh crore annually</strong> in avoidable energy costs.
+            VoltSpark quantifies it in ₹ and tracks every rupee saved — used directly by facilities, and by energy consultants who manage portfolios of clients.
+            We are starting with manufacturing and industrial facilities. Healthcare, hospitality, and commercial buildings are the next sectors on the roadmap, using the same platform and IoT infrastructure.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">

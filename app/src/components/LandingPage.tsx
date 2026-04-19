@@ -110,8 +110,8 @@ export default function LandingPage() {
             <Zap className="h-4 w-4" /> Energy Management for Industrial India
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-            Save Energy. Stay Safe.<br />
-            <span className="text-brand-600">Win Customers.</span>
+            Save Energy. Cut Costs.<br />
+            <span className="text-brand-600">Stay Compliant.</span>
           </h1>
           <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
             Industrial facilities sign up directly and track their own energy costs and compliance.
