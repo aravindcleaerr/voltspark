@@ -6,7 +6,7 @@ export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Create
 
 const marketRows = [
   { label: 'TAM', sublabel: 'Energy management software — Indian industry', value: '₹5,000 Cr/yr', note: '~12 lakh medium industrial facilities spending ₹3L–₹50L/month on electricity' },
-  { label: 'SAM', sublabel: 'MSME segment reachable through consultants', value: '₹500 Cr/yr', note: 'Manufacturing, kitchens, hospitals, commercial buildings with compliance pressure' },
+  { label: 'SAM', sublabel: 'MSME segment — direct signups + consultant-managed', value: '₹500 Cr/yr', note: 'Manufacturing, kitchens, hospitals, commercial buildings with compliance pressure — reachable via direct B2C and through energy consultant networks' },
   { label: 'SOM', sublabel: '3-year target', value: '₹25 Cr/yr', note: '5,000 IoT-enabled sites at ~₹5,300/month average (meters + sensors + intelligence bundle) — achievable with 200 onboarded consultants converting 40–50% of clients to IoT' },
 ];
 
@@ -89,8 +89,7 @@ export default function InvestorPage() {
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             India&apos;s industrial sector wastes an estimated <strong className="text-gray-900 dark:text-white">₹3 lakh crore annually</strong> in avoidable energy costs.
-            VoltSpark is the platform that identifies it, quantifies it in ₹, and tracks every rupee saved — built for the
-            energy consultants who serve India&apos;s 12 lakh+ industrial facilities.
+            VoltSpark is the platform that identifies it, quantifies it in ₹, and tracks every rupee saved — used directly by industrial facilities, and by energy consultants who manage portfolios of those facilities.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
@@ -164,8 +163,24 @@ export default function InvestorPage() {
         <section className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2"><Zap className="h-6 w-6 text-brand-500" /> VoltSpark&apos;s Approach</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">B2B2C SaaS. Consultants are the distribution channel. Their clients are the end customers.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Dual-track SaaS — facilities sign up directly (B2C), or through an energy consultant who manages their portfolio (B2B2C). Both tracks use the same platform; the consultant track is the primary growth lever.</p>
           </div>
+
+          {/* B2C track */}
+          <div className="bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 rounded-xl px-5 py-4 flex gap-4 items-start">
+            <Building2 className="h-5 w-5 text-brand-600 flex-shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-semibold text-gray-900 dark:text-white text-sm">Track 1 — Direct facility signup (B2C)</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                A factory owner, hotel, or hospital finds VoltSpark, signs up free, enters their electricity bills, and immediately sees where money is being lost.
+                No consultant, no hardware required to start. When they choose to add IoT meters or sensors, they install via any local electrical contractor.
+                This track builds adoption volume and generates direct subscription revenue.
+              </p>
+            </div>
+          </div>
+
+          {/* B2B2C track */}
+          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Track 2 — Consultant-managed portfolio (B2B2C)</p>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { step: '1', title: 'Consultant signs up', body: 'Energy auditor, ZED/ISO consultant, or ESCO registers on VoltSpark. Adds their industrial clients. Manages all from one portfolio dashboard.' },
