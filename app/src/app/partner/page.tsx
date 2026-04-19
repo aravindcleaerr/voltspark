@@ -350,6 +350,29 @@ export default function PartnerPage() {
           </div>
         </section>
 
+        {/* Competitive callout */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold">Why not existing tools?</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Your clients may have come across these names. Here is why none of them replace what VoltSpark does for your practice.</p>
+          <div className="space-y-3">
+            {[
+              { name: 'Schneider PME / Siemens SIMATIC / ABB Ability', gap: 'Enterprise energy monitoring at ₹10–50 lakh per site. Zero ZED, BEE, or BESCOM tariff logic. No compliance workflows, no CAPA, no consultant portal. Completely inaccessible to MSMEs.' },
+              { name: 'Zenatix (Schneider IoT)', gap: 'Deployed in 2,500+ Indian commercial buildings — but only buildings. No industrial manufacturing use case, no ISO 50001 or ZED compliance, no audit or CAPA management.' },
+              { name: 'Tor.ai LENZ', gap: 'Good Indian industrial energy monitoring — kWh, power quality, machine-level consumption. But purely a monitoring tool. No compliance frameworks, no audit management, no consultant portfolio view, no savings attribution.' },
+              { name: 'Facilio', gap: 'Facilities CMMS with good maintenance workflows — but for commercial real estate, not industrial facilities. No India-specific compliance (ZED, BEE, BESCOM). No energy consultant GTM model.' },
+              { name: 'EHS platforms (Intelex, GoAudits)', gap: 'Strong audit and CAPA management — but zero energy monitoring, zero IoT integration, and no India-specific compliance templates. And none built for energy consultants managing a client portfolio.' },
+            ].map((item, i) => (
+              <div key={i} className="flex gap-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-5 py-4">
+                <span className="text-amber-500 font-bold flex-shrink-0 mt-0.5">✕</span>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white text-sm">{item.name}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-0.5">{item.gap}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="rounded-2xl bg-brand-600 text-white p-8 text-center space-y-4">
           <p className="text-xl font-bold">Ready to build your practice on VoltSpark?</p>

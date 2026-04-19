@@ -146,7 +146,7 @@ export default function InvestorPage() {
           <h2 className="text-2xl font-bold flex items-center gap-2"><AlertTriangle className="h-6 w-6 text-amber-500" /> Why This Market Is Underserved</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
-              { title: 'No India-specific platform', body: 'Existing solutions (Zenatix, EnergyBrain) target large enterprises. The 12 lakh MSME industrial facilities — ₹1Cr–₹100Cr turnover — have no affordable, ZED/BESCOM-aware option.' },
+              { title: 'No India-specific platform', body: 'Enterprise tools (Schneider PME, Siemens SIMATIC, ABB Ability) are priced at ₹10–50 lakh per site and have no ZED, BEE, or BESCOM tariff logic. Indian IoT players (Tor.ai LENZ, Zenatix) do monitoring only — no compliance workflows, no consultant portal.' },
               { title: 'Consultants work in Excel', body: 'India has thousands of ZED, ISO 50001, and electrical safety consultants. Every one of them manages clients in spreadsheets and WhatsApp. No practice management platform exists for them.' },
               { title: 'Compliance pressure is accelerating', body: 'ZED certification is now an OEM vendor qualification requirement. ISO 50001 is being mandated by large buyers. BEE PAT penalties are increasing. The "do nothing" option is closing.' },
               { title: 'IoT alone is not enough', body: 'Hardware vendors sell dashboards with raw kWh data. No platform connects real-time energy and environmental sensor readings (temperature, humidity, CO2, vibration) to compliance frameworks, automated evidence logs, and ₹ ROI in the same workflow.' },
@@ -157,6 +157,60 @@ export default function InvestorPage() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Competitive Landscape */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2"><Shield className="h-6 w-6 text-brand-500" /> Competitive Landscape</h2>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No existing product covers the full stack VoltSpark addresses — at SME pricing, with a consultant GTM model, for Indian regulatory context.</p>
+          </div>
+          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th className="text-left px-4 py-3">Product</th>
+                  <th className="text-center px-3 py-3">Energy<br/>monitoring</th>
+                  <th className="text-center px-3 py-3">ISO 50001 /<br/>ZED / BEE</th>
+                  <th className="text-center px-3 py-3">Audit /<br/>CAPA</th>
+                  <th className="text-center px-3 py-3">Consultant<br/>portal</th>
+                  <th className="text-center px-3 py-3">India BESCOM<br/>tariff logic</th>
+                  <th className="text-center px-3 py-3">MSME<br/>pricing</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-center">
+                {[
+                  { name: 'Schneider PME', energy: '✅', compliance: '⚠️ data only', capa: '❌', portal: '❌', india: '❌', sme: '❌', note: '₹10–20L/site perpetual license' },
+                  { name: 'Siemens SIMATIC', energy: '✅', compliance: '✅ ISO only', capa: '❌', portal: '❌', india: '❌', sme: '❌', note: '₹15–50L/site, enterprise only' },
+                  { name: 'ABB Ability', energy: '✅', compliance: '❌', capa: '❌', portal: '❌', india: '❌', sme: '⚠️ $100/mo', note: 'No India compliance at all' },
+                  { name: 'Zenatix', energy: '✅', compliance: '❌', capa: '❌', portal: '❌', india: '⚠️ deployed', sme: '❌', note: 'Commercial buildings only, no manufacturing' },
+                  { name: 'Tor.ai LENZ', energy: '✅', compliance: '❌', capa: '❌', portal: '❌', india: '⚠️ partial', sme: '⚠️ partial', note: 'Monitoring only, no compliance workflows' },
+                  { name: 'Facilio', energy: '⚠️ basic', compliance: '❌', capa: '⚠️ maintenance', portal: '❌', india: '❌', sme: '❌', note: 'Facility CMMS, not industrial energy compliance' },
+                  { name: 'GoAudits / Intelex', energy: '❌', compliance: '⚠️ generic', capa: '✅', portal: '❌', india: '❌', sme: '⚠️ partial', note: 'EHS only, no energy monitoring' },
+                ].map((r) => (
+                  <tr key={r.name} className="hover:bg-gray-50 dark:hover:bg-gray-900/50">
+                    <td className="px-4 py-3 text-left font-medium text-gray-900 dark:text-white">{r.name}<br/><span className="text-xs font-normal text-gray-400">{r.note}</span></td>
+                    <td className="px-3 py-3">{r.energy}</td>
+                    <td className="px-3 py-3">{r.compliance}</td>
+                    <td className="px-3 py-3">{r.capa}</td>
+                    <td className="px-3 py-3">{r.portal}</td>
+                    <td className="px-3 py-3">{r.india}</td>
+                    <td className="px-3 py-3">{r.sme}</td>
+                  </tr>
+                ))}
+                <tr className="bg-brand-50 dark:bg-brand-950/30 font-bold border-t-2 border-brand-200 dark:border-brand-800">
+                  <td className="px-4 py-3 text-left text-brand-700 dark:text-brand-300">VoltSpark<br/><span className="text-xs font-normal text-brand-600 dark:text-brand-400">SaaS from FREE, IoT from ₹299/meter/mo</span></td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                  <td className="px-3 py-3 text-brand-600">✅</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-gray-400 px-1">Competitor data sourced from product documentation, pricing pages, and Tracxn profiles — April 2026. ⚠️ = partial capability.</p>
         </section>
 
         {/* Solution */}
