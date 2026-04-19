@@ -84,7 +84,7 @@ export default function InvestorPage() {
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
             Energy intelligence for<br />
-            <span className="text-brand-600">India&apos;s industrial facilities.</span>
+            <span className="text-brand-600">India&apos;s 12 lakh industrial facilities.</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             India&apos;s industrial sector loses an estimated <strong className="text-gray-900 dark:text-white">₹3 lakh crore annually</strong> in avoidable energy costs.
