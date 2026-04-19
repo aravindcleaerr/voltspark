@@ -433,6 +433,125 @@ async function main() {
   });
 
   // ============================================================
+  // CLIENT — A Plus Fixtures Private Limited (Active Pilot)
+  // ============================================================
+  const aplusClient = await prisma.client.create({
+    data: {
+      organizationId: org.id,
+      name: 'A Plus Fixtures Private Limited',
+      slug: 'aplus-fixtures',
+      address: 'Bommanahalli, Bengaluru - 560068',
+      industry: 'CNC Fixture Manufacturing',
+      employeeCount: 25,
+      accessMode: 'COLLABORATIVE',
+      enabledAddons: JSON.stringify(['IOT_METERING']),
+      gridTariffRate: 8.0,
+      solarTariffRate: 0,
+      contractDemand: 50,
+      powerFactorTarget: 0.90,
+      baselineYear: 2025,
+      baselineMonth: 10,
+    },
+  });
+  console.log('Client created: A Plus Fixtures Private Limited');
+
+  await prisma.clientAccess.create({ data: { userId: consultant.id, clientId: aplusClient.id, role: 'CLIENT_ADMIN' } });
+  await prisma.clientAccess.create({ data: { userId: lnk.id, clientId: aplusClient.id, role: 'CLIENT_ADMIN' } });
+
+  // CLIENT USER — A Plus Fixtures admin
+  const aplusHash = await bcrypt.hash('aplus123', 10);
+  const aplusAdmin = await prisma.user.create({
+    data: {
+      employeeId: 'APF-001',
+      name: 'A Plus Admin',
+      email: 'admin@aplusfixtures.com',
+      passwordHash: aplusHash,
+      role: 'USER',
+      department: 'Management',
+    },
+  });
+  await prisma.clientAccess.create({ data: { userId: aplusAdmin.id, clientId: aplusClient.id, role: 'CLIENT_ADMIN' } });
+  console.log('A Plus Fixtures: 1 user created');
+
+  // ENERGY SOURCES
+  await prisma.energySource.create({
+    data: {
+      clientId: aplusClient.id,
+      name: 'BESCOM Grid Supply',
+      type: 'ELECTRICITY',
+      unit: 'kWh',
+      description: 'BESCOM LT industrial supply — CNC machines, solar net-metering incomer',
+      location: 'Main LT Panel — Bommanahalli Factory',
+      meterNumber: 'EB-APF-001',
+      costPerUnit: 8.0,
+    },
+  });
+  await prisma.energySource.create({
+    data: {
+      clientId: aplusClient.id,
+      name: 'Solar PV Installation',
+      type: 'ELECTRICITY',
+      unit: 'kWh',
+      description: 'Rooftop solar — net-metered with BESCOM',
+      location: 'Factory Rooftop',
+      meterNumber: 'SOL-APF-001',
+      costPerUnit: 0,
+    },
+  });
+  await prisma.energySource.create({
+    data: {
+      clientId: aplusClient.id,
+      name: 'CNC Machine 1',
+      type: 'ELECTRICITY',
+      unit: 'kWh',
+      description: 'CNC sub-meter — Machine 1',
+      location: 'Machine Shop',
+      meterNumber: 'CNC-APF-001',
+      costPerUnit: 8.0,
+    },
+  });
+  await prisma.energySource.create({
+    data: {
+      clientId: aplusClient.id,
+      name: 'CNC Machine 2',
+      type: 'ELECTRICITY',
+      unit: 'kWh',
+      description: 'CNC sub-meter — Machine 2',
+      location: 'Machine Shop',
+      meterNumber: 'CNC-APF-002',
+      costPerUnit: 8.0,
+    },
+  });
+  await prisma.energySource.create({
+    data: {
+      clientId: aplusClient.id,
+      name: 'CNC Machine 3',
+      type: 'ELECTRICITY',
+      unit: 'kWh',
+      description: 'CNC sub-meter — Machine 3',
+      location: 'Machine Shop',
+      meterNumber: 'CNC-APF-003',
+      costPerUnit: 8.0,
+    },
+  });
+  console.log('A Plus Fixtures: 5 energy sources created');
+
+  await prisma.appSetting.createMany({
+    data: [
+      { clientId: aplusClient.id, key: 'company_name', value: 'A Plus Fixtures Private Limited' },
+      { clientId: aplusClient.id, key: 'company_address', value: 'Bommanahalli, Bengaluru - 560068' },
+      { clientId: aplusClient.id, key: 'deviation_threshold_warning', value: '10' },
+      { clientId: aplusClient.id, key: 'deviation_threshold_critical', value: '20' },
+      { clientId: aplusClient.id, key: 'consultant', value: 'Akshaya Createch' },
+      { clientId: aplusClient.id, key: 'consultant_fee_monthly', value: '15000' },
+      { clientId: aplusClient.id, key: 'consultant_engagement_start', value: '2025-10-01' },
+      { clientId: aplusClient.id, key: 'solar_monthly_target', value: '3000' },
+      { clientId: aplusClient.id, key: 'grid_monthly_target', value: '8000' },
+    ],
+  });
+  console.log('A Plus Fixtures: app settings created');
+
+  // ============================================================
   // COMPLIANCE FRAMEWORKS (Phase 2A — Built-in templates)
   // ============================================================
 
