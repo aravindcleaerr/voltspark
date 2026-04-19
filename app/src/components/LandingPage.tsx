@@ -114,9 +114,7 @@ export default function LandingPage() {
             <span className="text-brand-600">Stay Compliant.</span>
           </h1>
           <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
-            Industrial facilities sign up directly and track their own energy costs and compliance.
-            Energy consultants manage their entire client portfolio from one dashboard.
-            One platform, both tracks.
+            An all-in-one energy intelligence platform for Indian industry — energy cost tracking, compliance management, IoT metering, and savings proof in one place.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
