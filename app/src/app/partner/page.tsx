@@ -352,15 +352,15 @@ export default function PartnerPage() {
 
         {/* Competitive callout */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold">Why not existing tools?</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Your clients may have come across these names. Here is why none of them replace what VoltSpark does for your practice.</p>
+          <h2 className="text-2xl font-bold">How VoltSpark compares to tools your clients may have heard of</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Based on publicly available product documentation reviewed in April 2026. Specific capabilities not found in reviewed materials are noted — this does not confirm those capabilities are absent from every version or configuration of each product.</p>
           <div className="space-y-3">
             {[
-              { name: 'Schneider PME / Siemens SIMATIC / ABB Ability', gap: 'Enterprise energy monitoring at ₹10–50 lakh per site. Zero ZED, BEE, or BESCOM tariff logic. No compliance workflows, no CAPA, no consultant portal. Completely inaccessible to MSMEs.' },
-              { name: 'Zenatix (Schneider IoT)', gap: 'Deployed in 2,500+ Indian commercial buildings — but only buildings. No industrial manufacturing use case, no ISO 50001 or ZED compliance, no audit or CAPA management.' },
-              { name: 'Tor.ai LENZ', gap: 'Good Indian industrial energy monitoring — kWh, power quality, machine-level consumption. But purely a monitoring tool. No compliance frameworks, no audit management, no consultant portfolio view, no savings attribution.' },
-              { name: 'Facilio', gap: 'Facilities CMMS with good maintenance workflows — but for commercial real estate, not industrial facilities. No India-specific compliance (ZED, BEE, BESCOM). No energy consultant GTM model.' },
-              { name: 'EHS platforms (Intelex, GoAudits)', gap: 'Strong audit and CAPA management — but zero energy monitoring, zero IoT integration, and no India-specific compliance templates. And none built for energy consultants managing a client portfolio.' },
+              { name: 'Schneider PME / Siemens SIMATIC / ABB Ability', gap: 'Enterprise energy monitoring, estimated at ₹10–50 lakh per site based on available market information. ZED, BEE, and BESCOM tariff logic were not identified in their reviewed documentation. Compliance workflows, CAPA, and consultant portals were not found in their product materials. Pricing appears unlikely to be accessible to most MSMEs.' },
+              { name: 'Zenatix (Schneider IoT)', gap: 'Claims deployment in 2,500+ Indian commercial buildings — but their materials describe a commercial buildings use case. Industrial manufacturing, ISO 50001, ZED compliance workflows, and audit or CAPA management were not identified in their reviewed documentation.' },
+              { name: 'Tor.ai LENZ', gap: 'Capable Indian industrial energy monitoring — kWh, power quality, machine-level consumption. Based on reviewed materials, it appears focused on monitoring. Compliance frameworks, audit management, consultant portfolio view, and savings attribution were not identified.' },
+              { name: 'Facilio', gap: 'Facilities CMMS with maintenance workflows — positioned for commercial real estate per their materials. India-specific compliance (ZED, BEE, BESCOM) and an energy consultant GTM model were not identified.' },
+              { name: 'EHS platforms (Intelex, GoAudits)', gap: 'Capable audit and CAPA management — but energy monitoring, IoT integration, and India-specific compliance templates (ZED, BEE, BESCOM) were not identified in their reviewed materials. None appear designed for energy consultants managing a multi-client portfolio.' },
             ].map((item, i) => (
               <div key={i} className="flex gap-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-5 py-4">
                 <span className="text-amber-500 font-bold flex-shrink-0 mt-0.5">✕</span>

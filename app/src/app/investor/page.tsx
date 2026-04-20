@@ -20,7 +20,7 @@ const moat = [
   { title: 'Data switching cost', body: '12 months of energy baselines, compliance evidence, sensor logs, and savings records inside VoltSpark is not something a client moves away from easily.' },
   { title: 'Consultant distribution', body: 'Each consultant brings 5–20 clients. Winning 50 consultants is equivalent to winning 500–1,000 client sites — without direct sales to each factory.' },
   { title: 'Unified sensor + energy infrastructure', body: 'Established partnerships with Lotus Controls (Schneider authorised distributor) and Titan (Tor.ai) mean the hardware-software bundle is integrated. The same gateway infrastructure supports both energy meters and environmental sensors (temperature, humidity, CO2, vibration, pressure) — no second gateway, no second vendor.' },
-  { title: 'Multi-sensor compliance automation', body: 'When a cold room temperature breaches 4°C, VoltSpark auto-creates an audit finding, links it to HACCP requirements, and triggers a CAPA. When an OT humidity drifts outside NABH range, the same pipeline fires. No competitor in India connects sensor readings to compliance workflows automatically.' },
+  { title: 'Multi-sensor compliance automation', body: 'When a cold room temperature breaches 4°C, VoltSpark auto-creates an audit finding, links it to HACCP requirements, and triggers a CAPA. When an OT humidity drifts outside NABH range, the same pipeline fires. In this review, no competitor platform was identified that connects sensor readings to compliance workflows in this way.' },
   { title: 'Regulatory switching cost', body: 'NABH-accredited hospitals and FSSAI-registered kitchens depend on VoltSpark\'s timestamped sensor logs as compliance evidence. Migrating to another platform mid-audit cycle is not a decision any compliance manager makes voluntarily.' },
   { title: 'Compliance evidence layer', body: 'VoltSpark generates the audit trail for ZED, ISO 50001, NABH, FSSAI, and LEED/IGBC. Replacing it mid-certification cycle is not an option a client would choose.' },
   { title: 'Anonymised benchmarking', body: 'As the client base grows, cross-industry benchmarks become a unique asset — no single-facility tool can offer "your kWh/unit vs. industry average" or "your cold room temperature variance vs. HACCP peers".' },
@@ -146,10 +146,10 @@ export default function InvestorPage() {
           <h2 className="text-2xl font-bold flex items-center gap-2"><AlertTriangle className="h-6 w-6 text-amber-500" /> Why This Market Is Underserved</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
-              { title: 'No India-specific platform', body: 'Enterprise tools (Schneider PME, Siemens SIMATIC, ABB Ability) are priced at ₹10–50 lakh per site and have no ZED, BEE, or BESCOM tariff logic. Indian IoT players (Tor.ai LENZ, Zenatix) do monitoring only — no compliance workflows, no consultant portal.' },
+              { title: 'No India-specific platform identified', body: 'Enterprise tools (Schneider PME, Siemens SIMATIC, ABB Ability) are estimated at ₹10–50 lakh per site and ZED, BEE, or BESCOM tariff logic was not found in their reviewed documentation. Indian IoT players (Tor.ai LENZ, Zenatix) appear focused on monitoring — compliance workflows and consultant portals were not identified in their materials.' },
               { title: 'Consultants work in Excel', body: 'India has thousands of ZED, ISO 50001, and electrical safety consultants. Every one of them manages clients in spreadsheets and WhatsApp. No practice management platform exists for them.' },
               { title: 'Compliance pressure is accelerating', body: 'ZED certification is now an OEM vendor qualification requirement. ISO 50001 is being mandated by large buyers. BEE PAT penalties are increasing. The "do nothing" option is closing.' },
-              { title: 'IoT alone is not enough', body: 'Hardware vendors sell dashboards with raw kWh data. No platform connects real-time energy and environmental sensor readings (temperature, humidity, CO2, vibration) to compliance frameworks, automated evidence logs, and ₹ ROI in the same workflow.' },
+              { title: 'IoT alone is not enough', body: 'Hardware vendors sell dashboards with raw kWh data. Based on available product documentation, no platform reviewed connects real-time energy and environmental sensor readings (temperature, humidity, CO2, vibration) to compliance frameworks, automated evidence logs, and ₹ ROI in the same workflow.' },
             ].map((p, i) => (
               <div key={i} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 space-y-2">
                 <p className="font-semibold text-gray-900 dark:text-white">{p.title}</p>
@@ -163,7 +163,7 @@ export default function InvestorPage() {
         <section className="space-y-5">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2"><Shield className="h-6 w-6 text-brand-500" /> Competitive Landscape</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">No existing product covers the full stack VoltSpark addresses — at SME pricing, with a consultant GTM model, for Indian regulatory context.</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Based on this review, no directly comparable product was identified that covers VoltSpark&apos;s full stack — at SME pricing, with a consultant GTM model, for Indian regulatory context.</p>
           </div>
           <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
             <table className="w-full text-xs">
@@ -210,7 +210,7 @@ export default function InvestorPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-gray-400 px-1">Competitor data sourced from product documentation, pricing pages, and Tracxn profiles — April 2026. ⚠️ = partial capability.</p>
+          <p className="text-xs text-gray-400 px-1">Based on a purposive benchmark sample of publicly available product documentation, pricing pages, and Tracxn profiles — April 2026. ❌ = not identified in reviewed materials (does not confirm absence). ⚠️ = partial or adjacent capability found. Pricing estimates carry varying confidence levels.</p>
         </section>
 
         {/* Solution */}
