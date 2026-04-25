@@ -1354,3 +1354,24 @@ model DiscomTemplate {
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 }
+
+// ============================================================
+// LEAD MAGNETS (public tools)
+// ============================================================
+
+model LeadMagnetSubmission {
+  id            String   @id @default(cuid())
+  shareToken    String   @unique @default(cuid())
+  sourceTool    String   // "true-pf" | future modules
+  email         String?
+  inputJson     String   // raw user inputs
+  scenariosJson String   // computed scenarios (now / afterAPFC / afterAHF)
+  ipHash        String?
+  userAgent     String?
+  pdfRequested  Boolean  @default(false)
+  demoBooked    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([sourceTool, createdAt])
+  @@index([email])
+}
