@@ -1100,6 +1100,21 @@ CREATE TABLE "DiscomTemplate" (
     "updatedAt" DATETIME NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "LeadMagnetSubmission" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "shareToken" TEXT NOT NULL,
+    "sourceTool" TEXT NOT NULL,
+    "email" TEXT,
+    "inputJson" TEXT NOT NULL,
+    "scenariosJson" TEXT NOT NULL,
+    "ipHash" TEXT,
+    "userAgent" TEXT,
+    "pdfRequested" BOOLEAN NOT NULL DEFAULT false,
+    "demoBooked" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Organization_slug_key" ON "Organization"("slug");
 
@@ -1213,4 +1228,13 @@ CREATE UNIQUE INDEX "PQSnapshot_meterId_date_key" ON "PQSnapshot"("meterId", "da
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DiscomTemplate_code_key" ON "DiscomTemplate"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LeadMagnetSubmission_shareToken_key" ON "LeadMagnetSubmission"("shareToken");
+
+-- CreateIndex
+CREATE INDEX "LeadMagnetSubmission_sourceTool_createdAt_idx" ON "LeadMagnetSubmission"("sourceTool", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "LeadMagnetSubmission_email_idx" ON "LeadMagnetSubmission"("email");
 
