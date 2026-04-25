@@ -42,32 +42,39 @@ Multi-tenant B2B2C + B2C SaaS for industrial energy and compliance management in
 | ORM | Prisma 7 with driver adapters |
 | Charts | Recharts |
 | Icons | Lucide React |
+| PDF Export | jsPDF + jspdf-autotable |
+| QR Codes | qrcode.react |
 | Hosting | Vercel (project: `voltspark`, domain: `volt-spark.vercel.app`) |
-| Email | Resend (RESEND_API_KEY not yet set on Vercel — emails disabled in prod) |
+| Email | Resend (RESEND_API_KEY **not yet set on Vercel** — emails disabled in prod) |
 | E2E Tests | Playwright |
 
 ---
 
 ## What Has Been Built (Full Feature Inventory)
 
-### Core Architecture
+### Phase 1 — Core Architecture & Auth
+
 - Multi-tenant: Organisation → Client → User hierarchy with Membership + ClientAccess
 - 31 Prisma models, all energy/compliance models carry `clientId` for row-level isolation
 - `requireClient()` in every API route enforces tenant isolation
-- JWT session carries: userId, orgRole, activeClientId, activeClientSlug, clientRole
-- Workspace switcher (consultants switch between clients without re-login)
+- JWT session carries: `userId`, `orgRole`, `activeClientId`, `activeClientSlug`, `activeClientName`, `clientRole`
+- Workspace switcher — consultants switch between clients without re-login via `/api/auth/switch-client`
 - `/console` — consultant portfolio dashboard with client summary cards
-- `OnboardingGuard` in app layout — redirects to `/assessment` if baseline not complete
+- `OnboardingGuard` in app shell — redirects to `/assessment` if `baselineYear`/`baselineMonth` not set
+- Login, registration, and session management pages
 
-### Energy Management
+### Phase 2 — Energy Management
+
 - Energy sources (meter registry with cost per unit, tariff rates)
-- Consumption entries (manual + IoT-bridged, deviation detection)
+- Consumption entries (manual + IoT-bridged, auto-deviation detection)
 - Energy targets (per source, per period, reduction % tracking)
 - Energy Cost Dashboard (₹ view, monthly trends, source breakdown)
 - Utility bill analyser (BESCOM/CESC fields, PF penalty, demand overshoot, anomaly detection)
 
-### Compliance & Safety
+### Phase 3 — Compliance, Safety & Training
+
 - Compliance frameworks (ISO 50001, ZED, Electrical Safety templates — generic "Requirement N" display)
+- Compliance readiness assessment (per framework, per client)
 - Safety inspections (configurable templates, digital checklists)
 - Incident register (near-misses, RCA, follow-up)
 - Certification tracker with expiry alerts
@@ -76,44 +83,123 @@ Multi-tenant B2B2C + B2C SaaS for industrial energy and compliance management in
 - CAPA (5-Why analysis, comments, verification, effectiveness check)
 - Training programs + attendance tracking
 
-### IoT Metering (Add-on: `IOT_METERING`)
+### Phase 4 — Financial Tools & Government Schemes
+
+- Savings tracker (before/after baseline, improvement attribution, ROI)
+- ROI calculator (7 templates: solar, VFD, PF correction, LED, compressed air, motors, transformer)
+- Government scheme eligibility matching (BEE, ZED, MSME)
+- Action plans & tasks (linked to compliance gaps, CAPA outcomes)
+
+### Phase 5 — Reports, Sharing & Settings
+
+- PDF export (8-section Impact Report — branded)
+- CSV/JSON data export
+- Shareable compliance view (public read-only token-based link)
+- Document library
+- Notifications
+- Whitelabel settings: logo upload, custom platform name, brand colour picker
+- Sidebar displays custom branding per client
+- PWA manifest with SVG icon
+
+### Phase 6 — IoT Metering (Add-on: `IOT_METERING`)
+
 - Vendor-agnostic framework: Gateway → Meter → MeterReading models
 - MQTT webhook support for real-time ingest
 - IoT-to-Core bridge: POST `/api/iot/aggregate` → creates ConsumptionEntry from daily deltas
 - Validated hardware: Schneider ESX Panel Server (gateway), EM6400NG, EM1200 (meters)
 
-### Industry Intelligence Add-ons
-- **Manufacturing Intelligence** (`COMPRESSED_AIR`): kWh/unit, compressed air efficiency, shift analysis, vibration/temp sensor hooks
-- **Commercial Kitchen Intelligence** (`KITCHEN`): Titan meter integration, demand management, load shedding, HACCP temperature logging
-- **Power Quality** (`POWER_QUALITY`): EN 50160 compliance, PQEvent/PQSnapshot, THD, harmonics, sag/swell
-- Add-on toggle UI on console page; each add-on is gated per client
+### Add-on: Manufacturing Intelligence (`COMPRESSED_AIR`)
 
-### Financial Tools
-- Savings tracker (before/after baseline, improvement attribution, ROI)
-- ROI calculator (7 templates: solar, VFD, PF correction, LED, compressed air, motors, transformer)
-- Government scheme eligibility matching (BEE, ZED, MSME)
+- kWh/unit tracking (energy per production output)
+- Compressed air efficiency monitoring
+- Shift analysis
+- Vibration/temp sensor hooks
 
-### Reports & Export
-- PDF export (8-section Impact Report)
-- CSV/JSON data export
-- 20-month demo seed data per client
+### Add-on: Commercial Kitchen Intelligence (`KITCHEN`)
 
-### Public Pages (Marketing)
-- `/` — Landing page (B2B2C + B2C, two-track hero)
-- `/start` — For facilities signing up directly (B2C)
-- `/login`, `/register` — Auth pages
-- `/investor` — Investor pitch **(private, passphrase: `akshaya2026`)**
-- `/partner` — Partner programme **(private, passphrase: `akshaya2026`)**
-- `/partner/economics` — Full commission breakdown **(private, passphrase: `akshaya2026`)**
+- Titan by Tor.ai meter integration
+- Real-time demand monitoring
+- Load shedding & ToD optimisation
+- HACCP temperature logging
 
-### Whitelabel & Settings
-- Logo upload, custom platform name, brand colour picker (Settings page)
-- Sidebar displays custom branding per client
+### Add-on: Power Quality (`POWER_QUALITY`)
 
-### Other
-- PWA manifest with SVG icon
-- Playwright E2E tests (auth, dashboard nav, IoT ingest API): `npm run test:e2e`
-- Recurring schedules model (`RecurringSchedule`) → calendar API generates occurrences, 90-day horizon
+- EN 50160 compliance
+- PQEvent / PQSnapshot models
+- THD, harmonics, sag/swell detection
+
+---
+
+## Full Route Inventory
+
+### Protected Routes (require client context)
+
+```
+/dashboard                          # Main dashboard
+/energy-sources                     # Energy source registry
+/energy-sources/[id]                # Energy source detail & edit
+/energy-sources/new                 # New energy source
+/consumption                        # Consumption entries
+/consumption/new                    # New consumption entry
+/costs                              # Energy Cost Dashboard (₹ view)
+/targets                            # Energy targets
+/targets/new                        # New target
+/utility-bills                      # Utility bill entries
+/training                           # Training programs
+/training/[id]                      # Training detail
+/training/[id]/attendance           # Attendance tracking
+/training/new                       # New training program
+/audits                             # Audits list
+/audits/[id]                        # Audit detail & findings
+/audits/new                         # New audit
+/capa                               # CAPA register
+/capa/[id]                          # CAPA detail & comments
+/capa/new                           # New CAPA
+/compliance                         # Compliance frameworks
+/compliance/[frameworkId]           # Framework detail
+/compliance/readiness/[frameworkId] # Readiness assessment
+/assessment                         # Baseline assessment (onboarding)
+/safety                             # Safety inspections
+/safety/templates                   # Inspection templates
+/calendar                           # Compliance calendar
+/documents                          # Document library
+/analytics                          # Cross-client analytics
+/reports                            # Report generation & templates
+/roi                                # ROI calculator
+/savings                            # Savings tracker
+/schemes                            # Government schemes
+/action-plans                       # Action plans & tasks
+/import                             # Bulk data import
+/notifications                      # Notification centre
+/settings                           # App settings & branding
+/share                              # Shareable compliance views
+/ca/*                               # Compressed Air / Manufacturing Intelligence
+/kitchen/*                          # Kitchen Intelligence
+/iot/*                              # IoT Metering
+/pq/*                               # Power Quality
+/console                            # Consultant portfolio dashboard
+/console/clients/new                # Add new client
+```
+
+### Auth Routes
+
+```
+/login
+/register
+```
+
+### Public Routes (no auth)
+
+```
+/                                   # Landing page (B2B2C + B2C dual-track hero)
+/start                              # B2C facility direct signup
+/investor                           # Investor pitch — gated (passphrase: akshaya2026)
+/partner                            # Partner programme — gated (passphrase: akshaya2026)
+/partner/economics                  # Commission breakdown — gated (passphrase: akshaya2026)
+/privacy                            # Privacy policy
+/terms                              # Terms of service
+/share/[token]                      # Public shareable compliance view
+```
 
 ---
 
@@ -124,13 +210,30 @@ Multi-tenant B2B2C + B2C SaaS for industrial energy and compliance management in
 - **Local:** `app/dev.db` (better-sqlite3, gitignored)
 - **Production:** Turso libSQL — `libsql://unnnathicnc-aravindcleaerr.aws-ap-south-1.turso.io`
 
+### Prisma Model List (31 models)
+
+**Multi-tenancy:** Organisation, Client, Membership, ClientAccess, User
+
+**Energy:** EnergySource, EnergyTarget, ConsumptionEntry
+
+**Compliance & Training:** TrainingProgram, TrainingAttendance, Audit, AuditFinding, CAPA, CAPAComment, ComplianceFramework, FrameworkRequirement, ClientFramework, RequirementStatus, Inspection, InspectionTemplate, Incident, Certification
+
+**Financial & Planning:** UtilityBill, SavingsMeasure, ROICalculation, ActionPlan, ActionItem, Document
+
+**Notifications & Sharing:** Notification, ShareableView, SchemeApplication, RecurringSchedule
+
+**IoT & Hardware:** IoTGateway, IoTMeter, MeterReading, MeterAlert, PQEvent, PQSnapshot, Kitchen, Compressor, CAReading
+
+**System:** AuditLog, AppSetting
+
 ### Key Prisma Gotchas
+
 - Never use Prisma `enum` types — SQLite doesn't support them; use String with comments
 - CAPA model is `prisma.cAPA` (not `prisma.capa`)
-- TrainingProgram has no `createdById`
+- `TrainingProgram` has no `createdById`
 - Recharts Tooltip formatter: `(v) => Number(v)` not `(v: number) =>`
 - Set iteration: `Array.from(new Set(...))` not `[...new Set(...)]`
-- Next.js 14: export `Viewport` type separately, not in `metadata`
+- Next.js 14: export `Viewport` type separately, not inside `metadata`
 
 ---
 
@@ -147,81 +250,67 @@ git add ... && git commit -m "..." && git push origin master
 cd app && npx vercel --prod
 
 # If schema changed — Turso sync:
-# vercel env pull .env.turso --environment production
-# PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION="yes" npx prisma db push --force-reset
-# npx prisma db seed
-# set -a && source .env.turso && node push-schema.mjs
-# set -a && source .env.turso && node copy-to-turso.mjs
-# rm .env.turso
+vercel env pull .env.turso --environment production
+PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION="yes" npx prisma db push --force-reset
+npx prisma db seed
+set -a && source .env.turso && node push-schema.mjs
+set -a && source .env.turso && node copy-to-turso.mjs
+rm .env.turso
 ```
 
 ---
 
 ## Login Credentials (Seed Data)
 
-| User | Email | Password | Role |
-|---|---|---|---|
-| Consultant (Aravind) | `aravind@akshayacreatech.com` | `akshaya123` | Org OWNER |
-| Unnathi CNC admin | `sureshkumar@unnathicnc.com` | `unnathi123` | CLIENT_ADMIN |
-| A Plus Fixtures admin | `admin@aplusfixtures.com` | `aplus123` | CLIENT_ADMIN (IOT_METERING enabled) |
-| Demo | `demo@voltspark.in` | `demo123` | — |
+| User | Email | Password | Role | Notes |
+|---|---|---|---|---|
+| Consultant (Aravind) | `aravind@akshayacreatech.com` | `akshaya123` | Org OWNER | Access to both clients + console |
+| Unnathi CNC admin | `sureshkumar@unnathicnc.com` | `unnathi123` | CLIENT_ADMIN | |
+| A Plus Fixtures admin | `admin@aplusfixtures.com` | `aplus123` | CLIENT_ADMIN | IOT_METERING enabled |
+| Demo | `demo@voltspark.in` | `demo123` | — | Generic demo access |
 
 ---
 
 ## Key Architectural Decisions (Why, Not Just What)
 
-**Multi-tenant via `clientId` on every model, not schema-per-tenant**
-Simple for SQLite/Turso; `requireClient()` enforces isolation in every route. No cross-tenant queries possible by design.
+**Multi-tenant via `clientId` on every model — not schema-per-tenant**
+Simple for SQLite/Turso. `requireClient()` enforces isolation in every API route. Cross-tenant queries are structurally impossible.
 
 **JWT session carries active client context**
-Consultants switch clients without re-login. Session update is triggered via `/api/auth/switch-client` — no page refresh needed.
+Consultants switch clients without re-login. Session update triggered via `/api/auth/switch-client` — no page refresh required.
 
-**Add-ons are internal enum codes, never renamed**
-`COMPRESSED_AIR`, `KITCHEN`, `IOT_METERING`, `POWER_QUALITY` — display labels change, codes never do. Renaming would break DB values.
+**Add-on codes are permanent internal identifiers — never renamed**
+`COMPRESSED_AIR`, `KITCHEN`, `IOT_METERING`, `POWER_QUALITY` live in the DB. Display labels can change freely; codes cannot. Renaming would silently break all existing client add-on configurations.
 
-**Framework compliance uses generic labels**
-"ZED" was replaced with "Compliance Requirement N" display — dynamic from DB settings. This avoids hardcoding regulatory names that may evolve.
+**Framework compliance uses generic labels, not hardcoded regulatory names**
+"ZED" appears as "Compliance Requirement N" in the UI — text pulled from DB settings. This future-proofs against regulatory name changes and avoids hardcoded regulatory claims in UI strings.
 
-**OnboardingGuard wraps the app shell**
-If `baselineYear`/`baselineMonth` not set on the active client, the guard redirects to `/assessment`. This ensures consultants complete baseline setup before accessing dashboards.
+**`OnboardingGuard` wraps the app shell**
+If `baselineYear`/`baselineMonth` is not set on the active client, the guard redirects to `/assessment`. Ensures consultants complete baseline setup before any dashboard is visible.
 
-**Private pages use client-side passphrase gate only**
-`PrivateGate` component uses `sessionStorage`. This is security-by-obscurity — adequate for now (pages shared via WhatsApp with known partners). Upgrade to server-side middleware is documented as a future task.
+**Private pages use client-side passphrase gate only (`PrivateGate` component)**
+Uses `sessionStorage`. Security-by-obscurity — adequate for pages shared via WhatsApp with known partners/investors. Upgrade to server-side middleware is a documented pending item.
 
----
-
-## Recent Work (April 2026 Session)
-
-The following was completed in the most recent working session — context for anyone picking this up:
-
-1. **Sensor strategy** — Sensors priced below Basic meter tier (₹149/sensor/mo additional). Each meter tier includes sensors generically (Basic=1, Standard=2, Advanced=3, Power Quality=5). Industry-specific sensor types documented only in intelligence bundle descriptions, not in meter tier copy.
-
-2. **B2B2C + B2C positioning** — Landing page now serves both tracks. Facilities hero, consultants explained further down. Commission language removed from all public pages (commission details only on private `/partner` pages).
-
-3. **Private pages gated** — `/investor`, `/partner`, `/partner/economics` require passphrase `akshaya2026`. Shared via WhatsApp with specific partners/investors.
-
-4. **Competitor analysis** — Full benchmark study completed (8 competitors: Schneider PME, Zenatix, Facilio, Tor.ai, Siemens SIMATIC, ABB Ability, TCS Clever Energy, Intelex/GoAudits). SWOT analysis, feature matrix, FITT language per LNK Sir's review. Moved to GrowthPath.
-
-5. **Investor + partner page updates** — Competitive landscape table added to `/investor`. "How VoltSpark compares" section added to `/partner`. Language qualified per LNK Sir's internal review (no absolute claims, confidence labels on pricing, "not identified in reviewed materials" instead of "no competitor exists").
-
-6. **5-year blueprint** — Strategic document covering Year 1–5 goals, product priorities, GTM, team, and funding stages. Moved to GrowthPath.
+**`enabledAddons` field on Client model stores a JSON array**
+`["KITCHEN", "POWER_QUALITY"]` — consultant toggles per client from portfolio page. API routes call `requireAddon(clientId, 'ADDON_CODE')` before serving add-on data. Hardware pushes data via API key auth, not user session.
 
 ---
 
-## What to Refer to Where
+## Summary of April 2026 Session Work
 
-| Topic | Go to |
-|---|---|
-| App code, schema, API routes, UI components | This repo (`VoltSpark`) |
-| CLAUDE.md — coding conventions, patterns, deployment | This repo (`VoltSpark/CLAUDE.md`) |
-| Competitor analysis, SWOT, market positioning | GrowthPath → Business |
-| 5-year blueprint, revenue projections, funding | GrowthPath → Business |
-| Investor pitch documents | GrowthPath → Business |
-| IoT hardware partners (Lotus Controls, Titan) | GrowthPath → Partners |
-| Vendor NDAs, partner agreements | GrowthPath → Partners |
-| Customer data, pilot details (Unnathi CNC, A Plus Fixtures) | GrowthPath → Customers |
-| Events, conferences, networking | GrowthPath → Events |
-| Marketing materials | GrowthPath → Business → Marketing |
+Context for anyone picking this up after April 2026:
+
+1. **Sensor strategy finalised** — Sensors priced at ₹149/sensor/month (below Basic meter tier). Each meter tier includes sensors generically (Basic=1, Standard=2, Advanced=3, Power Quality=5). Industry-specific sensor types (vibration, CO2, temperature) are documented only in intelligence bundle descriptions, not in meter tier public copy.
+
+2. **B2B2C + B2C dual-track positioning** — Landing page now serves both tracks. Facilities hero up top; consultant value prop further down. Commission language removed from all public pages — appears only on private `/partner` routes.
+
+3. **Private page gating** — `/investor`, `/partner`, `/partner/economics` require passphrase `akshaya2026`. Shared via WhatsApp with specific partners/investors.
+
+4. **Competitor analysis completed** — 8 competitors benchmarked (Schneider PME, Zenatix, Facilio, Tor.ai, Siemens SIMATIC, ABB Ability, TCS Clever Energy, Intelex/GoAudits). SWOT analysis and feature matrix completed. Language qualified per LNK Sir's review (FITT framework — no absolute claims). Document lives in GrowthPath, not this repo.
+
+5. **Investor + partner page updates** — Competitive landscape table added to `/investor`. "How VoltSpark compares" section added to `/partner`. Language uses confidence labels and qualified statements throughout.
+
+6. **5-year blueprint produced** — Covers Year 1–5 goals, product priorities, GTM, team scaling, and funding stages. Lives in GrowthPath → Business.
 
 ---
 
@@ -230,12 +319,39 @@ The following was completed in the most recent working session — context for a
 - Registration/invite flow for consultants and client users (manual onboarding currently)
 - Native iOS/Android app (PWA shipped; native on Year 1 roadmap)
 - RESEND_API_KEY not set on Vercel → emails disabled in production
-- Private page gate is client-side only → upgrade to server-side middleware (future)
-- Consultant referral tracking
+- Private page gate upgrade from client-side to server-side middleware
+- Consultant referral tracking with commission calculation
 - Sensor onboarding flow UI
 - Auto-incident from sensor threshold breach
-- WhatsApp Business API alerts (rule-based alerts live; WA integration future)
+- WhatsApp Business API alerts (rule-based alerts live in DB; WA integration future)
 - `/w/[slug]/...` URL routing pattern (not yet implemented)
+
+---
+
+## What to Refer to Where (Cross-Reference)
+
+| Topic | Go to |
+|---|---|
+| App code, schema, API routes, UI components | This repo (`VoltSpark`) |
+| Coding conventions, patterns, deployment rules | This repo → `CLAUDE.md` |
+| Competitor analysis, SWOT, market positioning | GrowthPath → `Business/COMPETITOR-ANALYSIS.md` |
+| 5-year blueprint, revenue projections, funding | GrowthPath → `Business/BLUEPRINT-5YEAR.md` |
+| Financial model (unit economics, burn, runway) | GrowthPath → `Business/Financial-Model/` |
+| Investor slide deck (13 slides + speaker notes) | GrowthPath → `Business/Investor-Deck/` |
+| Investor narrative pitch documents | GrowthPath → `Business/VoltSpark + IoT The Investment Case*.md` |
+| GTM execution plan (Year 1 tactical) | GrowthPath → `Business/GTM-Execution-Plan/` |
+| Pricing rate card (public-facing one-pager) | GrowthPath → `Business/Rate-Card/` |
+| Business strategy, pricing, add-on architecture | GrowthPath → `Business/VoltSpark-Business-Strategy.md` |
+| Consultant onboarding (14-day launch plan) | GrowthPath → `Partners/Consultant-Onboarding-Kit/` |
+| Consultant sales playbook (discovery, demo, objections) | GrowthPath → `Partners/Consultant-Sales-Kit/` |
+| IoT hardware partners (Lotus Controls, Titan) | GrowthPath → `Vendors/` |
+| Vendor NDAs, partner agreements | GrowthPath → `Partners/` |
+| Customer details (Unnathi CNC, A Plus Fixtures) | GrowthPath → `Customers/` |
+| A Plus Fixtures case study template | GrowthPath → `Customers/APlusFixtures/` |
+| Events, conferences, networking | GrowthPath → `Events/` |
+| Marketing materials, pitch scripts, brochures | GrowthPath → `Business/Marketing/` |
+| Public page exports (5 PDFs for WhatsApp share) | GrowthPath → `Business/Marketing/Page-Exports/` |
+| Customer value proposition, MSME pain points | GrowthPath → `Business/CUSTOMER-VALUE.md` |
 
 ---
 
@@ -243,8 +359,8 @@ The following was completed in the most recent working session — context for a
 
 | Person | Role | Contact |
 |---|---|---|
-| Aravind V Bayari | Tech & Product | aravind@akshayacreatech.in · +91 83173 08558 |
-| Lakshminarasimhan K | Domain & Operations | akshayacreatech@gmail.com · +91 79750 55916 |
+| Aravind V Bayari | Tech & Product, Co-founder | aravind@akshayacreatech.in · +91 83173 08558 |
+| Lakshminarasimhan K | Domain & Operations, Founder | akshayacreatech@gmail.com · +91 79750 55916 |
 
 ---
 
