@@ -1,5 +1,6 @@
 import { PrismaClient } from '../src/generated/prisma/client';
 import bcrypt from 'bcryptjs';
+import { seedDrivewave } from './seed-drivewave';
 
 function createPrisma() {
   if (process.env.TURSO_DATABASE_URL) {
@@ -22,6 +23,10 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Q-Apps (Drivewave SMT)
+  await prisma.defectEvent.deleteMany();
+  await prisma.processExcursion.deleteMany();
+  await prisma.productionRecord.deleteMany();
   // Compressed Air
   await prisma.cAReading.deleteMany();
   await prisma.compressor.deleteMany();
@@ -2406,10 +2411,16 @@ async function main() {
   }
   console.log('Compressed Air seeded: 2 compressors, 60 daily readings');
 
+  // ============================================================
+  // Drivewave Automotive — Vitesco demo tenant
+  // ============================================================
+  await seedDrivewave(prisma, org.id, consultant.id);
+
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');
   console.log('Demo:        demo@voltspark.in / demo123 (Precision Engineering)');
+  console.log('Drivewave:   admin@drivewave.com / drivewave123 (SMT line — Vitesco demo)');
 }
 
 main()

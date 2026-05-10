@@ -46,6 +46,9 @@ import {
   Radio,
   Activity,
   Wind,
+  Factory,
+  Bug,
+  Thermometer,
 } from 'lucide-react';
 
 interface NavItem {
@@ -146,6 +149,15 @@ const iotNavSection: NavSection = {
   ],
 };
 
+const qAppsNavSection: NavSection = {
+  label: 'Q-Apps',
+  items: [
+    { name: 'Production Overview', href: '/q-apps/production', icon: Factory },
+    { name: 'Defects Log', href: '/q-apps/defects', icon: Bug },
+    { name: 'Process Excursions', href: '/q-apps/excursions', icon: Thermometer },
+  ],
+};
+
 const adminNav = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -217,6 +229,7 @@ export default function Sidebar({
   const [hasIoT, setHasIoT] = useState(false);
   const [hasPQ, setHasPQ] = useState(false);
   const [hasCA, setHasCA] = useState(false);
+  const [hasQApps, setHasQApps] = useState(false);
   const [brandName, setBrandName] = useState('');
   const [brandLogo, setBrandLogo] = useState('');
 
@@ -246,9 +259,10 @@ export default function Sidebar({
               setHasIoT(addons.includes('IOT_METERING'));
               setHasPQ(addons.includes('POWER_QUALITY'));
               setHasCA(addons.includes('COMPRESSED_AIR'));
-            } catch { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); }
+              setHasQApps(addons.includes('Q_APPS'));
+            } catch { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); setHasQApps(false); }
           })
-          .catch(() => { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); });
+          .catch(() => { setHasKitchen(false); setHasIoT(false); setHasPQ(false); setHasCA(false); setHasQApps(false); });
         // Fetch branding
         fetch('/api/settings')
           .then(r => r.ok ? r.json() : null)
@@ -268,6 +282,7 @@ export default function Sidebar({
       setHasIoT(false);
       setHasPQ(false);
       setHasCA(false);
+      setHasQApps(false);
     }
   }, [activeClientId]);
 
@@ -392,6 +407,10 @@ export default function Sidebar({
               {/* Show Compressed Air after Energy section */}
               {idx === 1 && hasCA && (
                 <NavSectionGroup section={caNavSection} pathname={pathname} onClose={onClose} />
+              )}
+              {/* Show Q-Apps after Compliance & Safety */}
+              {idx === 2 && hasQApps && (
+                <NavSectionGroup section={qAppsNavSection} pathname={pathname} onClose={onClose} />
               )}
             </React.Fragment>
           ))}

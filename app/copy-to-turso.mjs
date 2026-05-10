@@ -36,6 +36,10 @@ const tables = [
   'PQEvent', 'PQSnapshot',
   // Compressed Air tables
   'Compressor', 'CAReading',
+  // Lead Magnets
+  'LeadMagnetSubmission',
+  // Q-Apps tables (Drivewave / Vitesco demo)
+  'ProductionRecord', 'ProcessExcursion', 'DefectEvent',
 ];
 
 async function main() {
@@ -53,15 +57,28 @@ async function main() {
     const colNames = cols.map(c => `"${c}"`).join(', ');
     const insertSql = `INSERT INTO "${table}" (${colNames}) VALUES (${placeholders})`;
 
+    // Batch-insert in groups so high-volume tables (MeterReading, DefectEvent, etc.)
+    // don't eat hours of network round-trips. libSQL accepts up to a few hundred
+    // statements per batch; 200 is safe and keeps the per-batch payload small.
+    const BATCH = 200;
     let inserted = 0;
-    for (const row of rows) {
-      const values = cols.map(c => row[c]);
+    for (let i = 0; i < rows.length; i += BATCH) {
+      const slice = rows.slice(i, i + BATCH);
+      const stmts = slice.map(row => ({ sql: insertSql, args: cols.map(c => row[c]) }));
       try {
-        await turso.execute({ sql: insertSql, args: values });
-        inserted++;
+        await turso.batch(stmts, 'write');
+        inserted += slice.length;
       } catch (err) {
-        console.error(`  ERROR in ${table}: ${err.message}`);
-        console.error(`  Row:`, JSON.stringify(row).substring(0, 100));
+        console.error(`  ERROR in ${table} batch starting at ${i}: ${err.message}`);
+        // Fall back to row-by-row for this batch so we know which row failed
+        for (const row of slice) {
+          try {
+            await turso.execute({ sql: insertSql, args: cols.map(c => row[c]) });
+            inserted++;
+          } catch (rowErr) {
+            console.error(`    Row failed: ${rowErr.message}; first 100 chars: ${JSON.stringify(row).substring(0, 100)}`);
+          }
+        }
       }
     }
     console.log(`  ${table}: ${inserted}/${rows.length} rows copied`);

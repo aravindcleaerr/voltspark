@@ -85,6 +85,10 @@ model Client {
   // Compressed Air
   compressors        Compressor[]
   caReadings         CAReading[]
+  // Q-Apps (Drivewave SMT demo)
+  productionRecords  ProductionRecord[]
+  defectEvents       DefectEvent[]
+  processExcursions  ProcessExcursion[]
 }
 
 model Membership {
@@ -172,6 +176,15 @@ model EnergySource {
   location    String?
   meterNumber String?
   costPerUnit Float?   // ₹/kWh — overrides client-level tariff
+  // Equipment metadata (nullable — populated for SMT/IoT-instrumented assets)
+  kwAvg            Float?
+  kwPeak           Float?
+  criticality      String?  // "A" | "B" | "C"
+  manufacturer     String?
+  purchasePriceInr Float?
+  lifespanYears    Int?
+  pmFreqDays       Int?
+  installedDate    DateTime?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -1374,4 +1387,77 @@ model LeadMagnetSubmission {
 
   @@index([sourceTool, createdAt])
   @@index([email])
+}
+
+// ============================================================
+// Q-APPS MODULE (Drivewave / SMT / Vitesco demo — 15 May 2026)
+// ============================================================
+
+model ProductionRecord {
+  id                       String   @id @default(cuid())
+  clientId                 String
+  client                   Client   @relation(fields: [clientId], references: [id])
+  lineId                   String   // "LINE-01"
+  shiftDate                DateTime
+  shiftNumber              Int      // 1, 2, 3
+  unitsPlanned             Int
+  unitsProduced            Int
+  unitsRejected            Int
+  oee                      Float
+  fpy                      Float
+  ppmDefects               Int
+  cycleTimeAvgSeconds      Float
+  downtimeMinutesPlanned   Int
+  downtimeMinutesUnplanned Int
+  notes                    String?
+  createdAt                DateTime @default(now())
+
+  defectEvents DefectEvent[]
+
+  @@index([clientId])
+  @@index([shiftDate])
+  @@index([lineId, shiftDate, shiftNumber])
+}
+
+model DefectEvent {
+  id                      String           @id @default(cuid())
+  clientId                String
+  client                  Client           @relation(fields: [clientId], references: [id])
+  productionRecordId      String
+  productionRecord        ProductionRecord @relation(fields: [productionRecordId], references: [id])
+  detectedAt              DateTime
+  detectedAtMachine       String           // "AOI-01" | "ICT-01" | "FCT-01"
+  boardSerial             String
+  defectType              String
+  severity                String           // "low" | "medium" | "high"
+  componentRef            String?
+  actionTaken             String           // "rework" | "scrap" | "accept_with_deviation"
+  rootCauseSuspect        String?
+  linkedReflowExcursionId String?
+
+  @@index([clientId])
+  @@index([detectedAt])
+  @@index([defectType])
+  @@index([detectedAtMachine])
+  @@index([linkedReflowExcursionId])
+}
+
+model ProcessExcursion {
+  id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
+  machineId       String    // "REF-01" | "SPI-01"
+  parameter       String    // "zone3_temperature" | "soak_time" | "paste_age_hours"
+  expectedValue   Float
+  observedValue   Float
+  durationSeconds Int
+  severity        String    // "warning" | "critical"
+  detectedAt      DateTime
+  resolvedAt      DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+
+  @@index([clientId])
+  @@index([machineId])
+  @@index([detectedAt])
 }
