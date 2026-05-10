@@ -109,12 +109,18 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-sm font-medium mb-6">
             <Zap className="h-4 w-4" /> Energy Management for Industrial India
           </div>
+          <p className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest mb-4">
+            India&apos;s all-in-one energy intelligence platform
+          </p>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-            Energy. Compliance. Savings.<br />
-            <span className="text-brand-600">See it. Manage it. Prove it.</span>
+            Lower bills. Easier audits.<br />
+            <span className="text-brand-600">Provable ROI.</span>
           </h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
-            An all-in-one energy intelligence platform for Indian industry — energy cost tracking, compliance management, IoT metering, and savings proof in one place.
+          <p className="text-2xl sm:text-3xl font-semibold text-gray-600 dark:text-gray-300 mt-4">
+            See it. Manage it. Prove it.
+          </p>
+          <p className="text-base text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
+            For India&apos;s factories, hospitals, hotels, and commercial buildings — and the energy consultants who serve them. Energy cost tracking, compliance management, IoT metering, and savings proof in one place.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
