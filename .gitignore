@@ -55,3 +55,19 @@ auth-wal
 # Misc
 *.tsbuildinfo
 next-env.d.ts
+
+# Inputs and handoff materials (large binaries, not source)
+Inputs/
+
+# Session logs and scratch notes
+SESSION_LOG.md
+app/SESSION_LOG.md
+chartnotes.md
+CLAUDE-SESSION-LOG-SETUP.md
+.claude/scheduled_tasks.lock
+
+# Dev/admin scripts (one-off Turso operations)
+app/check-turso.mjs
+app/copy-to-turso-resume.mjs
+app/drop-turso-tables.mjs
+app/reset-turso-data.mjs
