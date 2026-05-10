@@ -40,8 +40,8 @@ const team = [
   },
   {
     name: 'Lakshminarasimhan K',
-    role: 'Domain & Operations',
-    org: 'Co-founder, VoltSpark',
+    role: 'Domain Advisor',
+    org: 'Advisor, VoltSpark',
     bio: '40+ years in industrial electrical systems. 32 years as AGM at Kasturi & Sons Ltd (The Hindu Group) managing transformers, DG sets, automation, HVAC, and fire safety across large commercial facilities. Decades of experience in electrical consultancy, solar EPC, and intelligent kitchen load management. B.E. Electrical & Electronics, TCE Madurai.',
     url: '',
     email: 'akshayacreatech@gmail.com',

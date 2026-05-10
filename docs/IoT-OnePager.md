@@ -67,6 +67,30 @@
 
 ---
 
+## Installation Location — Policy
+
+**Rule: Meters and CTs are never installed inside an OEM machine control panel.** This applies whether or not the machine is under warranty.
+
+**Why:**
+- Tampering inside an OEM panel risks voiding manufacturer warranty and rejecting future service claims.
+- Internal panel wiring carries machine PLC, drive, and safety signals — accidental contact can damage the machine.
+- Customers are increasingly refusing in-panel installation as a condition of consent. Doing it anyway erodes trust.
+
+**Approved installation locations (in priority order):**
+
+1. **External CT clamps on the supply feeder cable** upstream of the machine, in the cable tray or facility's main distribution panel.
+2. **Dedicated sub-meter on the MCB / incomer feeding the machine**, installed in the facility's main LT panel (not the machine's panel).
+3. **Clamp meter at the panel exit point** — between the supply MCB and the machine's incoming cable.
+
+**Off-limits:**
+- Anything inside the machine's own control cabinet — even if there is space.
+- Tapping into machine-side CTs that are part of the OEM's monitoring loop.
+- Drilling, splicing, or modifying any wire inside the OEM panel.
+
+This policy was set by Aravind in April 2026 and is the project's settled stance for all customer recommendations.
+
+---
+
 ## RS485 Bus Wiring Plan (Unnathi CNC site)
 
 ```
