@@ -391,9 +391,9 @@ export default function PartnerPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-gray-400">
-          <span>© 2026 VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a></span>
+          <span>© 2026 VoltSpark · Built in Bengaluru</span>
           <div className="flex gap-4">
-            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
+            <a href="mailto:aravind@volt-spark.in" className="hover:text-gray-600 dark:hover:text-gray-300">aravind@volt-spark.in</a>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
           </div>

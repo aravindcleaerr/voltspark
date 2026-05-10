@@ -107,11 +107,8 @@ export default function LandingPage() {
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-sm font-medium mb-6">
-            <Zap className="h-4 w-4" /> Energy Management for Industrial India
+            <Zap className="h-4 w-4" /> Energy Management Suite
           </div>
-          <p className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-widest mb-4">
-            India&apos;s all-in-one energy intelligence platform
-          </p>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
             Lower bills. Easier audits.<br />
             <span className="text-brand-600">Provable ROI.</span>
@@ -120,7 +117,7 @@ export default function LandingPage() {
             See it. Manage it. Prove it.
           </p>
           <p className="text-base text-gray-500 dark:text-gray-400 mt-6 max-w-2xl mx-auto">
-            For India&apos;s factories, hospitals, hotels, and commercial buildings — and the energy consultants who serve them. Energy cost tracking, compliance management, IoT metering, and savings proof in one place.
+            Energy intelligence platform — built for every sector.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link href="/register" className="btn-primary text-base px-8 py-3 flex items-center gap-2">
@@ -436,11 +433,11 @@ export default function LandingPage() {
                 <div className="h-7 w-7 rounded-lg bg-brand-600 flex items-center justify-center"><Zap className="h-4 w-4 text-white" /></div>
                 <span className="text-lg font-bold text-white">VoltSpark</span>
               </div>
-              <p className="text-sm max-w-sm mb-3">Energy management compliance suite for Indian industry. Save energy. Stay safe. Win customers.</p>
-              <p className="text-xs text-gray-500">A product of <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Akshaya Createch</a>, Bengaluru</p>
+              <p className="text-sm max-w-sm mb-3">Energy intelligence platform for Indian industry — see it, manage it, prove it.</p>
+              <p className="text-xs text-gray-500">Built in Bengaluru</p>
               <div className="mt-3 space-y-1 text-xs text-gray-500">
                 <p><a href="https://wa.me/918317308558" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">WhatsApp: +91 83173 08558</a></p>
-                <p><a href="mailto:aravind@akshayacreatech.in" className="hover:text-white transition-colors">aravind@akshayacreatech.in</a></p>
+                <p><a href="mailto:aravind@volt-spark.in" className="hover:text-white transition-colors">aravind@volt-spark.in</a></p>
               </div>
             </div>
             <div>
@@ -463,7 +460,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-10 pt-6 border-t border-gray-800 text-sm text-center">
-            &copy; {new Date().getFullYear()} VoltSpark by <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Akshaya Createch</a>. All rights reserved.
+            &copy; {new Date().getFullYear()} VoltSpark. All rights reserved.
           </div>
         </div>
       </footer>

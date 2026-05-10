@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Zap, TrendingUp, Shield, Users, ArrowRight, Building2, Cpu, IndianRupee, AlertTriangle, Phone, Mail, MessageCircle } from 'lucide-react';
 import PrivateGate from '@/components/PrivateGate';
 
-export const metadata = { title: 'Investor Pitch — VoltSpark by Akshaya Createch' };
+export const metadata = { title: 'Investor Pitch — VoltSpark' };
 
 const marketRows = [
   { label: 'TAM', sublabel: 'Energy management software — Indian industry', value: '₹5,000 Cr/yr', note: '~12 lakh medium industrial facilities spending ₹3L–₹50L/month on electricity' },
@@ -30,10 +30,10 @@ const team = [
   {
     name: 'Aravind V Bayari',
     role: 'Technology & Product',
-    org: 'Co-founder, Akshaya Createch',
+    org: 'Co-founder, VoltSpark',
     bio: '25+ years in embedded systems, IoT, and industrial automation. 20+ products shipped across 10+ industries including defence (HAL Tejas flight control, GTRE Kaveri engine), medical devices, and industrial automation. Hardware Lead at KuboCare (Antler-backed, $1M seed). B.E. Instrumentation & Electronics, RV College. Technology Development Board Award, Government of India (2013).',
     url: 'https://aravindcleaerr.github.io/',
-    email: 'aravind@akshayacreatech.in',
+    email: 'aravind@volt-spark.in',
     phone: '+91 83173 08558',
     wa: 'https://wa.me/918317308558',
     tags: ['Embedded Systems', 'IoT', 'Industrial Automation', 'Product'],
@@ -41,9 +41,9 @@ const team = [
   {
     name: 'Lakshminarasimhan K',
     role: 'Domain & Operations',
-    org: 'Founder, Akshaya Createch',
-    bio: '40+ years in industrial electrical systems. 32 years as AGM at Kasturi & Sons Ltd (The Hindu Group) managing transformers, DG sets, automation, HVAC, and fire safety across large commercial facilities. Founder of Akshaya Createch — electrical consultancy, solar EPC, and intelligent kitchen load management. B.E. Electrical & Electronics, TCE Madurai.',
-    url: 'https://akshayacreatech.in/founder',
+    org: 'Co-founder, VoltSpark',
+    bio: '40+ years in industrial electrical systems. 32 years as AGM at Kasturi & Sons Ltd (The Hindu Group) managing transformers, DG sets, automation, HVAC, and fire safety across large commercial facilities. Decades of experience in electrical consultancy, solar EPC, and intelligent kitchen load management. B.E. Electrical & Electronics, TCE Madurai.',
+    url: '',
     email: 'akshayacreatech@gmail.com',
     phone: '+91 79750 55916',
     wa: 'https://wa.me/917975055916',
@@ -67,7 +67,6 @@ export default function InvestorPage() {
           <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-brand-600 flex items-center justify-center"><Zap className="h-5 w-5 text-white" /></div>
             <span className="text-xl font-bold">VoltSpark</span>
-            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hidden sm:inline hover:text-gray-600 dark:hover:text-gray-200 transition-colors">by Akshaya Createch</a>
           </Link>
           <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="text-sm bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5">
             <MessageCircle className="h-4 w-4" /> Get in Touch
@@ -381,7 +380,7 @@ export default function InvestorPage() {
         {/* Team */}
         <section className="space-y-5">
           <h2 className="text-2xl font-bold flex items-center gap-2"><Users className="h-6 w-6 text-brand-500" /> The Team</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">VoltSpark is a product of Akshaya Createch. The founding team brings together deep domain expertise in industrial electrical systems and product engineering.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">The founding team brings together deep domain expertise in industrial electrical systems and product engineering.</p>
           <div className="grid sm:grid-cols-2 gap-5">
             {team.map((t) => (
               <div key={t.name} className="border border-gray-200 dark:border-gray-800 rounded-xl p-6 space-y-3">
@@ -403,9 +402,11 @@ export default function InvestorPage() {
                   <a href={t.wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600">
                     <Phone className="h-3 w-3" />{t.phone}
                   </a>
-                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 hover:underline ml-auto">
-                    Full profile <ArrowRight className="h-3 w-3" />
-                  </a>
+                  {t.url && (
+                    <a href={t.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 hover:underline ml-auto">
+                      Full profile <ArrowRight className="h-3 w-3" />
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -419,7 +420,7 @@ export default function InvestorPage() {
             <div className="text-center space-y-1">
               <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Pre-Seed Round</p>
               <p className="text-5xl font-black text-white">₹1 Crore</p>
-              <p className="text-gray-400 text-sm">Raised through Akshaya Createch · 18-month runway to 50+ paying client sites</p>
+              <p className="text-gray-400 text-sm">18-month runway to 50+ paying client sites</p>
             </div>
             <div className="grid sm:grid-cols-3 gap-4 pt-2">
               {fundUse.map((f) => (
@@ -456,20 +457,20 @@ export default function InvestorPage() {
             <a href="https://wa.me/918317308558?text=Hi+Aravind%2C+I+am+interested+in+VoltSpark" target="_blank" rel="noopener noreferrer" className="bg-white text-brand-700 font-semibold px-6 py-3 rounded-lg hover:bg-brand-50 transition-colors flex items-center justify-center gap-2">
               <MessageCircle className="h-4 w-4" /> WhatsApp: +91 83173 08558
             </a>
-            <a href="mailto:aravind@akshayacreatech.in" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
-              aravind@akshayacreatech.in
+            <a href="mailto:aravind@volt-spark.in" className="border border-brand-300 text-white font-semibold px-6 py-3 rounded-lg hover:bg-brand-500 transition-colors">
+              aravind@volt-spark.in
             </a>
           </div>
-          <p className="text-xs text-brand-200 pt-2">Live platform at volt-spark.vercel.app · Product by Akshaya Createch, Bengaluru</p>
+          <p className="text-xs text-brand-200 pt-2">Live platform at volt-spark.vercel.app · Built in Bengaluru</p>
         </section>
 
       </main>
 
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-16">
         <div className="max-w-4xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-          <span>© 2026 <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">Akshaya Createch</a>. VoltSpark is a product of Akshaya Createch, Bengaluru.</span>
+          <span>© 2026 VoltSpark · Built in Bengaluru</span>
           <div className="flex gap-4">
-            <a href="https://akshayacreatech.in" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">akshayacreatech.in</a>
+            <a href="mailto:aravind@volt-spark.in" className="hover:text-gray-600 dark:hover:text-gray-300">aravind@volt-spark.in</a>
             <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
             <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
           </div>

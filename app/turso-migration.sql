@@ -1,4 +1,3 @@
-Loaded Prisma config from prisma.config.ts.
 
 -- CreateTable
 CREATE TABLE "Organization" (
@@ -85,6 +84,14 @@ CREATE TABLE "EnergySource" (
     "location" TEXT,
     "meterNumber" TEXT,
     "costPerUnit" REAL,
+    "kwAvg" REAL,
+    "kwPeak" REAL,
+    "criticality" TEXT,
+    "manufacturer" TEXT,
+    "purchasePriceInr" REAL,
+    "lifespanYears" INTEGER,
+    "pmFreqDays" INTEGER,
+    "installedDate" DATETIME,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
@@ -1115,6 +1122,62 @@ CREATE TABLE "LeadMagnetSubmission" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- CreateTable
+CREATE TABLE "ProductionRecord" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "lineId" TEXT NOT NULL,
+    "shiftDate" DATETIME NOT NULL,
+    "shiftNumber" INTEGER NOT NULL,
+    "unitsPlanned" INTEGER NOT NULL,
+    "unitsProduced" INTEGER NOT NULL,
+    "unitsRejected" INTEGER NOT NULL,
+    "oee" REAL NOT NULL,
+    "fpy" REAL NOT NULL,
+    "ppmDefects" INTEGER NOT NULL,
+    "cycleTimeAvgSeconds" REAL NOT NULL,
+    "downtimeMinutesPlanned" INTEGER NOT NULL,
+    "downtimeMinutesUnplanned" INTEGER NOT NULL,
+    "notes" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "ProductionRecord_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "DefectEvent" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "productionRecordId" TEXT NOT NULL,
+    "detectedAt" DATETIME NOT NULL,
+    "detectedAtMachine" TEXT NOT NULL,
+    "boardSerial" TEXT NOT NULL,
+    "defectType" TEXT NOT NULL,
+    "severity" TEXT NOT NULL,
+    "componentRef" TEXT,
+    "actionTaken" TEXT NOT NULL,
+    "rootCauseSuspect" TEXT,
+    "linkedReflowExcursionId" TEXT,
+    CONSTRAINT "DefectEvent_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "DefectEvent_productionRecordId_fkey" FOREIGN KEY ("productionRecordId") REFERENCES "ProductionRecord" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ProcessExcursion" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "clientId" TEXT NOT NULL,
+    "machineId" TEXT NOT NULL,
+    "parameter" TEXT NOT NULL,
+    "expectedValue" REAL NOT NULL,
+    "observedValue" REAL NOT NULL,
+    "durationSeconds" INTEGER NOT NULL,
+    "severity" TEXT NOT NULL,
+    "detectedAt" DATETIME NOT NULL,
+    "resolvedAt" DATETIME,
+    "notes" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "ProcessExcursion_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Organization_slug_key" ON "Organization"("slug");
 
@@ -1237,4 +1300,37 @@ CREATE INDEX "LeadMagnetSubmission_sourceTool_createdAt_idx" ON "LeadMagnetSubmi
 
 -- CreateIndex
 CREATE INDEX "LeadMagnetSubmission_email_idx" ON "LeadMagnetSubmission"("email");
+
+-- CreateIndex
+CREATE INDEX "ProductionRecord_clientId_idx" ON "ProductionRecord"("clientId");
+
+-- CreateIndex
+CREATE INDEX "ProductionRecord_shiftDate_idx" ON "ProductionRecord"("shiftDate");
+
+-- CreateIndex
+CREATE INDEX "ProductionRecord_lineId_shiftDate_shiftNumber_idx" ON "ProductionRecord"("lineId", "shiftDate", "shiftNumber");
+
+-- CreateIndex
+CREATE INDEX "DefectEvent_clientId_idx" ON "DefectEvent"("clientId");
+
+-- CreateIndex
+CREATE INDEX "DefectEvent_detectedAt_idx" ON "DefectEvent"("detectedAt");
+
+-- CreateIndex
+CREATE INDEX "DefectEvent_defectType_idx" ON "DefectEvent"("defectType");
+
+-- CreateIndex
+CREATE INDEX "DefectEvent_detectedAtMachine_idx" ON "DefectEvent"("detectedAtMachine");
+
+-- CreateIndex
+CREATE INDEX "DefectEvent_linkedReflowExcursionId_idx" ON "DefectEvent"("linkedReflowExcursionId");
+
+-- CreateIndex
+CREATE INDEX "ProcessExcursion_clientId_idx" ON "ProcessExcursion"("clientId");
+
+-- CreateIndex
+CREATE INDEX "ProcessExcursion_machineId_idx" ON "ProcessExcursion"("machineId");
+
+-- CreateIndex
+CREATE INDEX "ProcessExcursion_detectedAt_idx" ON "ProcessExcursion"("detectedAt");
 
