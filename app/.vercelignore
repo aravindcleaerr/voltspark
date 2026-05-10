@@ -1,0 +1,13 @@
+# Local SQLite files — must not be uploaded to Vercel build (Turso is used in production)
+dev.db
+dev.db-journal
+*.db-journal
+.env.turso
+
+# Tests / artifacts
+e2e/
+playwright-report/
+test-results/
+
+# Local development only
+SESSION_LOG.md
