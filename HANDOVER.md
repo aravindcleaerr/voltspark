@@ -23,10 +23,10 @@ Multi-tenant B2B2C + B2C SaaS for industrial energy and compliance management in
 
 - **B2B2C track:** Energy consultant signs up → adds industrial clients → manages all from one portfolio dashboard
 - **B2C track:** Industrial facility signs up directly, enters bills, tracks compliance
-- **First client:** Unnathi CNC Technologies (Peenya, Bengaluru) — managed by Akshaya Createch
+- **First client:** Unnathi CNC Technologies (Peenya, Bengaluru)
 - **Pilot client:** A Plus Fixtures Pvt Ltd (Bommanahalli) — 3 CNC machines + solar
 - **Live at:** https://volt-spark.vercel.app
-- **Built by:** Akshaya Createch (Aravind V Bayari — tech; Lakshminarasimhan K — domain)
+- **Built by:** VoltSpark (Aravind V Bayari — tech & product)
 
 ---
 
@@ -193,9 +193,9 @@ Multi-tenant B2B2C + B2C SaaS for industrial energy and compliance management in
 ```
 /                                   # Landing page (B2B2C + B2C dual-track hero)
 /start                              # B2C facility direct signup
-/investor                           # Investor pitch — gated (passphrase: akshaya2026)
-/partner                            # Partner programme — gated (passphrase: akshaya2026)
-/partner/economics                  # Commission breakdown — gated (passphrase: akshaya2026)
+/investor                           # Investor pitch — gated (passphrase: voltspark2026)
+/partner                            # Partner programme — gated (passphrase: voltspark2026)
+/partner/economics                  # Commission breakdown — gated (passphrase: voltspark2026)
 /privacy                            # Privacy policy
 /terms                              # Terms of service
 /share/[token]                      # Public shareable compliance view
@@ -264,7 +264,7 @@ rm .env.turso
 
 | User | Email | Password | Role | Notes |
 |---|---|---|---|---|
-| Consultant (Aravind) | `aravind@akshayacreatech.com` | `akshaya123` | Org OWNER | Access to both clients + console |
+| Consultant (Aravind) | `aravind@volt-spark.in` | `voltspark123` | Org OWNER | Access to both clients + console |
 | Unnathi CNC admin | `sureshkumar@unnathicnc.com` | `unnathi123` | CLIENT_ADMIN | |
 | A Plus Fixtures admin | `admin@aplusfixtures.com` | `aplus123` | CLIENT_ADMIN | IOT_METERING enabled |
 | Demo | `demo@voltspark.in` | `demo123` | — | Generic demo access |
@@ -304,7 +304,7 @@ Context for anyone picking this up after April 2026:
 
 2. **B2B2C + B2C dual-track positioning** — Landing page now serves both tracks. Facilities hero up top; consultant value prop further down. Commission language removed from all public pages — appears only on private `/partner` routes.
 
-3. **Private page gating** — `/investor`, `/partner`, `/partner/economics` require passphrase `akshaya2026`. Shared via WhatsApp with specific partners/investors.
+3. **Private page gating** — `/investor`, `/partner`, `/partner/economics` require passphrase `voltspark2026`. Shared via WhatsApp with specific partners/investors.
 
 4. **Competitor analysis completed** — 8 competitors benchmarked (Schneider PME, Zenatix, Facilio, Tor.ai, Siemens SIMATIC, ABB Ability, TCS Clever Energy, Intelex/GoAudits). SWOT analysis and feature matrix completed. Language qualified per LNK Sir's review (FITT framework — no absolute claims). Document lives in GrowthPath, not this repo.
 
@@ -359,8 +359,8 @@ Context for anyone picking this up after April 2026:
 
 | Person | Role | Contact |
 |---|---|---|
-| Aravind V Bayari | Tech & Product, Co-founder | aravind@akshayacreatech.in · +91 83173 08558 |
-| Lakshminarasimhan K | Domain & Operations, Founder | akshayacreatech@gmail.com · +91 79750 55916 |
+| Aravind V Bayari | Tech & Product, Founder | aravind@volt-spark.in · +91 83173 08558 |
+| Lakshminarasimhan K | Domain Advisor | +91 79750 55916 |
 
 ---
 

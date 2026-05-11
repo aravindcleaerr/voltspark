@@ -93,7 +93,7 @@ async function main() {
   await prisma.user.deleteMany();
 
   // ============================================================
-  // ORGANIZATION — Akshaya Createch (consulting firm)
+  // ORGANIZATION — Akshaya Createch (consulting firm using VoltSpark)
   // ============================================================
   const org = await prisma.organization.create({
     data: {
@@ -103,12 +103,12 @@ async function main() {
       plan: 'PRO',
     },
   });
-  console.log('Organization created: Akshaya Createch');
+  console.log('Organization created: Akshaya Createch (demo consulting tenant)');
 
   // ============================================================
   // CONSULTANT USERS
   // ============================================================
-  const consultantHash = await bcrypt.hash('akshaya123', 10);
+  const consultantHash = await bcrypt.hash('voltspark123', 10);
   const consultant = await prisma.user.create({
     data: { name: 'Aravind', email: 'aravind@volt-spark.in', passwordHash: consultantHash, role: 'USER' },
   });
@@ -427,7 +427,7 @@ async function main() {
       { clientId: unnathiClient.id, key: 'deviation_threshold_warning', value: '10' },
       { clientId: unnathiClient.id, key: 'deviation_threshold_critical', value: '20' },
       { clientId: unnathiClient.id, key: 'certification', value: 'ZED (Zero Defect Zero Effect)' },
-      { clientId: unnathiClient.id, key: 'consultant', value: 'Akshaya Createch' },
+      { clientId: unnathiClient.id, key: 'consultant', value: 'Aravind' },
       { clientId: unnathiClient.id, key: 'energy_policy_approved_by', value: 'Sandeep G. Parvatikar' },
       { clientId: unnathiClient.id, key: 'energy_policy_date', value: '2025-01-10' },
       { clientId: unnathiClient.id, key: 'solar_monthly_target', value: '8000' },
@@ -549,7 +549,7 @@ async function main() {
       { clientId: aplusClient.id, key: 'company_address', value: 'Bommanahalli, Bengaluru - 560068' },
       { clientId: aplusClient.id, key: 'deviation_threshold_warning', value: '10' },
       { clientId: aplusClient.id, key: 'deviation_threshold_critical', value: '20' },
-      { clientId: aplusClient.id, key: 'consultant', value: 'Akshaya Createch' },
+      { clientId: aplusClient.id, key: 'consultant', value: 'Aravind' },
       { clientId: aplusClient.id, key: 'consultant_fee_monthly', value: '15000' },
       { clientId: aplusClient.id, key: 'consultant_engagement_start', value: '2025-10-01' },
       { clientId: aplusClient.id, key: 'solar_monthly_target', value: '3000' },
@@ -2423,7 +2423,7 @@ async function main() {
   await seedDrivewave(prisma, org.id, consultant.id);
 
   console.log('\n=== Seeding complete! ===\n');
-  console.log('Consultant:  aravind@volt-spark.in / akshaya123');
+  console.log('Consultant:  aravind@volt-spark.in / voltspark123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');
   console.log('Demo:        demo@voltspark.in / demo123 (Precision Engineering)');
   console.log('Drivewave:   admin@drivewave.com / drivewave123 (SMT line — Vitesco demo)');

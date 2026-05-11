@@ -279,7 +279,7 @@ const html = `<!DOCTYPE html>
   <h1>VoltSpark<br/>Competitor<br/>Benchmark Study</h1>
   <div class="cover-sub">A comprehensive analysis of the industrial energy compliance software landscape in India — positioning, gaps, and strategic moat.</div>
   <div class="cover-meta">
-    Prepared by: Akshaya Createch &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; volt-spark.vercel.app
+    Prepared by: VoltSpark &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; volt-spark.vercel.app
   </div>
 </div>
 
