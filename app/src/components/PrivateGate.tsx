@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Zap, Lock } from 'lucide-react';
 
-const PASSPHRASE = 'akshaya2026';
+const PASSPHRASE = 'voltspark2026';
 const STORAGE_KEY = 'vs_private_unlocked';
 
 export default function PrivateGate({ children, pageName }: { children: React.ReactNode; pageName: string }) {

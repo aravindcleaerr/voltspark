@@ -20,7 +20,7 @@ export default function TermsPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Terms of Service</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Last updated: March 1, 2026</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Last updated: May 2026</p>
 
         <div className="prose prose-gray dark:prose-invert max-w-none space-y-6 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
           <section>
@@ -75,10 +75,20 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mt-8 mb-3">Contact</h2>
-            <p>For questions about these Terms, contact us at <a href="mailto:hello@voltspark.in" className="text-brand-600 hover:underline">hello@voltspark.in</a>.</p>
+            <p>For questions about these Terms, contact us at <a href="mailto:aravind@volt-spark.in" className="text-brand-600 hover:underline">aravind@volt-spark.in</a> or via <a href="https://wa.me/918317308558" target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline">WhatsApp</a>.</p>
           </section>
         </div>
       </main>
+
+      <footer className="border-t border-gray-200 dark:border-gray-800 mt-12">
+        <div className="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-gray-400">
+          <span>© 2026 VoltSpark · Built in Bengaluru</span>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy Policy</Link>
+            <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300">Home</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

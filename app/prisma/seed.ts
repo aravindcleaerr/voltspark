@@ -99,7 +99,7 @@ async function main() {
     data: {
       name: 'Akshaya Createch',
       slug: 'akshaya-createch',
-      website: 'https://akshayacreatech.vercel.app',
+      website: 'https://volt-spark.vercel.app',
       plan: 'PRO',
     },
   });
@@ -110,7 +110,7 @@ async function main() {
   // ============================================================
   const consultantHash = await bcrypt.hash('akshaya123', 10);
   const consultant = await prisma.user.create({
-    data: { name: 'Aravind', email: 'aravind@akshayacreatech.com', passwordHash: consultantHash, role: 'USER' },
+    data: { name: 'Aravind', email: 'aravind@volt-spark.in', passwordHash: consultantHash, role: 'USER' },
   });
   const lnk = await prisma.user.create({
     data: { name: 'Lakshminarasimhan K', email: 'lnk@akshayacreatech.com', passwordHash: consultantHash, role: 'USER' },
@@ -316,14 +316,14 @@ async function main() {
   await prisma.trainingProgram.create({
     data: {
       clientId: unnathiClient.id, title: 'Energy Management for ZED Certification — Practical Workshop',
-      type: 'SKILL_BUILDING', trainer: 'Akshaya Createch', scheduledDate: new Date('2026-03-01'),
+      type: 'SKILL_BUILDING', trainer: 'Aravind', scheduledDate: new Date('2026-03-01'),
       duration: 6, location: 'Unnathi CNC Technologies', maxParticipants: 20, status: 'SCHEDULED',
     },
   });
   await prisma.trainingProgram.create({
     data: {
       clientId: unnathiClient.id, title: 'Energy Monitoring System — User Training',
-      type: 'SKILL_BUILDING', trainer: 'Akshaya Createch (Aravind)', scheduledDate: new Date('2026-04-01'),
+      type: 'SKILL_BUILDING', trainer: 'Aravind', scheduledDate: new Date('2026-04-01'),
       duration: 3, location: 'Unnathi CNC Technologies', maxParticipants: 16, status: 'SCHEDULED',
     },
   });
@@ -434,6 +434,8 @@ async function main() {
       { clientId: unnathiClient.id, key: 'grid_monthly_target', value: '22000' },
       { clientId: unnathiClient.id, key: 'consultant_fee_monthly', value: '25000' },
       { clientId: unnathiClient.id, key: 'consultant_engagement_start', value: '2025-01-01' },
+      { clientId: unnathiClient.id, key: 'tariff_energy_rate', value: '8.10' },
+      { clientId: unnathiClient.id, key: 'tariff_demand_rate', value: '345' },
     ],
   });
 
@@ -552,6 +554,8 @@ async function main() {
       { clientId: aplusClient.id, key: 'consultant_engagement_start', value: '2025-10-01' },
       { clientId: aplusClient.id, key: 'solar_monthly_target', value: '3000' },
       { clientId: aplusClient.id, key: 'grid_monthly_target', value: '8000' },
+      { clientId: aplusClient.id, key: 'tariff_energy_rate', value: '8.10' },
+      { clientId: aplusClient.id, key: 'tariff_demand_rate', value: '345' },
     ],
   });
   console.log('A Plus Fixtures: app settings created');
@@ -1415,6 +1419,8 @@ async function main() {
       { clientId: demoClient.id, key: 'consultant_engagement_start', value: '2024-07-01' },
       { clientId: demoClient.id, key: 'deviation_threshold_warning', value: '10' },
       { clientId: demoClient.id, key: 'deviation_threshold_critical', value: '20' },
+      { clientId: demoClient.id, key: 'tariff_energy_rate', value: '8.10' },
+      { clientId: demoClient.id, key: 'tariff_demand_rate', value: '345' },
     ],
   });
 
@@ -2417,7 +2423,7 @@ async function main() {
   await seedDrivewave(prisma, org.id, consultant.id);
 
   console.log('\n=== Seeding complete! ===\n');
-  console.log('Consultant:  aravind@akshayacreatech.com / akshaya123');
+  console.log('Consultant:  aravind@volt-spark.in / akshaya123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');
   console.log('Demo:        demo@voltspark.in / demo123 (Precision Engineering)');
   console.log('Drivewave:   admin@drivewave.com / drivewave123 (SMT line — Vitesco demo)');

@@ -7,7 +7,7 @@
 - **Vision:** "Save energy. Stay safe. Win customers."
 - **Core insight:** Compliance is the medicine. The customer buys the cure — which is profit, safety, and growth.
 - **Product:** Standalone brand (not tied to any consulting firm)
-- **First customer:** Unnathi CNC Technologies (managed by Akshaya Createch)
+- **First customer:** Unnathi CNC Technologies
 - **Live at:** https://volt-spark.vercel.app
 
 ## Tech Stack
@@ -255,7 +255,7 @@ vercel env pull .env.turso --environment production
 - [ ] URL routing update with `/w/[slug]/...` pattern
 
 ### Login Credentials (seed data)
-- **Consultant:** `aravind@akshayacreatech.com` / `akshaya123` (Org: Akshaya Createch, role: OWNER)
+- **Consultant:** `aravind@volt-spark.in` / `akshaya123` (Org: Akshaya Createch, role: OWNER)
 - **Client user:** `sureshkumar@unnathicnc.com` / `unnathi123` (Client: Unnathi CNC, role: CLIENT_ADMIN)
 
 ### Prisma Models (current schema)

@@ -44,7 +44,7 @@ const team = [
     org: 'Advisor, VoltSpark',
     bio: '40+ years in industrial electrical systems. 32 years as AGM at Kasturi & Sons Ltd (The Hindu Group) managing transformers, DG sets, automation, HVAC, and fire safety across large commercial facilities. Decades of experience in electrical consultancy, solar EPC, and intelligent kitchen load management. B.E. Electrical & Electronics, TCE Madurai.',
     url: '',
-    email: 'akshayacreatech@gmail.com',
+    email: '',
     phone: '+91 79750 55916',
     wa: 'https://wa.me/917975055916',
     tags: ['Electrical Systems', 'Energy Consultancy', 'Solar EPC', 'Industrial Ops'],
@@ -396,9 +396,11 @@ export default function InvestorPage() {
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3 pt-1 border-t border-gray-100 dark:border-gray-800">
-                  <a href={`mailto:${t.email}`} className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400">
-                    <Mail className="h-3 w-3" />{t.email}
-                  </a>
+                  {t.email && (
+                    <a href={`mailto:${t.email}`} className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400">
+                      <Mail className="h-3 w-3" />{t.email}
+                    </a>
+                  )}
                   <a href={t.wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-green-600">
                     <Phone className="h-3 w-3" />{t.phone}
                   </a>
