@@ -255,7 +255,7 @@ vercel env pull .env.turso --environment production
 - [ ] URL routing update with `/w/[slug]/...` pattern
 
 ### Login Credentials (seed data)
-- **Consultant:** `aravind@volt-spark.in` / `voltspark123` (Org: Akshaya Createch, role: OWNER)
+- **Consultant:** `aravind@volt-spark.in` / `voltspark123` (Org: VoltSpark, role: OWNER)
 - **Client user:** `sureshkumar@unnathicnc.com` / `unnathi123` (Client: Unnathi CNC, role: CLIENT_ADMIN)
 
 ### Prisma Models (current schema)

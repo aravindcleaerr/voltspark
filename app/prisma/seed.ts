@@ -93,17 +93,17 @@ async function main() {
   await prisma.user.deleteMany();
 
   // ============================================================
-  // ORGANIZATION — Akshaya Createch (consulting firm using VoltSpark)
+  // ORGANIZATION — VoltSpark (the platform org / demo consulting tenant)
   // ============================================================
   const org = await prisma.organization.create({
     data: {
-      name: 'Akshaya Createch',
-      slug: 'akshaya-createch',
+      name: 'VoltSpark',
+      slug: 'voltspark',
       website: 'https://volt-spark.vercel.app',
       plan: 'PRO',
     },
   });
-  console.log('Organization created: Akshaya Createch (demo consulting tenant)');
+  console.log('Organization created: VoltSpark');
 
   // ============================================================
   // CONSULTANT USERS
