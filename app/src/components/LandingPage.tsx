@@ -77,7 +77,7 @@ export default function LandingPage() {
   const handleTryDemo = async () => {
     setDemoLoading(true);
     await signIn('credentials', {
-      email: 'demo@voltspark.in',
+      email: 'demo@volt-spark.in',
       password: 'demo123',
       callbackUrl: '/dashboard',
     });

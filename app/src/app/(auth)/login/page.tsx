@@ -89,7 +89,7 @@ export default function LoginPage() {
 
         <div className="mt-4 p-3 bg-brand-50 border border-brand-200 rounded-lg text-center">
           <p className="text-xs text-brand-700 font-medium mb-1">Try the demo</p>
-          <p className="text-xs text-brand-600 font-mono">demo@voltspark.in / demo123</p>
+          <p className="text-xs text-brand-600 font-mono">demo@volt-spark.in / demo123</p>
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-4">

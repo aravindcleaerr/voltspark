@@ -1191,7 +1191,7 @@ async function main() {
 
   const demoHash = await bcrypt.hash('demo123', 10);
   const demoUser = await prisma.user.create({
-    data: { name: 'Demo User', email: 'demo@voltspark.in', passwordHash: demoHash, role: 'USER' },
+    data: { name: 'Demo User', email: 'demo@volt-spark.in', passwordHash: demoHash, role: 'USER' },
   });
   await prisma.membership.create({ data: { userId: demoUser.id, organizationId: demoOrg.id, role: 'MEMBER' } });
 
@@ -2425,7 +2425,7 @@ async function main() {
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@volt-spark.in / voltspark123');
   console.log('Client:      sureshkumar@unnathicnc.com / unnathi123');
-  console.log('Demo:        demo@voltspark.in / demo123 (Precision Engineering)');
+  console.log('Demo:        demo@volt-spark.in / demo123 (Precision Engineering)');
   console.log('Drivewave:   admin@drivewave.com / drivewave123 (SMT line — Vitesco demo)');
 }
 
