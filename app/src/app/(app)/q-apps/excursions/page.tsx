@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { requireClient } from '@/lib/session';
 import PageHeader from '@/components/layout/PageHeader';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,7 +76,11 @@ export default async function ProcessExcursionsPage() {
                     <td className={`px-3 py-2 text-right ${Math.abs(delta) > 5 ? 'text-red-600 font-bold' : ''}`}>{delta > 0 ? '+' : ''}{delta.toFixed(2)}</td>
                     <td className="px-3 py-2 text-right">{e.durationSeconds}s</td>
                     <td className="px-3 py-2"><span className={`text-xs px-2 py-0.5 rounded ${SEVERITY_COLOR[e.severity] || ''}`}>{e.severity}</span></td>
-                    <td className={`px-3 py-2 text-right ${linked > 0 ? 'text-purple-600 font-medium' : 'text-gray-400'}`}>{linked}</td>
+                    <td className="px-3 py-2 text-right">
+                      {linked > 0
+                        ? <Link href={`/q-apps/defects?excursionId=${e.id}`} className="text-purple-600 font-medium hover:underline">{linked}</Link>
+                        : <span className="text-gray-400">0</span>}
+                    </td>
                     <td className="px-3 py-2 text-xs text-gray-600 max-w-[28ch] truncate">{e.notes || ''}</td>
                   </tr>
                 );

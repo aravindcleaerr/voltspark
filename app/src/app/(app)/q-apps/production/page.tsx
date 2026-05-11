@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { requireClient } from '@/lib/session';
 import PageHeader from '@/components/layout/PageHeader';
 import { redirect } from 'next/navigation';
+import ProductionSparkline from './ProductionSparkline';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,14 @@ export default async function ProductionOverviewPage() {
   const avgFpy = records.length ? records.reduce((s, r) => s + r.fpy, 0) / records.length : 0;
   const avgPpm = records.length ? Math.round(records.reduce((s, r) => s + r.ppmDefects, 0) / records.length) : 0;
 
+  // Oldest-first for chart (last 30 shifts)
+  const sparkData = records.slice(0, 30).reverse().map(r => ({
+    shift: `${r.shiftDate.toISOString().slice(5, 10)} S${r.shiftNumber}`,
+    oee: r.oee,
+    fpy: r.fpy,
+    ppm: r.ppmDefects,
+  }));
+
   return (
     <div>
       <PageHeader
@@ -40,6 +49,8 @@ export default async function ProductionOverviewPage() {
             <div className="card"><p className="text-xs text-gray-500">Avg FPY</p><p className="text-2xl font-bold">{pct(avgFpy)}</p></div>
             <div className="card"><p className="text-xs text-gray-500">Avg PPM</p><p className={`text-2xl font-bold ${avgPpm > 100 ? 'text-red-600' : ''}`}>{avgPpm.toLocaleString()}</p></div>
           </div>
+
+          <ProductionSparkline data={sparkData} />
 
           <div className="card overflow-x-auto">
             <table className="min-w-full text-sm">
