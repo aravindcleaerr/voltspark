@@ -4,9 +4,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/layout/PageHeader';
 import { IOT_GATEWAY_TYPES, IOT_PROTOCOLS, IOT_METER_MAKES, IOT_METER_TYPES } from '@/lib/constants';
-import { Copy, Check, Plus, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { METER_PROFILES, METER_PROFILES_BY_TIER } from '@/lib/meter-profiles';
+import { Copy, Check, Plus, Trash2, ArrowRight, ArrowLeft, AlertTriangle } from 'lucide-react';
 
 interface EnergySource { id: string; name: string; type: string }
+
+type MeterRow = {
+  name: string; meterSerial: string; modbusAddress: string;
+  make: string; model: string; meterType: string;
+  energySourceId: string; ctRatio: string; panelName: string; location: string;
+  profileId: string;
+};
 
 export default function NewDevicePage() {
   const router = useRouter();
@@ -20,7 +28,7 @@ export default function NewDevicePage() {
   const [gatewayId, setGatewayId] = useState('');
 
   // Meters form
-  const [meters, setMeters] = useState<Array<{ name: string; meterSerial: string; modbusAddress: string; make: string; model: string; meterType: string; energySourceId: string; ctRatio: string; panelName: string; location: string }>>([]);
+  const [meters, setMeters] = useState<MeterRow[]>([]);
 
   // API key
   const [apiKey, setApiKey] = useState('');
@@ -43,7 +51,20 @@ export default function NewDevicePage() {
     setSaving(false);
   };
 
-  const addMeterRow = () => setMeters([...meters, { name: '', meterSerial: '', modbusAddress: '', make: 'SCHNEIDER', model: '', meterType: 'SUBMETER', energySourceId: '', ctRatio: '', panelName: '', location: '' }]);
+  const applyProfile = (index: number, profileId: string) => {
+    const profile = METER_PROFILES.find(p => p.id === profileId);
+    const updated = [...meters];
+    updated[index] = {
+      ...updated[index],
+      profileId,
+      make: profile?.makeKey ?? updated[index].make,
+      model: profile ? `${profile.brand} ${profile.model}` : updated[index].model,
+      modbusAddress: profile ? String(profile.modbus.defaultSlaveId) : updated[index].modbusAddress,
+    };
+    setMeters(updated);
+  };
+
+  const addMeterRow = () => setMeters([...meters, { name: '', meterSerial: '', modbusAddress: '', make: 'SCHNEIDER', model: '', meterType: 'SUBMETER', energySourceId: '', ctRatio: '', panelName: '', location: '', profileId: '' }]);
 
   const createMeters = async () => {
     if (meters.length === 0) { setStep(3); return; }
@@ -143,7 +164,38 @@ export default function NewDevicePage() {
                 <span className="text-sm font-semibold text-gray-700">Meter {i + 1}</span>
                 <button onClick={() => setMeters(meters.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-700"><Trash2 className="h-4 w-4" /></button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3">
+                {/* Meter profile selector */}
+                <div>
+                  <label className="label-text">Meter Profile <span className="text-gray-400 font-normal">(optional — auto-fills make, model, Modbus address)</span></label>
+                  <select className="input-field" value={m.profileId} onChange={e => applyProfile(i, e.target.value)}>
+                    <option value="">— Select a profile to auto-fill —</option>
+                    <optgroup label="Standard Tier (₹599/meter/mo)">
+                      {METER_PROFILES_BY_TIER.standard.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+                    </optgroup>
+                    <optgroup label="Advanced Tier (₹999/meter/mo)">
+                      {METER_PROFILES_BY_TIER.advanced.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+                    </optgroup>
+                    <optgroup label="Power Quality Tier (₹1,499/meter/mo)">
+                      {METER_PROFILES_BY_TIER.power_quality.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+                    </optgroup>
+                  </select>
+                </div>
+                {/* Commissioning gotchas */}
+                {m.profileId && (() => {
+                  const profile = METER_PROFILES.find(p => p.id === m.profileId);
+                  if (!profile?.gotchas.length) return null;
+                  return (
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                      <div className="flex items-center gap-1.5 text-amber-800 font-medium text-xs mb-1.5"><AlertTriangle className="h-3.5 w-3.5" /> Commissioning Notes</div>
+                      <ul className="space-y-1">
+                        {profile.gotchas.map((g, gi) => <li key={gi} className="text-amber-700 text-xs">• {g}</li>)}
+                      </ul>
+                    </div>
+                  );
+                })()}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                 <div><label className="label-text">Name *</label><input className="input-field" value={m.name} onChange={e => { const u = [...meters]; u[i].name = e.target.value; setMeters(u); }} placeholder="e.g. Incomer Meter" /></div>
                 <div><label className="label-text">Serial</label><input className="input-field" value={m.meterSerial} onChange={e => { const u = [...meters]; u[i].meterSerial = e.target.value; setMeters(u); }} /></div>
                 <div><label className="label-text">Modbus Address</label><input className="input-field" type="number" min="1" max="247" value={m.modbusAddress} onChange={e => { const u = [...meters]; u[i].modbusAddress = e.target.value; setMeters(u); }} /></div>

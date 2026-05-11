@@ -66,5 +66,15 @@ export async function POST(request: NextRequest) {
     data: { userId: user.id, clientId: client.id, role: 'CLIENT_ADMIN' },
   });
 
+  // Seed default AppSettings for new clients (BESCOM HT-2A Karnataka defaults)
+  await prisma.appSetting.createMany({
+    data: [
+      { clientId: client.id, key: 'tariff_energy_rate', value: '8.10' },
+      { clientId: client.id, key: 'tariff_demand_rate', value: '345' },
+      { clientId: client.id, key: 'deviation_threshold_warning', value: '10' },
+      { clientId: client.id, key: 'deviation_threshold_critical', value: '20' },
+    ],
+  });
+
   return NextResponse.json(client, { status: 201 });
 }

@@ -1306,10 +1306,14 @@ model PQEvent {
   readingId        String?   // reference to MeterReading that triggered this
   resolvedAt       DateTime?
   createdAt        DateTime  @default(now())
+  // PQ waveform capture (PQ tier — gateway captures Parquet blob, stores in S3)
+  waveformEventId  String?   // gateway-assigned event ID (e.g. evt_abc123) for cross-reference
+  waveformS3Key    String?   // S3 object key for the Parquet+zstd waveform blob
 
   @@index([clientId, createdAt])
   @@index([meterId, createdAt])
   @@index([type, createdAt])
+  @@index([waveformEventId])
 }
 
 model PQSnapshot {

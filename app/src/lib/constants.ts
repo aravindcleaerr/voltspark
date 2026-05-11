@@ -119,15 +119,20 @@ export const DEVIATION_THRESHOLD_CRITICAL = 20;
 export const IOT_GATEWAY_TYPES = [
   { value: 'ESX_UNIVERSAL', label: 'Schneider ESX Panel Server Universal' },
   { value: 'PAS600', label: 'Schneider PAS600 Panel Server (Basic)' },
+  { value: 'SAN_TELEQUIP_G8M', label: 'SAN Telequip GW IoT G8M-485' },
   { value: 'RASPBERRY_PI', label: 'Raspberry Pi Gateway' },
   { value: 'INDUSTRIAL_PC', label: 'Industrial PC' },
   { value: 'OTHER', label: 'Other' },
 ] as const;
 
 export const IOT_METER_MAKES = [
-  { value: 'SCHNEIDER', label: 'Schneider Electric' },
+  { value: 'SCHNEIDER', label: 'Schneider / Conzerv' },
   { value: 'ABB', label: 'ABB' },
   { value: 'SIEMENS', label: 'Siemens' },
+  { value: 'LNT', label: 'L&T Electrical' },
+  { value: 'RISHABH', label: 'Rishabh Instruments' },
+  { value: 'SELEC', label: 'Selec Instruments' },
+  { value: 'JANITZA', label: 'Janitza Electronics' },
   { value: 'SECURE', label: 'Secure Meters' },
   { value: 'ELMEASURE', label: 'Elmeasure' },
   { value: 'OTHER', label: 'Other' },
