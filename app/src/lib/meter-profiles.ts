@@ -3,7 +3,7 @@ export interface MeterProfile {
   brand: string;
   model: string;
   fullName: string;
-  tier: 'standard' | 'advanced' | 'power_quality';
+  tier: 'basic' | 'standard' | 'advanced' | 'power_quality';
   makeKey: string;
   modbus: {
     defaultSlaveId: number;
@@ -157,7 +157,7 @@ export const METER_PROFILES: MeterProfile[] = [
     brand: 'Schneider',
     model: 'EM6400NG CL-1RS',
     fullName: 'Schneider EM6400NG CL-1RS',
-    tier: 'advanced',
+    tier: 'standard',
     makeKey: 'SCHNEIDER',
     modbus: { defaultSlaveId: 1, baud: 9600, parity: 'E', stopBits: 1, wordOrder: 'CDAB' },
     gotchas: [
@@ -172,7 +172,7 @@ export const METER_PROFILES: MeterProfile[] = [
     brand: 'Schneider',
     model: 'EM1200 CL-1RS',
     fullName: 'Schneider EM1200 CL-1RS',
-    tier: 'standard',
+    tier: 'basic',
     makeKey: 'SCHNEIDER',
     modbus: { defaultSlaveId: 1, baud: 9600, parity: 'E', stopBits: 1, wordOrder: 'CDAB' },
     gotchas: [
@@ -198,6 +198,7 @@ export const METER_PROFILES: MeterProfile[] = [
 ];
 
 export const METER_PROFILES_BY_TIER = {
+  basic: METER_PROFILES.filter(p => p.tier === 'basic'),
   standard: METER_PROFILES.filter(p => p.tier === 'standard'),
   advanced: METER_PROFILES.filter(p => p.tier === 'advanced'),
   power_quality: METER_PROFILES.filter(p => p.tier === 'power_quality'),

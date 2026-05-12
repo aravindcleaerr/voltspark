@@ -170,6 +170,9 @@ export default function NewDevicePage() {
                   <label className="label-text">Meter Profile <span className="text-gray-400 font-normal">(optional — auto-fills make, model, Modbus address)</span></label>
                   <select className="input-field" value={m.profileId} onChange={e => applyProfile(i, e.target.value)}>
                     <option value="">— Select a profile to auto-fill —</option>
+                    <optgroup label="Basic Tier (₹299/meter/mo)">
+                      {METER_PROFILES_BY_TIER.basic.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+                    </optgroup>
                     <optgroup label="Standard Tier (₹599/meter/mo)">
                       {METER_PROFILES_BY_TIER.standard.map(p => <option key={p.id} value={p.id}>{p.fullName}</option>)}
                     </optgroup>
