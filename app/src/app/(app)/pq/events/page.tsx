@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PageHeader from '@/components/layout/PageHeader';
-import { AlertTriangle, Filter } from 'lucide-react';
+import { AlertTriangle, Filter, Waves } from 'lucide-react';
 
 const PQ_EVENT_TYPES = [
   { value: 'VOLTAGE_SAG', label: 'Voltage Sag' },
@@ -24,6 +24,8 @@ interface PQEvent {
   nominalValue: number | null;
   message: string;
   createdAt: string;
+  waveformEventId: string | null;
+  waveformS3Key: string | null;
   meter: { id: string; name: string; meterType: string } | null;
 }
 
@@ -81,6 +83,14 @@ export default function PQEventsPage() {
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${severityColor(event.severity)}`}>{event.severity}</span>
                   <span className="text-xs text-gray-400">{event.type.replace(/_/g, ' ')}</span>
+                  {event.waveformS3Key && (
+                    <span
+                      className="text-xs px-1.5 py-0.5 rounded font-medium bg-indigo-50 text-indigo-700 inline-flex items-center gap-1"
+                      title={`Waveform captured: ${event.waveformS3Key}`}
+                    >
+                      <Waves className="h-3 w-3" /> Waveform
+                    </span>
+                  )}
                 </div>
                 <div className="text-sm font-medium text-gray-900">{event.message}</div>
                 <div className="text-xs text-gray-500 mt-0.5">
