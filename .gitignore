@@ -71,3 +71,6 @@ app/check-turso.mjs
 app/copy-to-turso-resume.mjs
 app/drop-turso-tables.mjs
 app/reset-turso-data.mjs
+
+# Standalone sibling repo (tracked separately, not a submodule)
+docs/voltspark-field-engineering/
