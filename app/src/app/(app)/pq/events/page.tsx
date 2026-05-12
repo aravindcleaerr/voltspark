@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PageHeader from '@/components/layout/PageHeader';
+import Link from 'next/link';
 import { AlertTriangle, Filter, Waves } from 'lucide-react';
 
 const PQ_EVENT_TYPES = [
@@ -77,7 +78,7 @@ export default function PQEventsPage() {
       ) : (
         <div className="card divide-y">
           {events.map(event => (
-            <div key={event.id} className="px-4 py-3 flex items-start gap-3">
+            <Link key={event.id} href={`/pq/events/${event.id}`} className="px-4 py-3 flex items-start gap-3 hover:bg-gray-50 transition-colors">
               <AlertTriangle className={`h-4 w-4 mt-1 flex-shrink-0 ${event.severity === 'CRITICAL' ? 'text-red-500' : 'text-amber-500'}`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
@@ -102,7 +103,7 @@ export default function PQEventsPage() {
                 <div className="font-mono">{event.actualValue.toFixed(1)}</div>
                 <div className="text-gray-400">limit: {event.thresholdValue.toFixed(1)}</div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
