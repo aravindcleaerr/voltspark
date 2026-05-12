@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
         Severity: i.severity,
         Date: new Date(i.incidentDate).toISOString().split('T')[0],
         Location: i.location || '',
-        ReportedBy: i.reportedBy.name,
+        ReportedBy: i.reportedBy?.name ?? 'Auto-generated',
         Status: i.status,
         RootCause: i.rootCause || '',
         CorrectiveAction: i.correctiveAction || '',

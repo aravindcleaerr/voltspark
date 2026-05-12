@@ -11,6 +11,8 @@ export async function GET() {
     include: {
       reportedBy: { select: { name: true } },
       closedBy: { select: { name: true } },
+      meterAlert: { include: { meter: { select: { name: true, model: true } } } },
+      frameworkRequirement: { select: { code: true, title: true, framework: { select: { code: true, name: true } } } },
     },
     orderBy: { incidentDate: 'desc' },
   });

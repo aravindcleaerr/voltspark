@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireIoTApiKey } from '@/lib/iot-auth';
 import { rateLimit } from '@/lib/rate-limit';
 import { canonicalToMeterReading } from '@/lib/iot-canonical';
+import { maybeCreateAutoIncident } from '@/lib/auto-incident';
 
 /**
  * MQTT telemetry ingest — accepts the VS-Meter Profile canonical payload format.
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       isActive: true,
       OR: [{ meterSerial: meterRef }, { id: meterRef }],
     },
-    select: { id: true, demandWarningPct: true, demandCriticalPct: true, pfLowThreshold: true },
+    select: { id: true, name: true, location: true, demandWarningPct: true, demandCriticalPct: true, pfLowThreshold: true },
   });
   if (!iotMeter) {
     return NextResponse.json({ error: `Meter not found: ${meterRef}` }, { status: 404 });
@@ -115,7 +116,15 @@ export async function POST(request: NextRequest) {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
     for (const alert of alertsToCreate) {
       const existing = await prisma.meterAlert.findFirst({ where: { meterId: alert.meterId, type: alert.type, createdAt: { gte: fiveMinAgo } } });
-      if (!existing) prisma.meterAlert.create({ data: alert }).catch(() => {});
+      if (!existing) {
+        const created = await prisma.meterAlert.create({ data: alert }).catch(() => null);
+        if (created) {
+          maybeCreateAutoIncident(
+            { id: created.id, clientId: created.clientId, meterId: created.meterId, type: created.type, message: created.message },
+            { name: iotMeter.name, location: iotMeter.location }
+          ).catch(() => {});
+        }
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireIoTApiKey } from '@/lib/iot-auth';
 import { ingestBatchSchema } from '@/lib/iot-validations';
 import { rateLimit } from '@/lib/rate-limit';
+import { maybeCreateAutoIncident } from '@/lib/auto-incident';
 
 export async function POST(request: NextRequest) {
   const auth = await requireIoTApiKey(request);
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
   // Resolve meters for this gateway
   const meters = await prisma.ioTMeter.findMany({
     where: { gatewayId: auth.gatewayId, isActive: true },
-    select: { id: true, meterSerial: true, modbusAddress: true, demandWarningPct: true, demandCriticalPct: true, pfLowThreshold: true },
+    select: { id: true, name: true, location: true, meterSerial: true, modbusAddress: true, demandWarningPct: true, demandCriticalPct: true, pfLowThreshold: true },
   });
 
   const meterBySerial = new Map(meters.filter(m => m.meterSerial).map(m => [m.meterSerial!, m]));
@@ -153,7 +154,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Batch create alerts (fire-and-forget, deduplicate by 5 min window)
+  // Batch create alerts (deduplicate by 5 min window). For each fresh alert,
+  // also try to promote it into a compliance incident (handles 24-hr dedup itself).
   if (alertsToCreate.length > 0) {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
     for (const alert of alertsToCreate) {
@@ -161,7 +163,14 @@ export async function POST(request: NextRequest) {
         where: { meterId: alert.meterId, type: alert.type, createdAt: { gte: fiveMinAgo } },
       });
       if (!existing) {
-        prisma.meterAlert.create({ data: alert }).catch(() => {});
+        const created = await prisma.meterAlert.create({ data: alert }).catch(() => null);
+        if (created) {
+          const meter = meterById.get(alert.meterId);
+          maybeCreateAutoIncident(
+            { id: created.id, clientId: created.clientId, meterId: created.meterId, type: created.type, message: created.message },
+            meter ? { name: meter.name, location: meter.location } : null
+          ).catch(() => {});
+        }
       }
     }
   }
