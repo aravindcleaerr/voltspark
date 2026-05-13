@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Cpu, ShieldCheck, AlertTriangle, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Cpu, ShieldCheck, AlertTriangle, ExternalLink, ClipboardCheck } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { formatDate } from '@/lib/utils';
@@ -39,6 +39,7 @@ interface Incident {
     meter: { id: string; name: string; model: string | null; location: string | null } | null;
   } | null;
   frameworkRequirement: { code: string; title: string; framework: { code: string; name: string } } | null;
+  capas: { id: string; capaNumber: string; priority: string; status: string; actionDueDate: string | null }[];
 }
 
 const SEVERITY_COLORS: Record<string, string> = { NEAR_MISS: 'yellow', MINOR: 'orange', MAJOR: 'red', FATAL: 'red' };
@@ -148,6 +149,31 @@ export default function IncidentDetailPage() {
                 </p>
               )}
               <p className="text-xs text-purple-600">Triggered {formatDate(incident.meterAlert.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {incident.capas.length > 0 && (
+        <div className="card bg-amber-50 border-amber-200">
+          <div className="flex items-start gap-3">
+            <ClipboardCheck className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 text-sm">
+              <p className="font-medium text-amber-900">Linked CAPA{incident.capas.length > 1 ? 's' : ''} — auto-generated</p>
+              <p className="text-amber-700 mt-0.5 mb-2">This incident triggered a corrective action plan. Close it through the CAPA workflow.</p>
+              <ul className="space-y-1">
+                {incident.capas.map(c => (
+                  <li key={c.id}>
+                    <Link href={`/capa/${c.id}`} className="inline-flex items-center gap-2 text-amber-900 hover:underline">
+                      <span className="font-mono text-xs">{c.capaNumber}</span>
+                      <StatusBadge label={c.priority} color={c.priority === 'CRITICAL' ? 'red' : 'orange'} />
+                      <StatusBadge label={c.status.replace('_', ' ')} color={c.status === 'CLOSED' ? 'green' : 'red'} />
+                      {c.actionDueDate && <span className="text-xs text-amber-700">due {formatDate(c.actionDueDate)}</span>}
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

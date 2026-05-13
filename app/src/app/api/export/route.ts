@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
         Source: c.source,
         Priority: c.priority,
         Status: c.status,
-        RaisedBy: c.raisedBy.name,
+        RaisedBy: c.raisedBy?.name ?? 'Auto-generated',
         AssignedTo: c.assignedTo?.name || '',
         RootCause: c.rootCause || '',
         CorrectiveAction: c.correctiveAction || '',

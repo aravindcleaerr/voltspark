@@ -13,6 +13,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
       closedBy: { select: { name: true, email: true } },
       meterAlert: { include: { meter: { select: { id: true, name: true, model: true, location: true } } } },
       frameworkRequirement: { select: { code: true, title: true, framework: { select: { code: true, name: true } } } },
+      capas: { select: { id: true, capaNumber: true, priority: true, status: true, actionDueDate: true } },
     },
   });
   if (!incident) return NextResponse.json({ error: 'Not found' }, { status: 404 });
