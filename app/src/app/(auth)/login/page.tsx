@@ -13,23 +13,27 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function signInWith(emailVal: string, passwordVal: string) {
     setError('');
     setLoading(true);
-
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
-
+    const result = await signIn('credentials', { email: emailVal, password: passwordVal, redirect: false });
     if (result?.error) {
       setError('Invalid email or password');
       setLoading(false);
     } else {
       router.push('/dashboard');
     }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await signInWith(email, password);
+  }
+
+  function tryDemo() {
+    setEmail('demo@volt-spark.in');
+    setPassword('demo123');
+    signInWith('demo@volt-spark.in', 'demo123');
   }
 
   function handleGoogleSignIn() {
@@ -85,12 +89,23 @@ export default function LoginPage() {
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
+
+          <div className="text-center">
+            <Link href="/forgot-password" className="text-xs text-gray-500 hover:text-brand-600">
+              Forgot your password?
+            </Link>
+          </div>
         </form>
 
-        <div className="mt-4 p-3 bg-brand-50 border border-brand-200 rounded-lg text-center">
+        <button
+          type="button"
+          onClick={tryDemo}
+          disabled={loading}
+          className="mt-4 w-full p-3 bg-brand-50 border border-brand-200 rounded-lg text-center hover:bg-brand-100 hover:border-brand-300 transition-colors disabled:opacity-60"
+        >
           <p className="text-xs text-brand-700 font-medium mb-1">Try the demo</p>
           <p className="text-xs text-brand-600 font-mono">demo@volt-spark.in / demo123</p>
-        </div>
+        </button>
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Don&apos;t have an account?{' '}

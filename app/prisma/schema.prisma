@@ -118,6 +118,20 @@ model ClientAccess {
   @@unique([userId, clientId])
 }
 
+// Short-lived single-use token for password reset email flow. Created on
+// /api/auth/forgot-password, consumed by /api/auth/reset-password. Always
+// returns success to the client to avoid email enumeration.
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
 // ============================================================
 // USER MODEL
 // ============================================================

@@ -91,6 +91,46 @@ export function notificationEmail(opts: {
   };
 }
 
+export function passwordResetEmail(opts: { name: string; resetUrl: string; expiryHours: number }) {
+  return {
+    subject: 'Reset your VoltSpark password',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f9fafb;">
+        <div style="max-width:600px;margin:0 auto;padding:20px;">
+          <div style="text-align:center;padding:20px 0;">
+            <h1 style="margin:0;font-size:24px;color:#111827;">VoltSpark</h1>
+            <p style="margin:4px 0 0;font-size:13px;color:#6B7280;">Energy Management Platform</p>
+          </div>
+          <div style="background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:24px;">
+            <h2 style="margin:0 0 16px;font-size:18px;color:#111827;">Password reset request</h2>
+            <p style="font-size:14px;color:#374151;line-height:1.6;">
+              Hi ${opts.name},<br><br>
+              Someone (hopefully you) asked to reset the password for this VoltSpark account.
+              Click the button below to set a new password.
+            </p>
+            <div style="text-align:center;margin:24px 0;">
+              <a href="${opts.resetUrl}" style="display:inline-block;padding:12px 32px;background:#2563EB;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Reset password</a>
+            </div>
+            <p style="font-size:13px;color:#6B7280;line-height:1.6;">
+              This link expires in ${opts.expiryHours} hour${opts.expiryHours === 1 ? '' : 's'}. If you didn't request a reset, you can safely ignore this email — your password won't change.
+            </p>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px;margin-top:16px;word-break:break-all;">
+              <p style="margin:0;font-size:11px;color:#9CA3AF;">If the button doesn't work, copy this link:</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#374151;">${opts.resetUrl}</p>
+            </div>
+          </div>
+          <p style="text-align:center;font-size:11px;color:#9CA3AF;margin-top:20px;">
+            Powered by VoltSpark — Energy Management Platform
+          </p>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+}
+
 export function inviteEmail(opts: {
   inviterName: string;
   inviterOrg: string;

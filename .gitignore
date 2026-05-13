@@ -39,9 +39,9 @@ yarn-error.log*
 credentials/
 *.pem
 
-# SQLite WAL files
-auth
-auth-wal
+# SQLite WAL files (anchored to repo root only — don't match api/auth dirs)
+/auth
+/auth-wal
 *.db-wal
 *.db-shm
 
