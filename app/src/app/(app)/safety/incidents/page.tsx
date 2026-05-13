@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AlertTriangle, Cpu, ShieldCheck } from 'lucide-react';
 import PageHeader from '@/components/layout/PageHeader';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -38,6 +39,7 @@ const STATUS_COLORS: Record<string, 'gray' | 'blue' | 'yellow' | 'orange' | 'red
 };
 
 export default function IncidentsPage() {
+  const router = useRouter();
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'ALL' | 'AUTO' | 'MANUAL' | 'OPEN'>('ALL');
@@ -105,7 +107,7 @@ export default function IncidentsPage() {
             </thead>
             <tbody className="divide-y">
               {filtered.map((i) => (
-                <tr key={i.id} className="hover:bg-gray-50">
+                <tr key={i.id} onClick={() => router.push(`/safety/incidents/${i.id}`)} className="hover:bg-gray-50 cursor-pointer">
                   <td className="py-3 px-3 whitespace-nowrap text-gray-600">{formatDate(i.incidentDate)}</td>
                   <td className="py-3 px-3">
                     <p className="font-medium">{i.title}</p>
