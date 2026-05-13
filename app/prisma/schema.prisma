@@ -78,6 +78,7 @@ model Client {
   // IoT Metering
   iotGateways        IoTGateway[]
   iotMeters          IoTMeter[]
+  iotSensors         IoTSensor[]
   meterAlerts        MeterAlert[]
   // Power Quality
   pqEvents           PQEvent[]
@@ -581,6 +582,8 @@ model Incident {
   source                String?              // METER_ALERT, SENSOR_BREACH, MANUAL
   meterAlertId          String?
   meterAlert            MeterAlert?          @relation(fields: [meterAlertId], references: [id])
+  sensorId              String?
+  sensor                IoTSensor?           @relation(fields: [sensorId], references: [id])
   frameworkRequirementId String?
   frameworkRequirement  FrameworkRequirement? @relation(fields: [frameworkRequirementId], references: [id])
   capas                 CAPA[]
@@ -1099,9 +1102,60 @@ model IoTGateway {
   updatedAt       DateTime @updatedAt
 
   meters          IoTMeter[]
+  sensors         IoTSensor[]
   apiKeys         IoTApiKey[]
 
   @@index([clientId])
+}
+
+// Environmental / process sensors — non-electrical instrumentation hung off the
+// same gateway. Examples: cold-room temperature (HACCP), compressor outlet
+// pressure, ICU humidity (NABH), motor vibration (predictive maintenance).
+// Threshold breaches feed the same MeterAlert → Incident → CAPA pipeline as
+// meter alerts so the compliance loop applies uniformly.
+model IoTSensor {
+  id            String     @id @default(cuid())
+  clientId      String
+  client        Client     @relation(fields: [clientId], references: [id])
+  gatewayId     String
+  gateway       IoTGateway @relation(fields: [gatewayId], references: [id])
+  name          String                                // e.g., "Cold Room A — Temperature"
+  sensorSerial  String?
+  modbusAddress Int?
+  make          String?
+  model         String?
+  sensorType    String                                // TEMPERATURE, HUMIDITY, CO2, VIBRATION, PRESSURE, AIR_QUALITY, OTHER
+  unit          String                                // °C, %RH, ppm, mm/s, bar, AQI, etc.
+  // Threshold pair — either bound (or both) triggers an alert when breached.
+  // Leave null for unbounded direction (e.g. CO2 only has an upper bound).
+  minValue      Float?                                // breach below this → LOW_VALUE alert
+  maxValue      Float?                                // breach above this → HIGH_VALUE alert
+  criticalDelta Float?                                // optional: how far past threshold = CRITICAL severity (otherwise WARNING)
+  // Where this sensor is mounted
+  location      String?
+  assetName     String?                               // e.g., "Cold Room A", "Air Compressor #2"
+  isActive      Boolean    @default(true)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  readings SensorReading[]
+  alerts   MeterAlert[]
+  incidents Incident[]
+
+  @@index([clientId])
+  @@index([gatewayId])
+}
+
+model SensorReading {
+  id        String    @id @default(cuid())
+  sensorId  String
+  sensor    IoTSensor @relation(fields: [sensorId], references: [id])
+  timestamp DateTime
+  value     Float
+  createdAt DateTime  @default(now())
+
+  @@index([sensorId, timestamp])
+  @@index([timestamp])
 }
 
 model IoTMeter {
@@ -1204,13 +1258,18 @@ model IoTApiKey {
   updatedAt   DateTime   @updatedAt
 }
 
+// Despite the name, this table now carries both meter and sensor alerts —
+// the trigger (meterId vs sensorId) is mutually exclusive but the downstream
+// pipeline (auto-incident, auto-CAPA, dedup) is identical for both.
 model MeterAlert {
   id               String    @id @default(cuid())
   clientId         String
   client           Client    @relation(fields: [clientId], references: [id])
   meterId          String?
   meter            IoTMeter? @relation(fields: [meterId], references: [id])
-  type             String    // DEMAND_WARNING, DEMAND_CRITICAL, DEMAND_BREACH, PF_LOW, VOLTAGE_SAG, VOLTAGE_SWELL, THD_HIGH, METER_OFFLINE, GATEWAY_OFFLINE
+  sensorId         String?
+  sensor           IoTSensor? @relation(fields: [sensorId], references: [id])
+  type             String    // DEMAND_WARNING, DEMAND_CRITICAL, DEMAND_BREACH, PF_LOW, VOLTAGE_SAG, VOLTAGE_SWELL, THD_HIGH, METER_OFFLINE, GATEWAY_OFFLINE, SENSOR_LOW, SENSOR_HIGH
   severity         String    @default("WARNING") // INFO, WARNING, CRITICAL
   parameterName    String?   // which parameter triggered: demandKVA, powerFactor, voltageR, etc.
   actualValue      Float?
@@ -1224,6 +1283,7 @@ model MeterAlert {
 
   @@index([clientId, createdAt])
   @@index([meterId, createdAt])
+  @@index([sensorId, createdAt])
 }
 
 model IoTMonthlySummary {

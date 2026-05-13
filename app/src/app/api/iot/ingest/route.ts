@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireIoTApiKey } from '@/lib/iot-auth';
 import { ingestBatchSchema } from '@/lib/iot-validations';
 import { rateLimit } from '@/lib/rate-limit';
-import { maybeCreateAutoIncident } from '@/lib/auto-incident';
+import { maybeCreateAutoIncident, maybeCreateAutoIncidentFromSensor } from '@/lib/auto-incident';
 
 export async function POST(request: NextRequest) {
   const auth = await requireIoTApiKey(request);
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Validation failed', details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { readings } = parsed.data;
+  const { readings = [], sensorReadings = [] } = parsed.data;
 
   // Resolve meters for this gateway
   const meters = await prisma.ioTMeter.findMany({
@@ -171,6 +171,79 @@ export async function POST(request: NextRequest) {
             meter ? { name: meter.name, location: meter.location } : null
           ).catch(() => {});
         }
+      }
+    }
+  }
+
+  // ============================================================
+  // SENSOR READINGS — separate channel from meter readings
+  // ============================================================
+  if (sensorReadings.length > 0) {
+    const sensors = await prisma.ioTSensor.findMany({
+      where: { gatewayId: auth.gatewayId, isActive: true },
+      select: { id: true, name: true, sensorType: true, unit: true, sensorSerial: true, minValue: true, maxValue: true, criticalDelta: true, location: true, assetName: true },
+    });
+    const sensorBySerial = new Map(sensors.filter(s => s.sensorSerial).map(s => [s.sensorSerial!, s]));
+    const sensorById = new Map(sensors.map(s => [s.id, s]));
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+    for (const sr of sensorReadings) {
+      const sensor = (sr.sensorId && sensorById.get(sr.sensorId)) || (sr.sensorSerial && sensorBySerial.get(sr.sensorSerial));
+      if (!sensor) {
+        rejected++;
+        errors.push(`Sensor not found: id=${sr.sensorId} serial=${sr.sensorSerial}`);
+        continue;
+      }
+
+      try {
+        await prisma.sensorReading.create({
+          data: { sensorId: sensor.id, timestamp: new Date(sr.timestamp), value: sr.value },
+        });
+        accepted++;
+      } catch {
+        rejected++;
+        errors.push(`Failed to store reading for sensor ${sensor.id}`);
+        continue;
+      }
+
+      // Threshold check
+      let breach: { type: 'SENSOR_LOW' | 'SENSOR_HIGH'; threshold: number } | null = null;
+      if (sensor.maxValue !== null && sr.value > sensor.maxValue) {
+        breach = { type: 'SENSOR_HIGH', threshold: sensor.maxValue };
+      } else if (sensor.minValue !== null && sr.value < sensor.minValue) {
+        breach = { type: 'SENSOR_LOW', threshold: sensor.minValue };
+      }
+      if (!breach) continue;
+
+      // Severity escalates to CRITICAL once the breach exceeds the criticalDelta band
+      const delta = Math.abs(sr.value - breach.threshold);
+      const severity = sensor.criticalDelta !== null && delta >= sensor.criticalDelta ? 'CRITICAL' : 'WARNING';
+
+      // Dedup at 5 min
+      const recent = await prisma.meterAlert.findFirst({
+        where: { sensorId: sensor.id, type: breach.type, createdAt: { gte: fiveMinAgo } },
+      });
+      if (recent) continue;
+
+      const message = `${sensor.name}: ${sr.value.toFixed(2)} ${sensor.unit} (threshold ${breach.threshold} ${sensor.unit})`;
+      const alert = await prisma.meterAlert.create({
+        data: {
+          clientId: auth.clientId,
+          sensorId: sensor.id,
+          type: breach.type,
+          severity,
+          parameterName: sensor.sensorType.toLowerCase(),
+          actualValue: sr.value,
+          thresholdValue: breach.threshold,
+          message,
+        },
+      }).catch(() => null);
+
+      if (alert) {
+        maybeCreateAutoIncidentFromSensor(
+          { id: alert.id, clientId: alert.clientId, sensorId: sensor.id, type: alert.type, severity: alert.severity, message: alert.message },
+          sensor
+        ).catch(() => {});
       }
     }
   }

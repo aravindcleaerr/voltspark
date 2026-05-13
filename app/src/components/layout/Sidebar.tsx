@@ -145,6 +145,7 @@ const iotNavSection: NavSection = {
   items: [
     { name: 'IoT Dashboard', href: '/iot/dashboard', icon: Radio },
     { name: 'Devices', href: '/iot/devices', icon: Cpu },
+    { name: 'Sensors', href: '/iot/sensors', icon: Thermometer },
     { name: 'IoT Alerts', href: '/iot/alerts', icon: AlertTriangle },
   ],
 };

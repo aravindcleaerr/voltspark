@@ -29,9 +29,9 @@ const tables = [
   // Kitchen Intelligence tables
   'DiscomTemplate', 'Kitchen', 'KitchenZone', 'KitchenApiKey',
   'TitanReading', 'DemandEvent', 'MonthlyKitchenSummary',
-  // IoT Metering tables
-  'IoTGateway', 'IoTMeter', 'IoTApiKey',
-  'MeterReading', 'MeterAlert', 'IoTMonthlySummary',
+  // IoT Metering tables (sensors before MeterAlert since alerts can reference them)
+  'IoTGateway', 'IoTMeter', 'IoTSensor', 'IoTApiKey',
+  'MeterReading', 'SensorReading', 'MeterAlert', 'IoTMonthlySummary',
   // Power Quality tables
   'PQEvent', 'PQSnapshot',
   // Compressed Air tables

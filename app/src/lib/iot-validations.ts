@@ -94,7 +94,24 @@ export const meterReadingSchema = z.object({
   { message: 'At least one of meterSerial, modbusAddress, or meterId is required' }
 );
 
+// Sensor reading payload — separate channel from electrical readings since the
+// shape and units are entirely different. Sensors are matched by `sensorId`
+// (returned when the sensor is provisioned) or `sensorSerial`.
+const sensorReadingSchema = z.object({
+  sensorId: z.string().optional(),
+  sensorSerial: z.string().optional(),
+  timestamp: z.string().datetime(),
+  value: z.number(),
+}).refine(
+  (data) => data.sensorId || data.sensorSerial,
+  { message: 'Either sensorId or sensorSerial is required' }
+);
+
 export const ingestBatchSchema = z.object({
   gatewaySerial: z.string().optional(),
-  readings: z.array(meterReadingSchema).min(1).max(100),
-});
+  readings: z.array(meterReadingSchema).min(1).max(100).optional(),
+  sensorReadings: z.array(sensorReadingSchema).max(100).optional(),
+}).refine(
+  (data) => (data.readings && data.readings.length > 0) || (data.sensorReadings && data.sensorReadings.length > 0),
+  { message: 'At least one of readings or sensorReadings must be provided' }
+);
