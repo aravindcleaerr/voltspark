@@ -40,6 +40,8 @@ const tables = [
   'LeadMagnetSubmission',
   // Q-Apps tables (Drivewave / Vitesco demo)
   'ProductionRecord', 'ProcessExcursion', 'DefectEvent',
+  // Asset Context Profile (Intelligence Bundle keystone) — templates first
+  'AssetTemplate', 'AssetContextProfile', 'ContextReview',
 ];
 
 async function main() {

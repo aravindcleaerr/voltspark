@@ -49,6 +49,7 @@ import {
   Factory,
   Bug,
   Thermometer,
+  Boxes,
 } from 'lucide-react';
 
 interface NavItem {
@@ -76,6 +77,7 @@ const navSections: NavSection[] = [
     label: 'Energy',
     items: [
       { name: 'Energy Sources', href: '/energy-sources', icon: Zap },
+      { name: 'Assets', href: '/assets', icon: Boxes },
       { name: 'Consumption', href: '/consumption', icon: BarChart3 },
       { name: 'Utility Bills', href: '/utility-bills', icon: Receipt },
       { name: 'Energy Costs', href: '/costs', icon: IndianRupee },

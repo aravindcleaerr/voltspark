@@ -1,6 +1,7 @@
 import { PrismaClient } from '../src/generated/prisma/client';
 import bcrypt from 'bcryptjs';
 import { seedDrivewave } from './seed-drivewave';
+import { seedAssetTemplates } from './asset-templates';
 
 function createPrisma() {
   if (process.env.TURSO_DATABASE_URL) {
@@ -23,6 +24,9 @@ async function main() {
   console.log('Seeding database with multi-tenant structure...\n');
 
   // Clean existing data (reverse dependency order)
+  // Asset Context Profile (templates are global ref data — upserted, not cleaned)
+  await prisma.contextReview.deleteMany();
+  await prisma.assetContextProfile.deleteMany();
   // Q-Apps (Drivewave SMT)
   await prisma.defectEvent.deleteMany();
   await prisma.processExcursion.deleteMany();
@@ -2421,6 +2425,13 @@ async function main() {
   // Drivewave Automotive — Vitesco demo tenant
   // ============================================================
   await seedDrivewave(prisma, org.id, consultant.id);
+
+  // ============================================================
+  // Asset Context Profile — Manufacturing equipment library
+  // (global reference data — not tenant-scoped)
+  // ============================================================
+  const templateCount = await seedAssetTemplates(prisma);
+  console.log(`Asset templates seeded: ${templateCount} Manufacturing equipment templates`);
 
   console.log('\n=== Seeding complete! ===\n');
   console.log('Consultant:  aravind@volt-spark.in / voltspark123');

@@ -90,6 +90,9 @@ model Client {
   productionRecords  ProductionRecord[]
   defectEvents       DefectEvent[]
   processExcursions  ProcessExcursion[]
+  // Asset Context Profile (Intelligence Bundle keystone)
+  assetProfiles      AssetContextProfile[]
+  contextReviews     ContextReview[]
 }
 
 model Membership {
@@ -208,6 +211,7 @@ model EnergySource {
   consumptionEntries ConsumptionEntry[]
   savingsMeasures    SavingsMeasure[]
   iotMeters          IoTMeter[]
+  assetProfiles      AssetContextProfile[]
 }
 
 model EnergyTarget {
@@ -1557,4 +1561,106 @@ model ProcessExcursion {
   @@index([clientId])
   @@index([machineId])
   @@index([detectedAt])
+}
+
+// ============================================================
+// ASSET CONTEXT PROFILE — Intelligence Bundle keystone
+// See docs/bundles/asset-context-profile.md. Every bundle and
+// every smart feature (alerts, reports, benchmarks) reads from
+// the ACP — it stores WHAT a meter is looking at, not just kWh.
+// ============================================================
+
+// AssetTemplate — the equipment library entry. Global reference
+// data (NOT tenant-scoped — same exception as the 7 ROI templates):
+// it is a catalog, not customer data. A bundle ships a set of these.
+model AssetTemplate {
+  id                   String   @id @default(cuid())
+  key                  String   @unique          // "wire-cut-edm", "cnc-vmc"
+  bundleType           String                     // MANUFACTURING, HEALTHCARE, ...
+  name                 String                     // "Wire-cut EDM"
+  category             String                     // "machine-tool", "imaging", ...
+  version              Int      @default(1)        // bump when defaults change
+  // Design-intent defaults
+  ratedPowerMinKw      Float?
+  ratedPowerMaxKw      Float?
+  cycleStructure       String   // short-repetitive | long-unattended | batch | continuous | event | varies
+  criticalityDefault   String   // critical | important | standard | non-critical
+  recommendedMeterTier String   // BASIC | STANDARD | ADVANCED | POWER_QUALITY
+  primaryWasteMode     String?  // one-line description of how this asset wastes money
+  // Structured defaults — JSON strings (codebase convention; see §5 of the spec)
+  powerStatesJson      String   @default("[]")     // [{ state, label, expectedKwPctRange }]
+  operatingEnvelopeJson String  @default("{}")     // { pfRange, voltageBand, runWindow, sensorBands }
+  primaryKpisJson      String   @default("[]")     // ["kwh_per_part", "idle_energy_pct", ...]
+  failureModesJson     String   @default("[]")     // [{ key, label, currency, unitCost?, costModel? }]
+  defaultAlertsJson    String   @default("[]")     // [{ key, trigger, severity, currency }]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+// AssetContextProfile — one customer's one real asset. Created at
+// onboarding from a template, pre-filled with template defaults,
+// then tuned to the real machine. Carries clientId for isolation.
+model AssetContextProfile {
+  id               String   @id @default(cuid())
+  clientId         String
+  client           Client   @relation(fields: [clientId], references: [id])
+  name             String                          // "Wire-cut EDM #1"
+  templateKey      String                          // → AssetTemplate.key
+  templateVersion  Int      @default(1)
+  // Linkage — what measures this asset
+  energySourceId   String?
+  energySource     EnergySource? @relation(fields: [energySourceId], references: [id])
+  meteringMode     String   @default("DEDICATED")  // DEDICATED | BAY_SHARED
+  // Static — design intent (seeded from template, then tuned)
+  assetCategory    String
+  manufacturer     String?
+  model            String?
+  yearInstalled    Int?
+  ratedPowerKw     Float?
+  criticality      String   @default("standard")   // critical | important | standard | non-critical
+  // Static — operating envelope (the "good" band)
+  operatingEnvelopeJson String @default("{}")       // { powerStates, pfRange, voltageBand, runWindow, sensorBands }
+  // Business context
+  unitOfOutput     String?                          // "part" | "scan" | "patient-day" | ...
+  painCurrency     String?                          // cost | scrap | uptime | compliance | safety
+  activeKpisJson   String   @default("[]")          // KPI keys enabled for this asset
+  failureModesJson String   @default("[]")          // [{ key, label, currency, unitCost }]
+  reportAudiencesJson String @default("[]")         // ["owner","supervisor","auditor","customer"]
+  // Live / derived
+  currentState     String?                          // last detected state
+  lastStateAt      DateTime?
+  // Reconciliation — live data audits the declared static context
+  reconcileStatus  String   @default("UNVERIFIED")  // OK | DRIFT | UNVERIFIED
+  reconcileNote    String?
+  lastReconciledAt DateTime?
+  notes            String?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  reviews ContextReview[]
+
+  @@index([clientId])
+}
+
+// ContextReview — the 5-tier refresh model. Each context section
+// of an ACP has an owner and a "last verified / due again" row so
+// staleness is queryable across the whole portfolio.
+model ContextReview {
+  id             String   @id @default(cuid())
+  clientId       String
+  client         Client   @relation(fields: [clientId], references: [id])
+  profileId      String
+  profile        AssetContextProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  section        String   // DESIGN | ENVELOPE | BUSINESS | TARIFF | OPERATIONS
+  refreshTier    String   // STATIC | SLOW | EVENT | LIVE
+  ownerUserId    String?  // who keeps this section fresh
+  lastReviewedAt DateTime?
+  nextReviewAt   DateTime?
+  status         String   @default("CURRENT")      // CURRENT | DUE | STALE
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([profileId])
 }
