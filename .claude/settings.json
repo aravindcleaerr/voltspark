@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"d:\\Project-AI\\LNK\\VoltSpark\\.claude\\hooks\\append-to-session-log.ps1\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
