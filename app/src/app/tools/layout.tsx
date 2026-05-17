@@ -1,9 +1,27 @@
 import Link from 'next/link';
+import Script from 'next/script';
 import { Zap } from 'lucide-react';
+
+// Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN on Vercel to switch analytics on.
+// Left unset, no script loads and track() stays a no-op.
+const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 export default function ToolsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white flex flex-col">
+      {PLAUSIBLE_DOMAIN && (
+        <>
+          <Script
+            defer
+            data-domain={PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+          <Script id="plausible-init" strategy="afterInteractive">
+            {`window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}`}
+          </Script>
+        </>
+      )}
       <nav className="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">

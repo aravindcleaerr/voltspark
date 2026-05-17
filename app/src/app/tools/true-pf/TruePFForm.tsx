@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Info, Loader2 } from 'lucide-react';
 import { computeScenarios, bucketToThdi, THDI_BUCKETS, type Scenario, type ThdiBucketId } from '@/lib/pq/true-pf';
+import { track } from '@/lib/analytics';
 import ResultCard from './ResultCard';
 
 type Errors = Partial<Record<'units' | 'kva' | 'dpf' | 'penalty' | 'thdi', string>>;
@@ -76,6 +77,15 @@ export default function TruePFForm({ initialResult }: { initialResult?: InitialR
   const { errors, thdiDecimal } = useMemo(() => validate(s), [s]);
   const canSubmit = Object.keys(errors).length === 0 && thdiDecimal !== null;
 
+  // Top-of-funnel: fire once per page load. A shared-result view (?r=TOKEN)
+  // is a distinct event from a fresh visitor landing on the form.
+  useEffect(() => {
+    track(initialResult ? 'result_viewed' : 'tool_visited', {
+      tool: 'true-pf',
+      source: initialResult ? 'share-link' : 'direct',
+    });
+  }, [initialResult]);
+
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setS(prev => ({ ...prev, [k]: v }));
 
   async function onSubmit(e: React.FormEvent) {
@@ -95,6 +105,15 @@ export default function TruePFForm({ initialResult }: { initialResult?: InitialR
       thdiNow: inputs.thdi,
       currentPenalty: inputs.penalty,
     });
+
+    // Mid-funnel: the user reached a result. Harmonic share is the headline
+    // signal — it's why the tool exists, so it's worth a dimension.
+    const harmonicPct = inputs.penalty > 0
+      ? Math.round((scenarios[1].estimatedPenalty / inputs.penalty) * 100)
+      : 0;
+    const hasEmail = !!s.email.trim();
+    track('tool_completed', { tool: 'true-pf', harmonic_pct: harmonicPct, has_email: hasEmail });
+    if (hasEmail) track('email_provided', { tool: 'true-pf' });
 
     setSubmitting(true);
     let shareToken: string | undefined;

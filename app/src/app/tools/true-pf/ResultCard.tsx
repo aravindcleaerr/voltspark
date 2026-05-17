@@ -3,6 +3,7 @@
 import { AlertTriangle, ArrowLeft, CheckCircle2, Copy, Download, Linkedin, MessageCircle, Twitter } from 'lucide-react';
 import { useState } from 'react';
 import type { Scenario } from '@/lib/pq/true-pf';
+import { track } from '@/lib/analytics';
 
 interface Props {
   scenarios: Scenario[];
@@ -48,6 +49,7 @@ export default function ResultCard({ scenarios, inputs, shareToken, onReset }: P
 
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
+    track('share_clicked', { tool: 'true-pf', channel: 'copy-link' });
     try {
       await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
       setCopied(true);
@@ -135,12 +137,14 @@ export default function ResultCard({ scenarios, inputs, shareToken, onReset }: P
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <a
           href="/start"
+          onClick={() => track('pdf_report_clicked', { tool: 'true-pf' })}
           className="btn-primary text-center inline-flex items-center justify-center"
         >
           <Download className="h-4 w-4 mr-2" /> Get the detailed PDF report
         </a>
         <a
           href="/start"
+          onClick={() => track('demo_clicked', { tool: 'true-pf' })}
           className="btn-secondary text-center inline-flex items-center justify-center"
         >
           Book a 20-min walkthrough
@@ -161,6 +165,7 @@ export default function ResultCard({ scenarios, inputs, shareToken, onReset }: P
           <a
             href={`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`}
             target="_blank" rel="noopener noreferrer"
+            onClick={() => track('share_clicked', { tool: 'true-pf', channel: 'whatsapp' })}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium min-h-[44px]"
           >
             <MessageCircle className="h-4 w-4" /> WhatsApp
@@ -168,6 +173,7 @@ export default function ResultCard({ scenarios, inputs, shareToken, onReset }: P
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
             target="_blank" rel="noopener noreferrer"
+            onClick={() => track('share_clicked', { tool: 'true-pf', channel: 'linkedin' })}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0a66c2] hover:bg-[#084d92] text-white text-sm font-medium min-h-[44px]"
           >
             <Linkedin className="h-4 w-4" /> LinkedIn
@@ -175,6 +181,7 @@ export default function ResultCard({ scenarios, inputs, shareToken, onReset }: P
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
             target="_blank" rel="noopener noreferrer"
+            onClick={() => track('share_clicked', { tool: 'true-pf', channel: 'x' })}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 hover:bg-black text-white text-sm font-medium min-h-[44px]"
           >
             <Twitter className="h-4 w-4" /> Post on X
